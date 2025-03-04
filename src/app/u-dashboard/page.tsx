@@ -1,9 +1,17 @@
-"use client";
+import { redirect } from "next/navigation";
+import { createClient } from "../utils/supabase/server";
 
-export default function UDashboard() {
+export default async function UDashboard() {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.auth.getUser();
+  if (error || !data?.user) {
+    redirect("/");
+  }
+
   return (
     <main>
-      <h1>user dashboard</h1>
+      <h1>Hello {data.user.email}</h1>
     </main>
   );
 }
