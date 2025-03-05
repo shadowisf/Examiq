@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { handleCreateCourse } from "./_teacherActions";
+import { handleCreateCourse } from "./teacherActions";
 
 type CourseProps = {
   students: any[] | null;
@@ -10,7 +10,7 @@ type CourseProps = {
   courseError: any;
 };
 
-export default function Courses({
+export default function TeacherCourseCreation({
   students,
   studentsError,
   courses,
@@ -18,19 +18,10 @@ export default function Courses({
 }: CourseProps) {
   const [showModal, setShowModal] = useState(false);
   const [name, setName] = useState("");
-  const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
-
-  const handleStudentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedOptions = Array.from(
-      event.target.selectedOptions,
-      (option) => option.value
-    );
-    setSelectedStudents(selectedOptions);
-  };
 
   return (
     <>
-      <section className="courses-container">
+      <section className="teacher-courses-container">
         <h1 id="courses">courses</h1>
 
         <button className="create-button" onClick={() => setShowModal(true)}>
@@ -69,44 +60,41 @@ export default function Courses({
             </tbody>
           </table>
         ) : (
-          <p>you have not created any courses yet</p>
+          <p className="gray">you have not created any courses yet</p>
         )}
       </section>
 
       {showModal && (
         <section className="modal">
           <div className="modal-content">
-            <h1>Create New Course</h1>
+            <h1>create new course</h1>
 
             <form>
               <input
                 name="course name"
                 type="text"
-                placeholder="Course name"
+                placeholder="course name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
               />
 
-              <select
-                name="students"
-                multiple
-                value={selectedStudents}
-                onChange={handleStudentChange}
-                required
-              >
+              <select name="student" multiple required>
                 {students?.map((student) => (
                   <option key={student.id} value={student.id}>
-                    {student.display_name}
+                    {student.name}
                   </option>
                 ))}
               </select>
 
+              <br />
+
               <div className="modal-actions">
                 <button type="button" onClick={() => setShowModal(false)}>
-                  Cancel
+                  cancel
                 </button>
-                <button formAction={handleCreateCourse}>Confirm</button>
+
+                <button formAction={handleCreateCourse}>confirm</button>
               </div>
             </form>
           </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { handleCreateAccount } from "./_adminAction";
+import { handleCreateAccount } from "./adminAction";
 
 type AdminAccountCreationProps = {
   students: any[] | null;
@@ -57,7 +57,7 @@ export default function AdminAccountCreation({
               </tbody>
             </table>
           ) : (
-            <p>there are no students yet</p>
+            <p className="gray">there are no students yet</p>
           )}
         </div>
 

@@ -2,6 +2,8 @@
 
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { createClient } from "../utils/supabase/server";
+import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 export async function handleCreateAccount(formData: FormData) {
   const supabase = createServiceClient(
@@ -14,16 +16,31 @@ export async function handleCreateAccount(formData: FormData) {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
 
-  const { data } = await supabase.auth.admin.createUser({
-    email: email,
-    password: password,
-    user_metadata: {
-      display_name: name,
-      role: role,
-    },
-  });
+  const { data: authUserData, error: authUserError } =
+    await supabase.auth.admin.createUser({
+      email: email,
+      password: password,
+      user_metadata: {
+        display_name: name,
+        role: role,
+      },
+      email_confirm: true,
+    });
 
-  await supabase.from(role).insert([{ id: data.user?.id, name: name }]);
+  const { error: tableUserError } = await supabase
+    .from(role)
+    .insert([{ id: authUserData.user?.id, name: name }]);
+
+  if (authUserError) {
+    redirect(`/dashboard?error=${authUserError.message}`);
+  }
+
+  if (tableUserError) {
+    redirect(`/dashboard?error=${tableUserError.message}`);
+  }
+
+  revalidatePath("/", "layout");
+  redirect("/dashboard");
 }
 
 export async function retrieveDataForAdmin() {

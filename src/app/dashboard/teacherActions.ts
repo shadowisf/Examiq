@@ -29,11 +29,11 @@ export async function updateDisplayName(formData: FormData) {
   });
 
   if (error) {
-    redirect(`/teacher-dashboard?error=${error.message}`);
+    redirect(`/dashboard?error=${error.message}`);
   }
 
   revalidatePath("/", "layout");
-  redirect("/teacher-dashboard");
+  redirect("/dashboard");
 }
 
 export async function retrieveDataForTeacher() {
@@ -51,8 +51,8 @@ export async function retrieveDataForTeacher() {
     .eq("author", currentUser.user?.id);
 
   const { data: students, error: studentsError } = await supabase
-    .from("students")
-    .select("id, display_name");
+    .from("student")
+    .select("*");
 
   return {
     currentUser,
@@ -78,9 +78,9 @@ export async function handleCreateCourse(formData: FormData) {
     .select();
 
   if (error) {
-    redirect(`/teacher-dashboard?error=${error.message}`);
+    redirect(`/dashboard?error=${error.message}`);
   }
 
   revalidatePath("/", "layout");
-  redirect("/teacher-dashboard");
+  redirect("/dashboard");
 }
