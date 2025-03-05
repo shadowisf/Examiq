@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "../utils/supabase/client";
 import { useRouter } from "next/navigation";
 
-export const signout = async () => {
+export async function handleSignOut() {
   const supabase = createClient();
   const router = useRouter();
 
@@ -14,4 +14,4 @@ export const signout = async () => {
 
   router.push("/");
   router.refresh();
-};
+}

@@ -1,9 +1,9 @@
 "use client";
 
-import { signout } from "./actions";
+import { handleSignOut } from "./actions";
 
 export default function SignOut() {
-  signout();
+  handleSignOut();
 
   return "";
 }

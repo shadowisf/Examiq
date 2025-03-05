@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { signin } from "./actions";
+import { handleSignIn } from "./actions";
 import { useSearchParams } from "next/navigation";
 
 export default function SignIn() {
@@ -29,7 +29,7 @@ export default function SignIn() {
         <p className="gray">sign in to your account</p>
       </section>
 
-      <form className="input-container">
+      <form>
         <input
           name="email"
           type="email"
@@ -51,7 +51,7 @@ export default function SignIn() {
 
         <br />
 
-        <button formAction={signin}>sign in</button>
+        <button formAction={handleSignIn}>sign in</button>
       </form>
     </main>
   );

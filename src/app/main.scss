@@ -73,6 +73,41 @@ nav {
   }
 }
 
+table {
+  border-collapse: collapse;
+
+  th,
+  td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+}
+
+button {
+  all: unset;
+
+  border-radius: 5px;
+  color: black;
+  padding: 10px 20px;
+  background-color: white;
+  cursor: pointer;
+  text-align: center;
+}
+
+input,
+select {
+  border-radius: 5px;
+  background-color: rgb(44, 44, 46);
+  font-size: 15px;
+  text-align: center;
+
+  border: none;
+  padding: 10px;
+
+  color: white;
+}
+
 .eyetracker-container {
   margin-left: 350px;
 }
@@ -109,7 +144,7 @@ nav {
     }
   }
 
-  .input-container {
+  form {
     display: flex;
     flex-direction: column;
     gap: 7px;
@@ -118,29 +153,6 @@ nav {
       width: 350px;
     }
   }
-}
-
-button {
-  all: unset;
-
-  border-radius: 5px;
-  color: black;
-  padding: 10px 20px;
-  background-color: white;
-  cursor: pointer;
-  text-align: center;
-}
-
-input {
-  border-radius: 5px;
-  background-color: rgb(44, 44, 46);
-  font-size: 15px;
-  text-align: center;
-
-  border: none;
-  padding: 10px;
-
-  color: white;
 }
 
 .teacher-dashboard-page {
@@ -172,20 +184,28 @@ input {
   }
 }
 
-table {
-  border-collapse: collapse;
-
-  th,
-  td {
-    padding: 8px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-  }
-}
-
 .courses-container {
   display: grid;
   gap: 25px;
+
+  .create-button {
+    width: 150px;
+  }
+}
+
+.admin-account-creation-container {
+  display: grid;
+  gap: 25px;
+
+  form {
+    display: grid;
+    gap: 7px;
+
+    input,
+    select {
+      width: 300px;
+    }
+  }
 
   .create-button {
     width: 150px;
@@ -215,7 +235,7 @@ table {
 
     form {
       display: grid;
-      gap: 25px;
+      gap: 7px;
     }
 
     .modal-actions {
