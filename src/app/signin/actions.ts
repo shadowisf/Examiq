@@ -15,9 +15,9 @@ export async function signin(formData: FormData) {
   const { error } = await supabase.auth.signInWithPassword(data);
 
   if (error) {
-    redirect(`/login?=error${error.code}`);
+    redirect(`/signin?error=${error.message}`);
   }
 
   revalidatePath("/", "layout");
-  redirect("/u-dashboard");
+  redirect("/teacher-dashboard");
 }

@@ -1,10 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { signin } from "./actions";
+import { useSearchParams } from "next/navigation";
 
 export default function SignIn() {
+  const searchParams = useSearchParams();
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const errorMessage = searchParams.get("error");
+
+    if (errorMessage) {
+      setError(errorMessage);
+    }
+  }, [searchParams]);
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === " ") {
@@ -13,15 +23,14 @@ export default function SignIn() {
   };
 
   return (
-    <main className="login-page">
+    <main className="signin-page">
       <section className="text-container">
-        <h1>welcome back</h1>
-        <p>sign in to your account</p>
+        <h1 className="big">welcome back</h1>
+        <p className="gray">sign in to your account</p>
       </section>
 
       <form className="input-container">
         <input
-          id="email"
           name="email"
           type="email"
           onKeyDown={handleKeyDown}
@@ -29,7 +38,6 @@ export default function SignIn() {
           required
         />
         <input
-          id="password"
           name="password"
           type="password"
           onKeyDown={handleKeyDown}

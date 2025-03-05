@@ -3,8 +3,8 @@ export default function Home() {
     <main className="intro-page">
       <section className="banner-container">
         <div>
-          <h1>welcome to examiq</h1>
-          <p>smarter exams, smater integrity</p>
+          <h1 className="big">welcome to examiq</h1>
+          <p className="gray">smarter exams, smater integrity</p>
         </div>
         <img src="/intro-2.png" />
       </section>

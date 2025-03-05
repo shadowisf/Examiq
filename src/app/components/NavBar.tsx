@@ -13,7 +13,7 @@ export default async function NavBar() {
       </Link>
 
       <section className="nav-links">
-        {error || !data?.user ? "" : <Link href="/u-dashboard">dashboard</Link>}
+        {error || !data?.user ? "" : <Link href="/teacher-dashboard">dashboard</Link>}
 
         {error || !data?.user ? (
           <Link href="/signin">sign in</Link>
