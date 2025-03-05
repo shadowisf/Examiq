@@ -52,7 +52,7 @@ export async function retrieveDataForTeacher() {
 
   const { data: students, error: studentsError } = await supabase
     .from("student")
-    .select("*");
+    .select("id, name");
 
   return {
     currentUser,
@@ -62,6 +62,23 @@ export async function retrieveDataForTeacher() {
     students,
     studentsError,
   };
+}
+
+export async function retrieveNameFromID(id: string) {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("student")
+    .select("name")
+    .eq("id", id)
+    .single();
+
+  if (error) {
+    console.error("Error fetching student name:", error);
+    return null;
+  }
+
+  return data ? data.name : "Unknown";
 }
 
 export async function handleCreateCourse(formData: FormData) {

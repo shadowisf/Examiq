@@ -19,6 +19,11 @@ export default function TeacherCourseCreation({
   const [showModal, setShowModal] = useState(false);
   const [name, setName] = useState("");
 
+  const studentNameMap = students?.reduce((acc, student) => {
+    acc[student.id] = student.name;
+    return acc;
+  }, {} as Record<string, string>);
+
   return (
     <>
       <section className="teacher-courses-container">
@@ -34,29 +39,43 @@ export default function TeacherCourseCreation({
           <table>
             <thead>
               <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Date of Creation</th>
-                <th>Actions</th>
+                <th>id</th>
+                <th>name</th>
+                <th>students</th>
+                <th>date of creation</th>
+                <th>actions</th>
               </tr>
             </thead>
             <tbody>
-              {courses.map((course) => (
-                <tr key={course.id}>
-                  <td>{course.id}</td>
-                  <td>{course.name}</td>
-                  <td>
-                    {new Date(course.created_at).toLocaleString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </td>
-                  <td className="actions-column">
-                    <button>Edit</button>
-                  </td>
-                </tr>
-              ))}
+              {courses.map((course) => {
+                const studentNames = Object.values(course.students || {}).map(
+                  (studentId: any) => studentNameMap[studentId] || "Unknown"
+                );
+
+                return (
+                  <tr key={course.id}>
+                    <td>{course.id}</td>
+                    <td>{course.name}</td>
+                    <td>
+                      <ul>
+                        {studentNames.map((name, index) => (
+                          <li key={index}>{name}</li>
+                        ))}
+                      </ul>
+                    </td>
+                    <td>
+                      {new Date(course.created_at).toLocaleString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </td>
+                    <td className="actions-column">
+                      <button>edit</button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         ) : (

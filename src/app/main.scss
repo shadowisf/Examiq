@@ -81,6 +81,10 @@ table {
     padding: 8px;
     text-align: left;
     border-bottom: 1px solid #ddd;
+
+    ul {
+      list-style: none;
+    }
   }
 }
 
@@ -236,6 +240,11 @@ select {
     form {
       display: grid;
       gap: 7px;
+    }
+
+    .student-selection {
+      display: flex;
+      gap: 5px;
     }
 
     .modal-actions {
