@@ -3,19 +3,19 @@
 import { useState } from "react";
 import { handleCreateAccount } from "./adminAction";
 
-type AdminAccountCreationProps = {
+type AdminAccountsProps = {
   students: any[] | null;
   studentsError: any;
   teachers: any[] | null;
   teachersError: any;
 };
 
-export default function AdminAccountCreation({
+export default function AdminAccounts({
   students,
   studentsError,
   teachers,
   teachersError,
-}: AdminAccountCreationProps) {
+}: AdminAccountsProps) {
   const [showModal, setShowModal] = useState(false);
 
   return (

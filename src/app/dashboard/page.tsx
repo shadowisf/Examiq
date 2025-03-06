@@ -1,8 +1,8 @@
 import { retrieveDataForTeacher, updateDisplayName } from "./teacherActions";
 import Link from "next/link";
-import AdminAccountCreation from "./AdminAccountCreation";
+import AdminAccountCreation from "./AdminAccounts";
 import { retrieveDataForAdmin } from "./adminAction";
-import TeacherCourseCreation from "./TeacherCourseCreation";
+import TeacherCourseCreation from "./TeacherCourses";
 
 export default async function TeacherDashboard() {
   const resTeacher = await retrieveDataForTeacher();
