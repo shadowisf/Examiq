@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { handleCreateCourse } from "./teacherActions";
+import { useRouter } from "next/navigation";
 
 type TeacherCourseProps = {
   students: any[] | null;
@@ -16,10 +17,11 @@ export default function TeacherCourses({
   courses,
   courseError,
 }: TeacherCourseProps) {
+  const router = useRouter();
+
   const [showModal, setShowModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
-  const [courseName, setCourseName] = useState("");
 
   function toggleStudentSelection(studentId: string) {
     setSelectedStudents((prev) =>
@@ -39,17 +41,20 @@ export default function TeacherCourses({
       <section className="teacher-courses-container">
         <h1 id="courses">courses</h1>
 
-        <button
-          className="create-button"
-          onClick={() => {
-            setIsEditMode(false);
-            setSelectedStudents([]);
-            setCourseName("");
-            setShowModal(true);
-          }}
-        >
-          create new course
-        </button>
+        <div className="button-container">
+          <button
+            className="create-button"
+            onClick={() => {
+              setIsEditMode(false);
+              setSelectedStudents([]);
+              setShowModal(true);
+            }}
+          >
+            create new course
+          </button>
+
+          <button onClick={() => router.refresh()}>refresh</button>
+        </div>
 
         {courseError ? (
           <p style={{ color: "red" }}>failed to load courses</p>
@@ -67,7 +72,7 @@ export default function TeacherCourses({
             <tbody>
               {courses.map((course) => {
                 const studentNames = Object.values(course.students || {}).map(
-                  (studentId: any) => studentNameMap[studentId] || "Unknown"
+                  (studentId: any) => studentNameMap[studentId] || "unknown"
                 );
 
                 return (
@@ -76,9 +81,13 @@ export default function TeacherCourses({
                     <td>{course.name}</td>
                     <td>
                       <ul>
-                        {studentNames.map((name, index) => (
-                          <li key={index}>{name}</li>
-                        ))}
+                        {studentNames.length > 0 ? (
+                          studentNames.map((name, index) => (
+                            <li key={index}>{name}</li>
+                          ))
+                        ) : (
+                          <li>none</li>
+                        )}
                       </ul>
                     </td>
                     <td>

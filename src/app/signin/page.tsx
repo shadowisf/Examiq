@@ -30,6 +30,11 @@ export default function SignIn() {
       </section>
 
       <form>
+        <select name="role" defaultValue={"student"}>
+          <option value="student">student</option>
+          <option value="teacher">teacher</option>
+          <option value="admin">admin</option>
+        </select>
         <input
           name="email"
           type="email"

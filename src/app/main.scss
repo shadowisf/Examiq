@@ -192,8 +192,13 @@ select {
   display: grid;
   gap: 25px;
 
-  .create-button {
-    width: 150px;
+  .button-container {
+    display: flex;
+    gap: 25px;
+
+    button {
+      width: 150px;
+    }
   }
 }
 
