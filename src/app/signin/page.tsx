@@ -16,11 +16,11 @@ export default function SignIn() {
     }
   }, [searchParams]);
 
-  const handleKeyDown = (event: React.KeyboardEvent) => {
+  function handleKeyDown(event: React.KeyboardEvent) {
     if (event.key === " ") {
       event.preventDefault();
     }
-  };
+  }
 
   return (
     <main className="signin-page">
@@ -29,7 +29,7 @@ export default function SignIn() {
         <p className="gray">sign in to your account</p>
       </section>
 
-      <form>
+      <form action={handleSignIn}>
         <select name="role" defaultValue={"student"}>
           <option value="student">student</option>
           <option value="teacher">teacher</option>
@@ -56,7 +56,7 @@ export default function SignIn() {
 
         <br />
 
-        <button formAction={handleSignIn}>sign in</button>
+        <button type="submit">sign in</button>
       </form>
     </main>
   );
