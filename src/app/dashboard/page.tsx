@@ -1,22 +1,26 @@
-import { retrieveDataForTeacher, updateDisplayName } from "./teacherActions";
+import { readCourse, readStudents } from "./teacherCoursesActions";
 import Link from "next/link";
-import AdminAccountCreation from "./AdminAccounts";
-import { retrieveDataForAdmin } from "./adminAction";
-import TeacherCourseCreation from "./TeacherCourses";
+import AdminAccountCreation from "./adminAccounts";
+import { readTeachers } from "./adminAccountsActions";
+import TeacherCourses from "./teacherCourses";
+import { readCurrentUser } from "./pageActions";
 
 export default async function TeacherDashboard() {
-  const resTeacher = await retrieveDataForTeacher();
-  const resAdmin = await retrieveDataForAdmin();
+  const { currentUser } = await readCurrentUser();
 
-  const displayName = resTeacher.currentUser.user.user_metadata?.display_name;
+  const { teachers, teachersError } = await readTeachers();
+  const { students, studentsError } = await readStudents();
+  const { courses, coursesError } = await readCourse();
+
+  const displayName = currentUser.user.user_metadata?.display_name;
   const firstName = displayName ? displayName.split(" ")[0] : "";
 
-  const email = resTeacher.currentUser.user.email;
+  const email = currentUser.user.email;
   const username = email?.split("@")[0];
 
   const name = displayName ? firstName : username;
 
-  const role = resTeacher.currentUser.user.user_metadata?.role;
+  const role = currentUser.user.user_metadata?.role;
 
   let bentoContent;
   let mainContent;
@@ -25,9 +29,9 @@ export default async function TeacherDashboard() {
   if (role === undefined) {
     bentoContent = (
       <>
-        <Link href="#account-creation">
+        <Link href="#accounts">
           <h1>accounts</h1>
-          <p className="gray">create accounts for students and teachers</p>
+          <p className="gray">create accounts for students & teachers</p>
         </Link>
       </>
     );
@@ -35,10 +39,10 @@ export default async function TeacherDashboard() {
     mainContent = (
       <>
         <AdminAccountCreation
-          students={resAdmin.students}
-          studentsError={resAdmin.studentsError}
-          teachers={resAdmin.teachers}
-          teachersError={resAdmin.teachersError}
+          students={students}
+          studentsError={studentsError}
+          teachers={teachers}
+          teachersError={teachersError}
         />
       </>
     );
@@ -66,11 +70,11 @@ export default async function TeacherDashboard() {
 
     mainContent = (
       <>
-        <TeacherCourseCreation
-          students={resTeacher.students}
-          studentsError={resTeacher.studentsError}
-          courses={resTeacher.courses}
-          courseError={resTeacher.coursesError}
+        <TeacherCourses
+          students={students}
+          studentsError={studentsError}
+          courses={courses}
+          courseError={coursesError}
         />
       </>
     );
@@ -91,13 +95,6 @@ export default async function TeacherDashboard() {
       </section>
 
       {mainContent}
-
-      {/* <section>
-        <form>
-          <input name="display name" type="text" placeholder="display name" />
-          <button formAction={updateDisplayName}>confirm</button>
-        </form>
-      </section> */}
     </main>
   );
 }

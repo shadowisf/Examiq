@@ -16,54 +16,6 @@ function generateIdentifier(prefix: string) {
   return `${prefix}-` + result;
 }
 
-export async function updateDisplayName(formData: FormData) {
-  const supabase = await createClient();
-
-  const data = {
-    display_name: "admin",
-    role: "admin",
-  };
-
-  const { error } = await supabase.auth.updateUser({
-    data,
-  });
-
-  if (error) {
-    redirect(`/dashboard?error=${error.message}`);
-  }
-
-  revalidatePath("/", "layout");
-  redirect("/dashboard");
-}
-
-export async function retrieveDataForTeacher() {
-  const supabase = await createClient();
-
-  const { data: currentUser, error: currentUserError } =
-    await supabase.auth.getUser();
-  if (currentUserError || !currentUser?.user) {
-    redirect("/");
-  }
-
-  const { data: courses, error: coursesError } = await supabase
-    .from("course")
-    .select("*")
-    .eq("author", currentUser.user?.id);
-
-  const { data: students, error: studentsError } = await supabase
-    .from("student")
-    .select("id, name");
-
-  return {
-    currentUser,
-    currentUserError,
-    courses,
-    coursesError,
-    students,
-    studentsError,
-  };
-}
-
 export async function createCourse(formData: FormData, students: string[]) {
   const supabase = await createClient();
 
@@ -92,17 +44,20 @@ export async function createCourse(formData: FormData, students: string[]) {
   redirect("/dashboard");
 }
 
-export async function deleteCourse(id: string) {
+export async function readCourse() {
   const supabase = await createClient();
 
-  const { error } = await supabase.from("course").delete().eq("id", id);
+  const { data: currentUser } = await supabase.auth.getUser();
 
-  if (error) {
-    redirect(`/dashboard?error=${error.message}`);
-  }
+  const { data: courses, error: coursesError } = await supabase
+    .from("course")
+    .select("*")
+    .eq("author", currentUser.user?.id);
 
-  revalidatePath("/", "layout");
-  redirect("/dashboard");
+  return {
+    courses,
+    coursesError,
+  };
 }
 
 export async function updateCourse(
@@ -130,10 +85,28 @@ export async function updateCourse(
   redirect("/dashboard");
 }
 
-export async function readCourse(id: string) {
+export async function deleteCourse(id: string) {
   const supabase = await createClient();
 
-  const { data } = await supabase.from("course").select("*").eq("id", id);
+  const { error } = await supabase.from("course").delete().eq("id", id);
 
-  return { data };
+  if (error) {
+    redirect(`/dashboard?error=${error.message}`);
+  }
+
+  revalidatePath("/", "layout");
+  redirect("/dashboard");
+}
+
+export async function readStudents() {
+  const supabase = await createClient();
+
+  const { data: students, error: studentsError } = await supabase
+    .from("student")
+    .select("*");
+
+  return {
+    students,
+    studentsError,
+  };
 }

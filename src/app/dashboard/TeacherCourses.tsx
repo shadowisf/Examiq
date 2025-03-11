@@ -1,7 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { createCourse, deleteCourse, updateCourse } from "./teacherActions";
+import { useState, useMemo } from "react";
+import {
+  createCourse,
+  deleteCourse,
+  updateCourse,
+} from "./teacherCoursesActions";
 import { useRouter } from "next/navigation";
 
 type TeacherCourseProps = {
@@ -21,22 +25,59 @@ export default function TeacherCourses({
 
   const [showModal, setShowModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
 
+  const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
   const [selectedCourseID, setSelectedCourseID] = useState("");
   const [selectedCourseName, setSelectedCourseName] = useState("");
 
-  const studentNameMap = students?.reduce((acc, student) => {
-    acc[student.id] = student.name;
-    return acc;
-  }, {} as Record<string, string>);
+  const studentNameMap = useMemo(
+    () =>
+      students?.reduce((acc, student) => {
+        acc[student.id] = student.name;
+        return acc;
+      }, {} as Record<string, string>),
+    [students]
+  );
 
-  function toggleStudentSelection(studentId: string) {
+  const ErrorMessage = ({ message }: { message: string }) => (
+    <p style={{ color: "red" }}>{message}</p>
+  );
+
+  function toggleStudentSelection(studentID: string) {
     setSelectedStudents((prev) =>
-      prev.includes(studentId)
-        ? prev.filter((id) => id !== studentId)
-        : [...prev, studentId]
+      prev.includes(studentID)
+        ? prev.filter((id) => id !== studentID)
+        : [...prev, studentID]
     );
+  }
+
+  function handleCancel() {
+    setShowModal(false);
+    setIsEditMode(false);
+    setSelectedStudents([]);
+  }
+
+  function handleCreate() {
+    setIsEditMode(false);
+    setSelectedStudents([]);
+    setShowModal(true);
+  }
+
+  function handleEdit(course: any) {
+    setIsEditMode(true);
+    setShowModal(true);
+    setSelectedCourseID(course.id);
+    setSelectedCourseName(course.name);
+    setSelectedStudents(course.students?.uid || []);
+  }
+
+  function handleDelete(courseID: string) {
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete this course?"
+    );
+    if (isConfirmed) {
+      deleteCourse(courseID);
+    }
   }
 
   return (
@@ -45,22 +86,15 @@ export default function TeacherCourses({
         <h1 id="courses">courses</h1>
 
         <div className="button-container">
-          <button
-            className="create-button"
-            onClick={() => {
-              setIsEditMode(false);
-              setSelectedStudents([]);
-              setShowModal(true);
-            }}
-          >
-            create new course
+          <button className="create-button" onClick={handleCreate}>
+            create
           </button>
 
           <button onClick={() => router.refresh()}>refresh</button>
         </div>
 
         {courseError ? (
-          <p style={{ color: "red" }}>failed to load courses</p>
+          <ErrorMessage message="Failed to load courses" />
         ) : courses && courses.length > 0 ? (
           <table>
             <thead>
@@ -74,9 +108,9 @@ export default function TeacherCourses({
             </thead>
             <tbody>
               {courses.map((course) => {
-                const studentIds = course.students?.uid || [];
+                const studentIDs = course.students?.uid || [];
 
-                const studentNames = studentIds.map(
+                const studentNames = studentIDs.map(
                   (studentId: string) => studentNameMap[studentId]
                 );
 
@@ -103,28 +137,10 @@ export default function TeacherCourses({
                       })}
                     </td>
                     <td className="actions-column">
-                      <button
-                        onClick={() => {
-                          setIsEditMode(true);
-                          setShowModal(true);
-                          setSelectedCourseID(course.id);
-                          setSelectedCourseName(course.name);
-                        }}
-                      >
-                        edit
-                      </button>
-
+                      <button onClick={() => handleEdit(course)}>edit</button>
                       <button
                         className="delete"
-                        onClick={() => {
-                          const isConfirmed = window.confirm(
-                            "are you sure you want to delete this course?"
-                          );
-
-                          if (isConfirmed) {
-                            deleteCourse(course.id);
-                          }
-                        }}
+                        onClick={() => handleDelete(course.id)}
                       >
                         delete
                       </button>
@@ -135,14 +151,14 @@ export default function TeacherCourses({
             </tbody>
           </table>
         ) : (
-          <p className="gray">you have not created any courses yet</p>
+          <p className="gray">you have not created any courses yet.</p>
         )}
       </section>
 
       {showModal && (
         <section className="modal">
           <div className="modal-content">
-            {isEditMode ? <h1>edit course</h1> : <h1>create new course</h1>}
+            <h1>{isEditMode ? "edit course" : "create new course"}</h1>
 
             <form
               action={
@@ -155,7 +171,7 @@ export default function TeacherCourses({
               <input
                 name="course name"
                 type="text"
-                placeholder="course name"
+                placeholder="Course name"
                 required
                 defaultValue={isEditMode ? selectedCourseName : ""}
               />
@@ -164,7 +180,7 @@ export default function TeacherCourses({
                 <h4>students:</h4>
 
                 {studentsError ? (
-                  <p style={{ color: "red" }}>failed to load student table</p>
+                  <ErrorMessage message="Failed to load student table" />
                 ) : (
                   students?.map((student) => (
                     <label key={student.id} className="student-checkbox">
@@ -180,17 +196,8 @@ export default function TeacherCourses({
                 )}
               </div>
 
-              <br />
-
               <div className="modal-actions">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowModal(false);
-                    setIsEditMode(false);
-                    setSelectedStudents([]);
-                  }}
-                >
+                <button type="button" onClick={handleCancel}>
                   cancel
                 </button>
                 <button type="submit">confirm</button>

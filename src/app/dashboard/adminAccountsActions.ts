@@ -5,7 +5,7 @@ import { createClient } from "../utils/supabase/server";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 
-export async function handleCreateAccount(formData: FormData) {
+export async function createAccount(formData: FormData) {
   const supabase = createServiceClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY!
@@ -43,20 +43,13 @@ export async function handleCreateAccount(formData: FormData) {
   redirect("/dashboard");
 }
 
-export async function retrieveDataForAdmin() {
+export async function readTeachers() {
   const supabase = await createClient();
-
-  const { data: students, error: studentsError } = await supabase
-    .from("student")
-    .select("*");
-
   const { data: teachers, error: teachersError } = await supabase
     .from("teacher")
     .select("*");
 
   return {
-    students,
-    studentsError,
     teachers,
     teachersError,
   };

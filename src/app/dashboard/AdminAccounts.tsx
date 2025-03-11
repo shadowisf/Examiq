@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { handleCreateAccount } from "./adminAction";
+import { createAccount } from "./adminAccountsActions";
 
 type AdminAccountsProps = {
   students: any[] | null;
@@ -24,7 +24,7 @@ export default function AdminAccounts({
         <h1 id="account-creation">accounts</h1>
 
         <button className="create-button" onClick={() => setShowModal(true)}>
-          create new account
+          create
         </button>
 
         <div>
@@ -118,7 +118,7 @@ export default function AdminAccounts({
               <div className="modal-actions">
                 <button onClick={() => setShowModal(false)}>cancel</button>
 
-                <button formAction={handleCreateAccount}>create</button>
+                <button formAction={createAccount}>create</button>
               </div>
             </form>
           </div>
