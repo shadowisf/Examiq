@@ -82,6 +82,17 @@ table {
     text-align: left;
     border-bottom: 1px solid #ddd;
 
+    &.actions-column {
+      text-align: center;
+      display: grid;
+      gap: 7px;
+
+      .delete {
+        color: white;
+        background-color: darkred;
+      }
+    }
+
     ul {
       list-style: none;
     }

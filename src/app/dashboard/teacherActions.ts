@@ -64,24 +64,7 @@ export async function retrieveDataForTeacher() {
   };
 }
 
-export async function retrieveNameFromID(id: string) {
-  const supabase = await createClient();
-
-  const { data, error } = await supabase
-    .from("student")
-    .select("name")
-    .eq("id", id)
-    .single();
-
-  if (error) {
-    console.error("Error fetching student name:", error);
-    return null;
-  }
-
-  return data ? data.name : "Unknown";
-}
-
-export async function handleCreateCourse(formData: FormData) {
+export async function createCourse(formData: FormData) {
   const supabase = await createClient();
 
   const { data: currentUser } = await supabase.auth.getUser();
@@ -93,6 +76,32 @@ export async function handleCreateCourse(formData: FormData) {
     .from("course")
     .insert([{ id: id, name: course_name, author: currentUser.user?.id }])
     .select();
+
+  if (error) {
+    redirect(`/dashboard?error=${error.message}`);
+  }
+
+  revalidatePath("/", "layout");
+  redirect("/dashboard");
+}
+
+export async function deleteCourse(id: string) {
+  const supabase = await createClient();
+
+  const { error } = await supabase.from("course").delete().eq("id", id);
+
+  if (error) {
+    redirect(`/dashboard?error=${error.message}`);
+  }
+
+  revalidatePath("/", "layout");
+  redirect("/dashboard");
+}
+
+export async function updateCourse(id: string) {
+  const supabase = await createClient();
+
+  const { error } = await supabase.from("course").update({}).eq("id", id);
 
   if (error) {
     redirect(`/dashboard?error=${error.message}`);

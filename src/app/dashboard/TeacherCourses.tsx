@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { handleCreateCourse } from "./teacherActions";
+import { createCourse, deleteCourse, updateCourse } from "./teacherActions";
 import { useRouter } from "next/navigation";
 
 type TeacherCourseProps = {
@@ -22,6 +22,12 @@ export default function TeacherCourses({
   const [showModal, setShowModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
+  const [selectedCourse, setSelectedCourse] = useState("");
+
+  const studentNameMap = students?.reduce((acc, student) => {
+    acc[student.id] = student.name;
+    return acc;
+  }, {} as Record<string, string>);
 
   function toggleStudentSelection(studentId: string) {
     setSelectedStudents((prev) =>
@@ -30,11 +36,6 @@ export default function TeacherCourses({
         : [...prev, studentId]
     );
   }
-
-  const studentNameMap = students?.reduce((acc, student) => {
-    acc[student.id] = student.name;
-    return acc;
-  }, {} as Record<string, string>);
 
   return (
     <>
@@ -71,8 +72,10 @@ export default function TeacherCourses({
             </thead>
             <tbody>
               {courses.map((course) => {
-                const studentNames = Object.values(course.students || {}).map(
-                  (studentId: any) => studentNameMap[studentId] || "unknown"
+                const studentIds = course.students?.uid || [];
+
+                const studentNames = studentIds.map(
+                  (studentId: string) => studentNameMap[studentId]
                 );
 
                 return (
@@ -82,7 +85,7 @@ export default function TeacherCourses({
                     <td>
                       <ul>
                         {studentNames.length > 0 ? (
-                          studentNames.map((name, index) => (
+                          studentNames.map((name: string, index: number) => (
                             <li key={index}>{name}</li>
                           ))
                         ) : (
@@ -102,9 +105,25 @@ export default function TeacherCourses({
                         onClick={() => {
                           setIsEditMode(true);
                           setShowModal(true);
+                          setSelectedCourse(course.id);
                         }}
                       >
                         edit
+                      </button>
+
+                      <button
+                        className="delete"
+                        onClick={() => {
+                          const isConfirmed = window.confirm(
+                            "are you sure you want to delete this course?"
+                          );
+
+                          if (isConfirmed) {
+                            deleteCourse(course.id);
+                          }
+                        }}
+                      >
+                        delete
                       </button>
                     </td>
                   </tr>
@@ -122,7 +141,11 @@ export default function TeacherCourses({
           <div className="modal-content">
             {isEditMode ? <h1>edit course</h1> : <h1>create new course</h1>}
 
-            <form>
+            <form
+              action={
+                isEditMode ? () => updateCourse(selectedCourse) : createCourse
+              }
+            >
               <input
                 name="course name"
                 type="text"
@@ -153,10 +176,17 @@ export default function TeacherCourses({
               <br />
 
               <div className="modal-actions">
-                <button type="button" onClick={() => setShowModal(false)}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowModal(false);
+                    setIsEditMode(false);
+                    setSelectedStudents([]);
+                  }}
+                >
                   cancel
                 </button>
-                <button formAction={handleCreateCourse}>confirm</button>
+                <button type="submit">confirm</button>
               </div>
             </form>
           </div>
