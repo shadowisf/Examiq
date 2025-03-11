@@ -40,17 +40,4 @@ export async function createAccount(formData: FormData) {
   }
 
   revalidatePath("/", "layout");
-  redirect("/dashboard");
-}
-
-export async function readTeachers() {
-  const supabase = await createClient();
-  const { data: teachers, error: teachersError } = await supabase
-    .from("teacher")
-    .select("*");
-
-  return {
-    teachers,
-    teachersError,
-  };
 }

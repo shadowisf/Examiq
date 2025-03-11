@@ -18,3 +18,45 @@ export async function readCurrentUser() {
     currentUserError,
   };
 }
+
+export async function readCourse() {
+  const supabase = await createClient();
+
+  const { data: currentUser } = await supabase.auth.getUser();
+
+  const { data: courses, error: coursesError } = await supabase
+    .from("course")
+    .select("*")
+    .eq("author", currentUser.user?.id);
+
+  return {
+    courses,
+    coursesError,
+  };
+}
+
+export async function readStudents() {
+  const supabase = await createClient();
+
+  const { data: students, error: studentsError } = await supabase
+    .from("student")
+    .select("*");
+
+  return {
+    students,
+    studentsError,
+  };
+}
+
+export async function readTeachers() {
+  const supabase = await createClient();
+
+  const { data: teachers, error: teachersError } = await supabase
+    .from("teacher")
+    .select("*");
+
+  return {
+    teachers,
+    teachersError,
+  };
+}

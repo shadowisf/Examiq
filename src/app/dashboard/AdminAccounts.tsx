@@ -20,7 +20,7 @@ export default function AdminAccounts({
 
   return (
     <>
-      <section className="admin-account-creation-container">
+      <section className="admin-accounts-container">
         <h1 id="account-creation">accounts</h1>
 
         <button className="create-button" onClick={() => setShowModal(true)}>

@@ -3,6 +3,8 @@
 import { createClient } from "../utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { useLoader } from "../components/Loader";
+import { resourceUsage } from "process";
 
 function generateIdentifier(prefix: string) {
   const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -41,23 +43,8 @@ export async function createCourse(formData: FormData, students: string[]) {
   }
 
   revalidatePath("/", "layout");
-  redirect("/dashboard");
-}
 
-export async function readCourse() {
-  const supabase = await createClient();
-
-  const { data: currentUser } = await supabase.auth.getUser();
-
-  const { data: courses, error: coursesError } = await supabase
-    .from("course")
-    .select("*")
-    .eq("author", currentUser.user?.id);
-
-  return {
-    courses,
-    coursesError,
-  };
+  return "ok";
 }
 
 export async function updateCourse(
@@ -82,7 +69,6 @@ export async function updateCourse(
   }
 
   revalidatePath("/", "layout");
-  redirect("/dashboard");
 }
 
 export async function deleteCourse(id: string) {
@@ -95,18 +81,4 @@ export async function deleteCourse(id: string) {
   }
 
   revalidatePath("/", "layout");
-  redirect("/dashboard");
-}
-
-export async function readStudents() {
-  const supabase = await createClient();
-
-  const { data: students, error: studentsError } = await supabase
-    .from("student")
-    .select("*");
-
-  return {
-    students,
-    studentsError,
-  };
 }

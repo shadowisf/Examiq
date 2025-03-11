@@ -1,13 +1,15 @@
-import { readCourse, readStudents } from "./teacherCoursesActions";
 import Link from "next/link";
 import AdminAccountCreation from "./adminAccounts";
-import { readTeachers } from "./adminAccountsActions";
 import TeacherCourses from "./teacherCourses";
-import { readCurrentUser } from "./pageActions";
+import {
+  readCourse,
+  readCurrentUser,
+  readStudents,
+  readTeachers,
+} from "./pageActions";
 
-export default async function TeacherDashboard() {
+export default async function Dashboard() {
   const { currentUser } = await readCurrentUser();
-
   const { teachers, teachersError } = await readTeachers();
   const { students, studentsError } = await readStudents();
   const { courses, coursesError } = await readCourse();
@@ -48,6 +50,7 @@ export default async function TeacherDashboard() {
     );
   }
 
+  // teacher role
   if (role === "teacher") {
     bentoContent = (
       <>
@@ -80,12 +83,13 @@ export default async function TeacherDashboard() {
     );
   }
 
+  // student role
   if (role === "student") {
     bentoContent = <></>;
   }
 
   return (
-    <main className="teacher-dashboard-page">
+    <main className="dashboard-page">
       <section className="nav-container">
         <h1 className="big">
           aloha, {role} {name}

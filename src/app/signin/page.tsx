@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { handleSignIn } from "./actions";
+import { signIn } from "./actions";
 import { useSearchParams } from "next/navigation";
 
 export default function SignIn() {
   const searchParams = useSearchParams();
+
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -29,7 +30,7 @@ export default function SignIn() {
         <p className="gray">sign in to your account</p>
       </section>
 
-      <form action={handleSignIn}>
+      <form action={signIn}>
         <select name="role" defaultValue={"student"}>
           <option value="student">student</option>
           <option value="teacher">teacher</option>
