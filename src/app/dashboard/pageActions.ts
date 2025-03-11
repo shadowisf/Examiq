@@ -22,7 +22,7 @@ export async function readCurrentUser() {
 export async function readCourse() {
   const supabase = await createClient();
 
-  const { data: currentUser } = await supabase.auth.getUser();
+  const { currentUser } = await readCurrentUser();
 
   const { data: courses, error: coursesError } = await supabase
     .from("course")
@@ -58,5 +58,21 @@ export async function readTeachers() {
   return {
     teachers,
     teachersError,
+  };
+}
+
+export async function readExams() {
+  const supabase = await createClient();
+
+  const { currentUser } = await readCurrentUser();
+
+  const { data: exams, error: examsError } = await supabase
+    .from("exam")
+    .select("*")
+    .eq("author", currentUser.user?.id);
+
+  return {
+    exams,
+    examsError,
   };
 }

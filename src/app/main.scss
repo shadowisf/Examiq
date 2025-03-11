@@ -2,6 +2,7 @@ html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
+  scroll-padding-top: 100px;
 }
 
 body {
@@ -97,6 +98,10 @@ table {
       white-space: nowrap;
       overflow: hidden;
       width: 150px;
+    }
+
+    &.students-column {
+      padding-left: 24px;
     }
   }
 }
@@ -202,6 +207,14 @@ select {
   }
 }
 
+.create-button {
+  background-color: lightblue;
+}
+
+.delete-button {
+  background-color: lightcoral;
+}
+
 .teacher-courses-container {
   display: grid;
   gap: 24px;
@@ -210,13 +223,15 @@ select {
     display: flex;
     gap: 8px;
   }
+}
 
-  .create-button {
-    background-color: lightblue;
-  }
+.teacher-exams-container {
+  display: grid;
+  gap: 24px;
 
-  .delete-button {
-    background-color: lightcoral;
+  .button-container {
+    display: flex;
+    gap: 8px;
   }
 }
 

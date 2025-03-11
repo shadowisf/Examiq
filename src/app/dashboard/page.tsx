@@ -4,15 +4,18 @@ import TeacherCourses from "./teacherCourses";
 import {
   readCourse,
   readCurrentUser,
+  readExams,
   readStudents,
   readTeachers,
 } from "./pageActions";
+import TeacherExams from "./teacherExams";
 
 export default async function Dashboard() {
   const { currentUser } = await readCurrentUser();
   const { teachers, teachersError } = await readTeachers();
   const { students, studentsError } = await readStudents();
   const { courses, coursesError } = await readCourse();
+  const { exams, examsError } = await readExams();
 
   const displayName = currentUser.user.user_metadata?.display_name;
   const firstName = displayName ? displayName.split(" ")[0] : "";
@@ -79,6 +82,8 @@ export default async function Dashboard() {
           courses={courses}
           courseError={coursesError}
         />
+
+        <TeacherExams exams={exams} examsError={examsError} />
       </>
     );
   }

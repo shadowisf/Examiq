@@ -79,7 +79,7 @@ export default function TeacherCourses({
     setSelectedStudents(course.students?.uid || []);
   }
 
-  async function handleDelete(courseID: string) {
+  function handleDelete(courseID: string) {
     const isConfirmed = window.confirm(
       "are you sure you want to delete this course?"
     );
@@ -139,7 +139,7 @@ export default function TeacherCourses({
                   <tr key={course.id}>
                     <td>{course.id}</td>
                     <td>{course.name}</td>
-                    <td>
+                    <td className="students-column">
                       <ul>
                         {studentNames.length > 0 ? (
                           studentNames.map((name: string, index: number) => (
