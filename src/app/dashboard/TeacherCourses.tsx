@@ -22,7 +22,9 @@ export default function TeacherCourses({
   const [showModal, setShowModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
-  const [selectedCourse, setSelectedCourse] = useState("");
+
+  const [selectedCourseID, setSelectedCourseID] = useState("");
+  const [selectedCourseName, setSelectedCourseName] = useState("");
 
   const studentNameMap = students?.reduce((acc, student) => {
     acc[student.id] = student.name;
@@ -105,7 +107,8 @@ export default function TeacherCourses({
                         onClick={() => {
                           setIsEditMode(true);
                           setShowModal(true);
-                          setSelectedCourse(course.id);
+                          setSelectedCourseID(course.id);
+                          setSelectedCourseName(course.name);
                         }}
                       >
                         edit
@@ -143,7 +146,10 @@ export default function TeacherCourses({
 
             <form
               action={
-                isEditMode ? () => updateCourse(selectedCourse) : createCourse
+                isEditMode
+                  ? (formData) =>
+                      updateCourse(formData, selectedCourseID, selectedStudents)
+                  : (formData) => createCourse(formData, selectedStudents)
               }
             >
               <input
@@ -151,6 +157,7 @@ export default function TeacherCourses({
                 type="text"
                 placeholder="course name"
                 required
+                defaultValue={isEditMode ? selectedCourseName : ""}
               />
 
               <div>

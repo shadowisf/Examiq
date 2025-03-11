@@ -64,7 +64,7 @@ export async function retrieveDataForTeacher() {
   };
 }
 
-export async function createCourse(formData: FormData) {
+export async function createCourse(formData: FormData, students: string[]) {
   const supabase = await createClient();
 
   const { data: currentUser } = await supabase.auth.getUser();
@@ -74,7 +74,14 @@ export async function createCourse(formData: FormData) {
 
   const { error } = await supabase
     .from("course")
-    .insert([{ id: id, name: course_name, author: currentUser.user?.id }])
+    .insert([
+      {
+        id: id,
+        name: course_name,
+        author: currentUser.user?.id,
+        students: { uid: students },
+      },
+    ])
     .select();
 
   if (error) {
@@ -98,10 +105,22 @@ export async function deleteCourse(id: string) {
   redirect("/dashboard");
 }
 
-export async function updateCourse(id: string) {
+export async function updateCourse(
+  formData: FormData,
+  id: string,
+  students: string[]
+) {
   const supabase = await createClient();
 
-  const { error } = await supabase.from("course").update({}).eq("id", id);
+  const inputData = {
+    name: formData.get("course name") as string,
+    students: { uid: students },
+  };
+
+  const { error } = await supabase
+    .from("course")
+    .update(inputData)
+    .eq("id", id);
 
   if (error) {
     redirect(`/dashboard?error=${error.message}`);
@@ -109,4 +128,12 @@ export async function updateCourse(id: string) {
 
   revalidatePath("/", "layout");
   redirect("/dashboard");
+}
+
+export async function readCourse(id: string) {
+  const supabase = await createClient();
+
+  const { data } = await supabase.from("course").select("*").eq("id", id);
+
+  return { data };
 }
