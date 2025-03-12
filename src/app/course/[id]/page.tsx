@@ -1,10 +1,11 @@
+import CourseOptions from "@/app/components/CourseOptions";
 import CourseStudents from "../../components/CourseStudents";
 import {
   readAllStudents,
   readCurrentUser,
   readSingleCourse,
+  readSingleStudent,
 } from "@/app/utils/supabase/server";
-import Image from "next/image";
 
 type CourseProps = {
   params: {
@@ -13,35 +14,29 @@ type CourseProps = {
 };
 
 export default async function Course({ params }: CourseProps) {
+  const { students: allStudents, studentsError } = await readAllStudents();
   const { course } = await readSingleCourse(params.id);
   const { currentUser } = await readCurrentUser();
+
+  const studentIDs = course?.students?.uid || [];
+  const students = await Promise.all(
+    studentIDs.map(async (id: string) => {
+      const { student } = await readSingleStudent(id);
+
+      return student;
+    })
+  );
 
   return (
     <main className="course-page">
       <section>
         {currentUser.user.user_metadata.role === "teacher" ? (
-          <>
-            <div className="button-container">
-              <button>
-                <Image
-                  src={"/icons/edit.svg"}
-                  width={20}
-                  height={20}
-                  alt="edit"
-                />
-              </button>
-              <button className="delete-button">
-                <Image
-                  src={"/icons/trash.svg"}
-                  width={20}
-                  height={20}
-                  alt="delete"
-                />
-              </button>
-            </div>
-
-            <br />
-          </>
+          <CourseOptions
+            currentUser={currentUser}
+            course={course}
+            students={allStudents}
+            studentsError={studentsError}
+          />
         ) : null}
 
         <h1 className="big">{course.name}</h1>
@@ -50,7 +45,7 @@ export default async function Course({ params }: CourseProps) {
         <p className="gray">{course.description}</p>
       </section>
 
-      <CourseStudents course={course} />
+      <CourseStudents students={students} />
     </main>
   );
 }
