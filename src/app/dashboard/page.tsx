@@ -1,7 +1,7 @@
 import Link from "next/link";
-import AdminAccountCreation from "./adminAccounts";
-import TeacherCourses from "./teacherCourses";
-import TeacherExams from "./teacherExams";
+import AdminAccountCreation from "../components/AdminAccounts";
+import TeacherCourses from "../components/TeacherCourses";
+import TeacherExams from "../components/TeacherExams";
 import {
   readAllCourses,
   readAllExams,

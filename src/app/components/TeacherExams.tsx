@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useState } from "react";
-import ErrorMessage from "../components/ErrorMessage";
+import ErrorMessage from "./ErrorMessage";
 
 type TeacherExamsProps = {
   exams: any[] | null;

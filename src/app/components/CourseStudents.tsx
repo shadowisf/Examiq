@@ -1,3 +1,5 @@
+"use client";
+
 import { readSingleStudent } from "@/app/utils/supabase/server";
 
 type CourseStudentsProps = {

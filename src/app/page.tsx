@@ -13,6 +13,7 @@ export default function Home() {
           alt="picture of notebook, pencil"
           width={600}
           height={600}
+          priority
         />
       </section>
     </main>

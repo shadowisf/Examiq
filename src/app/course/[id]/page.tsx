@@ -1,4 +1,4 @@
-import CourseStudents from "./courseStudents";
+import CourseStudents from "../../components/CourseStudents";
 import {
   readAllStudents,
   readCurrentUser,

@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { createCourse, deleteCourse, updateCourse } from "./actions";
+import { createCourse, deleteCourse, updateCourse } from "../dashboard/actions";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import ErrorMessage from "../components/ErrorMessage";
+import ErrorMessage from "./ErrorMessage";
 import Link from "next/link";
 
 type TeacherCourseProps = {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useCallback } from "react";
 import { EyeTracking } from "react-eye-tracking";
 
 export default function EyeTracker() {
