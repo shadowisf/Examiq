@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { readCurrentUser } from "../utils/supabase/server";
+import { readCurrentUser } from "../utils/default/actions";
 
 export default async function NavBar() {
   const { currentUser, currentUserError } = await readCurrentUser();
@@ -11,9 +11,7 @@ export default async function NavBar() {
       </Link>
 
       <section className="nav-links">
-        {currentUserError || !currentUser?.user ? (
-          ""
-        ) : (
+        {currentUserError || !currentUser?.user ? null : (
           <Link href="/dashboard">dashboard</Link>
         )}
 

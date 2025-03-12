@@ -1,16 +1,12 @@
 "use client";
 
-import { useLoader } from "../components/Loader";
+import { useEffect } from "react";
 import { signOut } from "./actions";
 
 export default function SignOut() {
-  const { showLoader, hideLoader } = useLoader();
-
-  showLoader();
-
-  signOut();
-
-  hideLoader();
+  useEffect(() => {
+    signOut();
+  }, []);
 
   return "";
 }

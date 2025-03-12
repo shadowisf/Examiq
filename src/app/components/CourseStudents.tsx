@@ -1,16 +1,27 @@
-"use client";
+import { readSingleStudent } from "../utils/default/actions";
 
 type CourseStudentsProps = {
-  students: any[];
+  course: any;
 };
 
-export default function CourseStudents({ students }: CourseStudentsProps) {
+export default async function CourseStudents({ course }: CourseStudentsProps) {
+  const studentIDs = course?.students?.uid || [];
+  const students = await Promise.all(
+    studentIDs.map(async (id: string) => {
+      const { student } = await readSingleStudent(id);
+
+      return student;
+    })
+  );
+
   return (
-    <section>
-      <h1>students</h1>
+    <section className="student-list-container">
+      <h1>student list</h1>
       <ul>
         {students.length > 0 ? (
-          students.map((student, index) => <li key={index}>{student.name}</li>)
+          students
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map((student, index) => <li key={index}>{student.name}</li>)
         ) : (
           <p className="gray">no students enrolled</p>
         )}

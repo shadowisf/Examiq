@@ -8,7 +8,8 @@ import {
   readAllStudents,
   readAllTeachers,
   readCurrentUser,
-} from "../utils/supabase/server";
+} from "../utils/default/actions";
+import { redirect } from "next/navigation";
 
 export default async function Dashboard() {
   const { currentUser } = await readCurrentUser();
@@ -16,6 +17,10 @@ export default async function Dashboard() {
   const { students, studentsError } = await readAllStudents();
   const { courses, coursesError } = await readAllCourses();
   const { exams, examsError } = await readAllExams();
+
+  if (!currentUser.user) {
+    redirect("/");
+  }
 
   const displayName = currentUser.user.user_metadata?.display_name;
   const firstName = displayName ? displayName.split(" ")[0] : "";

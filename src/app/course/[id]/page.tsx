@@ -2,10 +2,10 @@ import CourseOptions from "@/app/components/CourseOptions";
 import CourseStudents from "../../components/CourseStudents";
 import {
   readAllStudents,
-  readCurrentUser,
   readSingleCourse,
-  readSingleStudent,
-} from "@/app/utils/supabase/server";
+  readCurrentUser,
+} from "@/app/utils/default/actions";
+import { redirect } from "next/navigation";
 
 type CourseProps = {
   params: {
@@ -14,18 +14,13 @@ type CourseProps = {
 };
 
 export default async function Course({ params }: CourseProps) {
-  const { students: allStudents, studentsError } = await readAllStudents();
+  const { students, studentsError } = await readAllStudents();
   const { course } = await readSingleCourse(params.id);
   const { currentUser } = await readCurrentUser();
 
-  const studentIDs = course?.students?.uid || [];
-  const students = await Promise.all(
-    studentIDs.map(async (id: string) => {
-      const { student } = await readSingleStudent(id);
-
-      return student;
-    })
-  );
+  if (!currentUser.user) {
+    redirect("/");
+  }
 
   return (
     <main className="course-page">
@@ -34,7 +29,7 @@ export default async function Course({ params }: CourseProps) {
           <CourseOptions
             currentUser={currentUser}
             course={course}
-            students={allStudents}
+            students={students}
             studentsError={studentsError}
           />
         ) : null}
@@ -45,7 +40,7 @@ export default async function Course({ params }: CourseProps) {
         <p className="gray">{course.description}</p>
       </section>
 
-      <CourseStudents students={students} />
+      <CourseStudents course={course} />
     </main>
   );
 }

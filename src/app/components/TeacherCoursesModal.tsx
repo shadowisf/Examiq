@@ -48,18 +48,22 @@ export default function TeacherCoursesModal({
 
             {studentsError ? (
               <ErrorMessage message="failed to load student table" />
+            ) : students && students.length > 0 ? (
+              students
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map((student) => (
+                  <label key={student.id} className="student-checkbox">
+                    <input
+                      type="checkbox"
+                      value={student.id}
+                      checked={selectedStudents.includes(student.id)}
+                      onChange={() => toggleStudentSelection(student.id)}
+                    />
+                    {student.name}
+                  </label>
+                ))
             ) : (
-              students?.map((student) => (
-                <label key={student.id} className="student-checkbox">
-                  <input
-                    type="checkbox"
-                    value={student.id}
-                    checked={selectedStudents.includes(student.id)}
-                    onChange={() => toggleStudentSelection(student.id)}
-                  />
-                  {student.name}
-                </label>
-              ))
+              <p className="gray">there are no existing students yet.</p>
             )}
           </div>
 

@@ -51,41 +51,43 @@ export default function TeacherExams({ exams, examsError }: TeacherExamsProps) {
             </tr>
           </thead>
           <tbody>
-            {exams.map((exam) => {
-              return (
-                <tr key={exam.id}>
-                  <td>{exam.id}</td>
-                  <td>{exam.course_id}</td>
-                  <td>{exam.name}</td>
-                  <td>{exam.items ? exam.items.length : 0}</td>
-                  <td>
-                    {new Date(exam.created_at).toLocaleString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </td>
-                  <td className="actions-column">
-                    <button onClick={() => {}}>
-                      <Image
-                        src="/icons/edit.svg"
-                        width={20}
-                        height={20}
-                        alt="edit"
-                      />
-                    </button>
-                    <button onClick={() => {}} className="delete-button">
-                      <Image
-                        src={"/icons/trash.svg"}
-                        width={20}
-                        height={20}
-                        alt="delete"
-                      />
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
+            {exams
+              .sort((a, b) => a.name - b.name)
+              .map((exam) => {
+                return (
+                  <tr key={exam.id}>
+                    <td>{exam.id}</td>
+                    <td>{exam.course_id}</td>
+                    <td>{exam.name}</td>
+                    <td>{exam.items ? exam.items.length : 0}</td>
+                    <td>
+                      {new Date(exam.created_at).toLocaleString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </td>
+                    <td className="actions-column">
+                      <button onClick={() => {}}>
+                        <Image
+                          src="/icons/edit.svg"
+                          width={20}
+                          height={20}
+                          alt="edit"
+                        />
+                      </button>
+                      <button onClick={() => {}} className="delete-button">
+                        <Image
+                          src={"/icons/trash.svg"}
+                          width={20}
+                          height={20}
+                          alt="delete"
+                        />
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
           </tbody>
         </table>
       ) : (

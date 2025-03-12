@@ -8,6 +8,7 @@ export default function Home() {
           <h1 className="big">welcome to examiq</h1>
           <p className="gray">smarter exams, smarter integrity</p>
         </div>
+
         <Image
           src={"/images/intro.png"}
           alt="picture of notebook, pencil"

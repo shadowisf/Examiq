@@ -3,8 +3,8 @@
 import { redirect } from "next/navigation";
 import { createClient } from "../utils/supabase/server";
 import { revalidatePath } from "next/cache";
-import { generateIdentifier } from "../utils/supabase/client";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
+import { generateIdentifier } from "../utils/default/actions";
 
 // ADMIN
 export async function createAccount(formData: FormData) {

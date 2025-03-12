@@ -120,45 +120,47 @@ export default function TeacherCourses({
               </tr>
             </thead>
             <tbody>
-              {courses.map((course) => {
-                return (
-                  <tr key={course.id}>
-                    <td>
-                      <Link href={`course/${course.id}`}>{course.id}</Link>
-                    </td>
-                    <td>{course.name}</td>
-                    <td>{course.students?.uid.length || 0}</td>
-                    <td>
-                      {new Date(course.created_at).toLocaleString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
-                    </td>
-                    <td className="actions-column">
-                      <button onClick={() => handleEdit(course)}>
-                        <Image
-                          src="/icons/edit.svg"
-                          width={20}
-                          height={20}
-                          alt="edit"
-                        />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(course.id)}
-                        className="delete-button"
-                      >
-                        <Image
-                          src={"/icons/trash.svg"}
-                          width={20}
-                          height={20}
-                          alt="delete"
-                        />
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
+              {courses
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map((course) => {
+                  return (
+                    <tr key={course.id}>
+                      <td>
+                        <Link href={`course/${course.id}`}>{course.id}</Link>
+                      </td>
+                      <td>{course.name}</td>
+                      <td>{course.students?.uid.length || 0}</td>
+                      <td>
+                        {new Date(course.created_at).toLocaleString("en-US", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                      </td>
+                      <td className="actions-column">
+                        <button onClick={() => handleEdit(course)}>
+                          <Image
+                            src="/icons/edit.svg"
+                            width={20}
+                            height={20}
+                            alt="edit"
+                          />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(course.id)}
+                          className="delete-button"
+                        >
+                          <Image
+                            src={"/icons/trash.svg"}
+                            width={20}
+                            height={20}
+                            alt="delete"
+                          />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
             </tbody>
           </table>
         ) : (
