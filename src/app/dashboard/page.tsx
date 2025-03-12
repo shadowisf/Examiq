@@ -1,21 +1,21 @@
 import Link from "next/link";
 import AdminAccountCreation from "./adminAccounts";
 import TeacherCourses from "./teacherCourses";
-import {
-  readCourse,
-  readCurrentUser,
-  readExams,
-  readStudents,
-  readTeachers,
-} from "./pageActions";
 import TeacherExams from "./teacherExams";
+import {
+  readAllCourses,
+  readAllExams,
+  readAllStudents,
+  readAllTeachers,
+  readCurrentUser,
+} from "../utils/supabase/server";
 
 export default async function Dashboard() {
   const { currentUser } = await readCurrentUser();
-  const { teachers, teachersError } = await readTeachers();
-  const { students, studentsError } = await readStudents();
-  const { courses, coursesError } = await readCourse();
-  const { exams, examsError } = await readExams();
+  const { teachers, teachersError } = await readAllTeachers();
+  const { students, studentsError } = await readAllStudents();
+  const { courses, coursesError } = await readAllCourses();
+  const { exams, examsError } = await readAllExams();
 
   const displayName = currentUser.user.user_metadata?.display_name;
   const firstName = displayName ? displayName.split(" ")[0] : "";

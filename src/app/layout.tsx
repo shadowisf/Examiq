@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./main.scss";
 import NavBar from "@/app/components/NavBar";
-import { LoaderProvider } from "./components/Loader";
 
 export const metadata: Metadata = {
   title: "examiq",
@@ -18,7 +17,7 @@ export default function RootLayout({
       <body>
         <NavBar />
 
-        <LoaderProvider>{children}</LoaderProvider>
+        {children}
       </body>
     </html>
   );

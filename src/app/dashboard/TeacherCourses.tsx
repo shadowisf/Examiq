@@ -1,14 +1,11 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import {
-  createCourse,
-  deleteCourse,
-  updateCourse,
-} from "./teacherCoursesActions";
+import { useState } from "react";
+import { createCourse, deleteCourse, updateCourse } from "./actions";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import ErrorMessage from "../components/ErrorMessage";
+import Link from "next/link";
 
 type TeacherCourseProps = {
   students: any[] | null;
@@ -31,15 +28,8 @@ export default function TeacherCourses({
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
   const [selectedCourseID, setSelectedCourseID] = useState("");
   const [selectedCourseName, setSelectedCourseName] = useState("");
-
-  const studentNameMap = useMemo(
-    () =>
-      students?.reduce((acc, student) => {
-        acc[student.id] = student.name;
-        return acc;
-      }, {} as Record<string, string>),
-    [students]
-  );
+  const [selectedCourseDescription, setSelectedCourseDescription] =
+    useState("");
 
   function toggleStudentSelection(studentID: string) {
     setSelectedStudents((prev) =>
@@ -76,6 +66,7 @@ export default function TeacherCourses({
     setShowModal(true);
     setSelectedCourseID(course.id);
     setSelectedCourseName(course.name);
+    setSelectedCourseDescription(course.description);
     setSelectedStudents(course.students?.uid || []);
   }
 
@@ -122,34 +113,20 @@ export default function TeacherCourses({
               <tr>
                 <th className="id-column">id</th>
                 <th>name</th>
-                <th>students</th>
+                <th>number of students</th>
                 <th>date of creation</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
               {courses.map((course) => {
-                const studentIDs = course.students?.uid || [];
-
-                const studentNames = studentIDs.map(
-                  (studentId: string) => studentNameMap[studentId]
-                );
-
                 return (
                   <tr key={course.id}>
-                    <td>{course.id}</td>
-                    <td>{course.name}</td>
-                    <td className="students-column">
-                      <ul>
-                        {studentNames.length > 0 ? (
-                          studentNames.map((name: string, index: number) => (
-                            <li key={index}>{name}</li>
-                          ))
-                        ) : (
-                          <li>none</li>
-                        )}
-                      </ul>
+                    <td>
+                      <Link href={`course/${course.id}`}>{course.id}</Link>
                     </td>
+                    <td>{course.name}</td>
+                    <td>{course.students?.uid.length || 0}</td>
                     <td>
                       {new Date(course.created_at).toLocaleString("en-US", {
                         year: "numeric",
@@ -201,6 +178,12 @@ export default function TeacherCourses({
                 required
                 defaultValue={isEditMode ? selectedCourseName : ""}
               />
+              <textarea
+                name="course description"
+                placeholder="description"
+                required
+                defaultValue={isEditMode ? selectedCourseDescription : ""}
+              />
 
               <div>
                 <h4>students:</h4>
@@ -237,3 +220,61 @@ export default function TeacherCourses({
     </>
   );
 }
+
+/* type TeacherCoursesModalProps = {
+  params: { handleConfirm: (formData: any) => void; handleCancel: () => void };
+};
+
+export function TeacherCoursesModal() {
+  <section className="modal">
+    <div className="modal-content">
+      <h1>{isEditMode ? "edit course" : "create new course"}</h1>
+
+      <form action={(formData) => handleConfirm(formData)}>
+        <input
+          name="course name"
+          type="text"
+          placeholder="name"
+          required
+          defaultValue={isEditMode ? selectedCourseName : ""}
+        />
+        <textarea
+          name="course description"
+          placeholder="description"
+          required
+          defaultValue={isEditMode ? selectedCourseDescription : ""}
+        />
+
+        <div>
+          <h4>students:</h4>
+
+          {studentsError ? (
+            <ErrorMessage message="failed to load student table" />
+          ) : (
+            students?.map((student) => (
+              <label key={student.id} className="student-checkbox">
+                <input
+                  type="checkbox"
+                  value={student.id}
+                  checked={selectedStudents.includes(student.id)}
+                  onChange={() => toggleStudentSelection(student.id)}
+                />
+                {student.name}
+              </label>
+            ))
+          )}
+        </div>
+
+        <br />
+
+        <div className="modal-actions">
+          <button type="button" onClick={handleCancel}>
+            cancel
+          </button>
+          <button type="submit">confirm</button>
+        </div>
+      </form>
+    </div>
+  </section>;
+}
+ */

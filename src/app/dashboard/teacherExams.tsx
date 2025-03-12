@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useState } from "react";
 import ErrorMessage from "../components/ErrorMessage";
-import Link from "next/link";
 
 type TeacherExamsProps = {
   exams: any[] | null;
@@ -58,7 +57,7 @@ export default function TeacherExams({ exams, examsError }: TeacherExamsProps) {
                   <td>{exam.id}</td>
                   <td>{exam.course_id}</td>
                   <td>{exam.name}</td>
-                  <td>{exam.total_items}</td>
+                  <td>{exam.items ? exam.items.length : 0}</td>
                   <td>
                     {new Date(exam.created_at).toLocaleString("en-US", {
                       year: "numeric",

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { createAccount } from "./adminAccountsActions";
+import { createAccount } from "./actions";
 
 type AdminAccountsProps = {
   students: any[] | null;
