@@ -1,10 +1,8 @@
 import Link from "next/link";
-import { createClient } from "../utils/supabase/server";
+import { readCurrentUser } from "../utils/supabase/server";
 
 export default async function NavBar() {
-  const supabase = await createClient();
-
-  const { data, error } = await supabase.auth.getUser();
+  const { currentUser, currentUserError } = await readCurrentUser();
 
   return (
     <nav>
@@ -13,9 +11,13 @@ export default async function NavBar() {
       </Link>
 
       <section className="nav-links">
-        {error || !data?.user ? "" : <Link href="/dashboard">dashboard</Link>}
+        {currentUserError || !currentUser?.user ? (
+          ""
+        ) : (
+          <Link href="/dashboard">dashboard</Link>
+        )}
 
-        {error || !data?.user ? (
+        {currentUserError || !currentUser?.user ? (
           <Link href="/signin">sign in</Link>
         ) : (
           <Link href="/signout">sign out</Link>

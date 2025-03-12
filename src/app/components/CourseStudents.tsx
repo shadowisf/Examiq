@@ -3,14 +3,11 @@
 import { readSingleStudent } from "@/app/utils/supabase/server";
 
 type CourseStudentsProps = {
-  params: {
-    course: any | null;
-    students: any[] | null;
-  };
+  course: any | null;
 };
 
-export default function CourseStudents({ params }: CourseStudentsProps) {
-  const studentIDs = params.course?.students?.uid || [];
+export default function CourseStudents({ course }: CourseStudentsProps) {
+  const studentIDs = course?.students?.uid || [];
 
   return (
     <section>

@@ -14,7 +14,6 @@ type CourseProps = {
 
 export default async function Course({ params }: CourseProps) {
   const { course } = await readSingleCourse(params.id);
-  const { students } = await readAllStudents();
   const { currentUser } = await readCurrentUser();
 
   return (
@@ -43,9 +42,7 @@ export default async function Course({ params }: CourseProps) {
 
             <br />
           </>
-        ) : (
-          ""
-        )}
+        ) : null}
 
         <h1 className="big">{course.name}</h1>
         <p>{course.id}</p>
@@ -53,7 +50,7 @@ export default async function Course({ params }: CourseProps) {
         <p className="gray">{course.description}</p>
       </section>
 
-      <CourseStudents params={{ course, students }} />
+      <CourseStudents course={course} />
     </main>
   );
 }

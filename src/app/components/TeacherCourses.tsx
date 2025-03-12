@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import ErrorMessage from "./ErrorMessage";
 import Link from "next/link";
+import TeacherCoursesModal from "./TeacherCoursesModal";
 
 type TeacherCourseProps = {
   students: any[] | null;
@@ -166,115 +167,18 @@ export default function TeacherCourses({
       </section>
 
       {showModal && (
-        <section className="modal">
-          <div className="modal-content">
-            <h1>{isEditMode ? "edit course" : "create new course"}</h1>
-
-            <form action={(formData) => handleConfirm(formData)}>
-              <input
-                name="course name"
-                type="text"
-                placeholder="name"
-                required
-                defaultValue={isEditMode ? selectedCourseName : ""}
-              />
-              <textarea
-                name="course description"
-                placeholder="description"
-                required
-                defaultValue={isEditMode ? selectedCourseDescription : ""}
-              />
-
-              <div>
-                <h4>students:</h4>
-
-                {studentsError ? (
-                  <ErrorMessage message="failed to load student table" />
-                ) : (
-                  students?.map((student) => (
-                    <label key={student.id} className="student-checkbox">
-                      <input
-                        type="checkbox"
-                        value={student.id}
-                        checked={selectedStudents.includes(student.id)}
-                        onChange={() => toggleStudentSelection(student.id)}
-                      />
-                      {student.name}
-                    </label>
-                  ))
-                )}
-              </div>
-
-              <br />
-
-              <div className="modal-actions">
-                <button type="button" onClick={handleCancel}>
-                  cancel
-                </button>
-                <button type="submit">confirm</button>
-              </div>
-            </form>
-          </div>
-        </section>
+        <TeacherCoursesModal
+          isEditMode={isEditMode}
+          handleConfirm={handleConfirm}
+          selectedCourseName={selectedCourseName}
+          selectedCourseDescription={selectedCourseDescription}
+          studentsError={studentsError}
+          students={students}
+          selectedStudents={selectedStudents}
+          toggleStudentSelection={toggleStudentSelection}
+          handleCancel={handleCancel}
+        />
       )}
     </>
   );
 }
-
-/* type TeacherCoursesModalProps = {
-  params: { handleConfirm: (formData: any) => void; handleCancel: () => void };
-};
-
-export function TeacherCoursesModal() {
-  <section className="modal">
-    <div className="modal-content">
-      <h1>{isEditMode ? "edit course" : "create new course"}</h1>
-
-      <form action={(formData) => handleConfirm(formData)}>
-        <input
-          name="course name"
-          type="text"
-          placeholder="name"
-          required
-          defaultValue={isEditMode ? selectedCourseName : ""}
-        />
-        <textarea
-          name="course description"
-          placeholder="description"
-          required
-          defaultValue={isEditMode ? selectedCourseDescription : ""}
-        />
-
-        <div>
-          <h4>students:</h4>
-
-          {studentsError ? (
-            <ErrorMessage message="failed to load student table" />
-          ) : (
-            students?.map((student) => (
-              <label key={student.id} className="student-checkbox">
-                <input
-                  type="checkbox"
-                  value={student.id}
-                  checked={selectedStudents.includes(student.id)}
-                  onChange={() => toggleStudentSelection(student.id)}
-                />
-                {student.name}
-              </label>
-            ))
-          )}
-        </div>
-
-        <br />
-
-        <div className="modal-actions">
-          <button type="button" onClick={handleCancel}>
-            cancel
-          </button>
-          <button type="submit">confirm</button>
-        </div>
-      </form>
-    </div>
-  </section>;
-}
- */
