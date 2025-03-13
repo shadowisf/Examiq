@@ -71,13 +71,13 @@ export default function TeacherCourses({
     setSelectedStudents(course.students?.uid || []);
   }
 
-  function handleDelete(courseID: string) {
+  function handleDelete(id: string) {
     const isConfirmed = window.confirm(
       "are you sure you want to delete this course?"
     );
 
     if (isConfirmed) {
-      deleteCourse(courseID);
+      deleteCourse(id);
     }
   }
 
@@ -90,8 +90,8 @@ export default function TeacherCourses({
           <button className="create-button" onClick={handleCreate}>
             <Image
               src={"/icons/plus.svg"}
-              width={20}
-              height={20}
+              width={24}
+              height={24}
               alt="create"
             />
           </button>
@@ -99,8 +99,8 @@ export default function TeacherCourses({
           <button onClick={() => router.refresh()}>
             <Image
               src={"/icons/refresh.svg"}
-              width={20}
-              height={20}
+              width={24}
+              height={24}
               alt={"refresh"}
             />
           </button>
@@ -114,7 +114,8 @@ export default function TeacherCourses({
               <tr>
                 <th className="id-column">id</th>
                 <th>name</th>
-                <th>number of students</th>
+                <th>total students</th>
+                <th>total exams</th>
                 <th>date of creation</th>
                 <th></th>
               </tr>
@@ -130,6 +131,7 @@ export default function TeacherCourses({
                       </td>
                       <td>{course.name}</td>
                       <td>{course.students?.uid.length || 0}</td>
+                      <td>{course.exams?.id.length || 0}</td>
                       <td>
                         {new Date(course.created_at).toLocaleString("en-US", {
                           year: "numeric",
@@ -141,8 +143,8 @@ export default function TeacherCourses({
                         <button onClick={() => handleEdit(course)}>
                           <Image
                             src="/icons/edit.svg"
-                            width={20}
-                            height={20}
+                            width={24}
+                            height={24}
                             alt="edit"
                           />
                         </button>
@@ -152,8 +154,8 @@ export default function TeacherCourses({
                         >
                           <Image
                             src={"/icons/trash.svg"}
-                            width={20}
-                            height={20}
+                            width={24}
+                            height={24}
                             alt="delete"
                           />
                         </button>

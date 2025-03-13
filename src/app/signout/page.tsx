@@ -1,12 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
 import { signOut } from "./actions";
 
 export default function SignOut() {
-  useEffect(() => {
-    signOut();
-  }, []);
+  signOut();
 
-  return "";
+  return <div className="signout-page" />;
 }

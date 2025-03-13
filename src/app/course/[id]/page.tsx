@@ -25,15 +25,6 @@ export default async function Course({ params }: CourseProps) {
   return (
     <main className="course-page">
       <section>
-        {currentUser.user.user_metadata.role === "teacher" ? (
-          <CourseOptions
-            currentUser={currentUser}
-            course={course}
-            students={students}
-            studentsError={studentsError}
-          />
-        ) : null}
-
         <h1 className="big">{course.name}</h1>
         <p>{course.id}</p>
         <br />
@@ -41,6 +32,13 @@ export default async function Course({ params }: CourseProps) {
       </section>
 
       <CourseStudents course={course} />
+
+      <CourseOptions
+        currentUser={currentUser}
+        course={course}
+        students={students}
+        studentsError={studentsError}
+      />
     </main>
   );
 }

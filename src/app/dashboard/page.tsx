@@ -38,12 +38,12 @@ export default async function Dashboard() {
   // admin role
   if (role === undefined) {
     bentoContent = (
-      <>
+      <div className="bento-container">
         <Link href="#accounts">
           <h1>accounts</h1>
           <p className="gray">create accounts for students & teachers</p>
         </Link>
-      </>
+      </div>
     );
 
     mainContent = (
@@ -61,7 +61,7 @@ export default async function Dashboard() {
   // teacher role
   if (role === "teacher") {
     bentoContent = (
-      <>
+      <div className="bento-container">
         <Link href="#courses">
           <h1>courses</h1>
           <p className="gray">view the courses you manage</p>
@@ -76,7 +76,7 @@ export default async function Dashboard() {
           <h1>profile</h1>
           <p className="gray">update your information</p>
         </Link>
-      </>
+      </div>
     );
 
     mainContent = (
@@ -88,7 +88,12 @@ export default async function Dashboard() {
           courseError={coursesError}
         />
 
-        <TeacherExams exams={exams} examsError={examsError} />
+        <TeacherExams
+          courses={courses}
+          coursesError={coursesError}
+          exams={exams}
+          examsError={examsError}
+        />
       </>
     );
   }
@@ -96,6 +101,8 @@ export default async function Dashboard() {
   // student role
   if (role === "student") {
     bentoContent = <></>;
+
+    mainContent = <></>;
   }
 
   return (
@@ -105,7 +112,7 @@ export default async function Dashboard() {
           aloha, {role} {name}
         </h1>
 
-        <div className="bento-container">{bentoContent}</div>
+        {bentoContent}
       </section>
 
       {mainContent}

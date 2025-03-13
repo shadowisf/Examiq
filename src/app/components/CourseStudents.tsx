@@ -23,7 +23,7 @@ export default async function CourseStudents({ course }: CourseStudentsProps) {
             .sort((a, b) => a.name.localeCompare(b.name))
             .map((student, index) => <li key={index}>{student.name}</li>)
         ) : (
-          <p className="gray">no students enrolled</p>
+          <p className="gray">no students enrolled.</p>
         )}
       </ul>
     </section>

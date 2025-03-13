@@ -1,10 +1,13 @@
-import { redirect } from "next/navigation";
 import { createClient } from "../utils/supabase/client";
+import { useRouter } from "next/navigation";
 
 export async function signOut() {
+  const router = useRouter();
+
   const supabase = createClient();
 
   await supabase.auth.signOut();
 
-  redirect("/");
+  router.push("/");
+  router.refresh();
 }

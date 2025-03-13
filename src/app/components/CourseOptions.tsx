@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { updateCourse, deleteCourse } from "../dashboard/actions";
 import TeacherCoursesModal from "./TeacherCoursesModal";
+import { redirect } from "next/navigation";
 
 type CourseOptionsProps = {
   currentUser: any;
@@ -19,7 +20,6 @@ export default function CourseOptions({
   studentsError,
 }: CourseOptionsProps) {
   const [showModal, setShowModal] = useState(false);
-
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
 
   function toggleStudentSelection(studentID: string) {
@@ -53,6 +53,7 @@ export default function CourseOptions({
 
     if (isConfirmed) {
       deleteCourse(course.id);
+      redirect("/dashboard");
     }
   }
 
@@ -60,10 +61,10 @@ export default function CourseOptions({
     <>
       <div className="button-container">
         <button onClick={handleEdit}>
-          <Image src={"/icons/edit.svg"} width={20} height={20} alt="edit" />
+          <Image src={"/icons/edit.svg"} width={24} height={24} alt="edit" />
         </button>
         <button className="delete-button" onClick={handleDelete}>
-          <Image src={"/icons/trash.svg"} width={20} height={20} alt="delete" />
+          <Image src={"/icons/trash.svg"} width={24} height={24} alt="delete" />
         </button>
       </div>
 

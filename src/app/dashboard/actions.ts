@@ -68,8 +68,6 @@ export async function createCourse(formData: FormData, students: string[]) {
   }
 
   revalidatePath("/", "layout");
-
-  return "ok";
 }
 
 export async function updateCourse(

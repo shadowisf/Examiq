@@ -1,4 +1,5 @@
 import ErrorMessage from "./ErrorMessage";
+import Image from "next/image";
 
 type TeacherCoursesModalProps = {
   isEditMode: boolean;
@@ -26,7 +27,18 @@ export default function TeacherCoursesModal({
   return (
     <section className="modal">
       <div className="modal-content">
-        <h1>{isEditMode ? "edit course" : "create new course"}</h1>
+        <div className="header">
+          <h1>{isEditMode ? "edit course" : "create new course"}</h1>
+
+          <button className="none" onClick={handleCancel}>
+            <Image
+              src={"/icons/close.svg"}
+              alt="cancel"
+              width={24}
+              height={24}
+            />
+          </button>
+        </div>
 
         <form action={(formData) => handleConfirm(formData)}>
           <input
@@ -43,7 +55,7 @@ export default function TeacherCoursesModal({
             defaultValue={isEditMode ? selectedCourseDescription : ""}
           />
 
-          <div>
+          <div className="students-container">
             <h4>students:</h4>
 
             {studentsError ? (
@@ -69,12 +81,14 @@ export default function TeacherCoursesModal({
 
           <br />
 
-          <div className="modal-actions">
-            <button type="button" onClick={handleCancel}>
-              cancel
-            </button>
-            <button type="submit">confirm</button>
-          </div>
+          <button type="submit" className="confirm-button">
+            <Image
+              src={"/icons/check.svg"}
+              alt="confirm"
+              width={24}
+              height={24}
+            />
+          </button>
         </form>
       </div>
     </section>

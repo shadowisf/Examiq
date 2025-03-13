@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { createAccount } from "../dashboard/actions";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 type AdminAccountsProps = {
   students: any[] | null;
@@ -16,16 +18,34 @@ export default function AdminAccounts({
   teachers,
   teachersError,
 }: AdminAccountsProps) {
+  const router = useRouter();
+
   const [showModal, setShowModal] = useState(false);
 
   return (
     <>
       <section className="admin-accounts-container">
-        <h1 id="account-creation">accounts</h1>
+        <h1 id="accounts">accounts</h1>
 
-        <button className="create-button" onClick={() => setShowModal(true)}>
-          create
-        </button>
+        <div className="button-container">
+          <button className="create-button" onClick={() => setShowModal(true)}>
+            <Image
+              src={"/icons/plus.svg"}
+              alt="create"
+              width={24}
+              height={24}
+            />
+          </button>
+
+          <button onClick={() => router.refresh()}>
+            <Image
+              src={"/icons/refresh.svg"}
+              alt="referesh"
+              width={24}
+              height={24}
+            />
+          </button>
+        </div>
 
         <div>
           <h3>students</h3>
@@ -38,6 +58,7 @@ export default function AdminAccounts({
                   <th>id</th>
                   <th>name</th>
                   <th>date of creation</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -52,12 +73,33 @@ export default function AdminAccounts({
                         day: "numeric",
                       })}
                     </td>
+                    <td className="actions-column">
+                      <button>
+                        <Image
+                          src={"/icons/edit.svg"}
+                          alt="edit"
+                          width={24}
+                          height={24}
+                        />
+                      </button>
+
+                      <button className="delete-button">
+                        <Image
+                          src={"/icons/trash.svg"}
+                          alt="delete"
+                          width={24}
+                          height={24}
+                        />
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           ) : (
-            <p className="gray">there are no students yet</p>
+            <p className="gray">
+              there are no existing accounts for students yet.
+            </p>
           )}
         </div>
 
@@ -91,7 +133,7 @@ export default function AdminAccounts({
               </tbody>
             </table>
           ) : (
-            <p>there are no teachers yet</p>
+            <p>there are no existing accounts for teachers yet.</p>
           )}
         </div>
       </section>
