@@ -4,12 +4,16 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "../utils/supabase/server";
 
-export async function signIn(formData: FormData) {
+type signInProps = {
+  formData: FormData;
+  userType: string;
+};
+
+export async function signIn({ formData, userType }: signInProps) {
   const supabase = await createClient();
 
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
-  const role = formData.get("role") as string;
 
   const { data: userData, error: userError } =
     await supabase.auth.signInWithPassword({
@@ -21,14 +25,15 @@ export async function signIn(formData: FormData) {
     redirect(`/signin?error=${userError.message}`);
   }
 
-  if (role !== "admin") {
+  if (userType !== "admin") {
     const { data: roleData } = await supabase
-      .from(role)
+      .from(userType)
       .select("id")
       .eq("id", userData.user?.id)
       .single();
 
     if (!roleData) {
+      await supabase.auth.signOut();
       redirect(`/signin?error=User not found`);
     }
   }

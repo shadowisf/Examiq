@@ -81,7 +81,7 @@ export default function TeacherCoursesModal({
 
           <br />
 
-          <button type="submit" className="confirm-button">
+          <button type="submit" className="accent">
             <Image
               src={"/icons/check.svg"}
               alt="confirm"

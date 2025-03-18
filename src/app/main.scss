@@ -71,7 +71,15 @@ nav {
   padding: 24px;
 
   .logo {
-    font-weight: bolder;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    pointer-events: none;
+
+    span {
+      font-weight: bolder;
+    }
   }
 
   .nav-links {
@@ -114,7 +122,7 @@ button {
 
   border-radius: var(--border-radius);
   color: black;
-  padding: 8px;
+  padding: 12px 24px;
   background-color: white;
   cursor: pointer;
   text-align: center;
@@ -197,9 +205,7 @@ textarea {
   }
 }
 
-.delete-button,
-.create-button,
-.confirm-button {
+.accent {
   background-color: var(--accent-color);
 }
 
@@ -207,14 +213,21 @@ textarea {
   all: unset;
 
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  gap: 24px;
   height: 100vh;
 
-  .banner-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    place-items: center;
+  a {
+    width: 400px;
+    padding: 24px;
+    background-color: var(--secondary-color);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+
+    h1 {
+      text-align: center;
+    }
   }
 }
 
@@ -228,6 +241,10 @@ textarea {
     p,
     h1 {
       text-align: center;
+
+      span {
+        text-decoration: underline;
+      }
     }
   }
 

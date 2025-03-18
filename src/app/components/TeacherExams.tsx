@@ -73,7 +73,7 @@ export default function TeacherExams({
         <h1 id="exams">exams</h1>
 
         <div className="button-container">
-          <button className="create-button" onClick={handleCreate}>
+          <button className="accent" onClick={handleCreate}>
             <Image
               src={"/icons/plus.svg"}
               width={24}
@@ -138,7 +138,7 @@ export default function TeacherExams({
                         </button>
                         <button
                           onClick={() => handleDelete(exam.id)}
-                          className="delete-button"
+                          className="accent"
                         >
                           <Image
                             src={"/icons/trash.svg"}
