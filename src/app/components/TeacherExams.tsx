@@ -93,7 +93,7 @@ export default function TeacherExams({
         </div>
 
         {examsError ? (
-          <ErrorMessage message="failed to load courses" />
+          <ErrorMessage>failed to load courses.</ErrorMessage>
         ) : exams && exams.length > 0 ? (
           <table>
             <thead>

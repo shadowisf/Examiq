@@ -4,6 +4,9 @@ import { useState } from "react";
 import { createAccount } from "../dashboard/actions";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import AdminAccountsModal from "./AdminAccountsModal";
+import ErrorMessage from "./ErrorMessage";
+import InfoMessage from "./InfoMessage";
 
 type AdminAccountsProps = {
   students: any[] | null;
@@ -22,13 +25,25 @@ export default function AdminAccounts({
 
   const [showModal, setShowModal] = useState(false);
 
+  function handleConfirm(formData: FormData) {
+    const result = createAccount(formData);
+  }
+
+  function handleCreate() {
+    setShowModal(true);
+  }
+
+  function handleCancel() {
+    setShowModal(false);
+  }
+
   return (
     <>
       <section className="admin-accounts-container">
         <h1 id="accounts">accounts</h1>
 
         <div className="button-container">
-          <button className="create-button" onClick={() => setShowModal(true)}>
+          <button className="accent" onClick={handleCreate}>
             <Image
               src={"/icons/plus.svg"}
               alt="create"
@@ -50,7 +65,7 @@ export default function AdminAccounts({
         <div>
           <h3>students</h3>
           {studentsError ? (
-            <p style={{ color: "red" }}>failed to load student table</p>
+            <ErrorMessage>failed to load student table.</ErrorMessage>
           ) : students && students.length > 0 ? (
             <table>
               <thead>
@@ -83,7 +98,7 @@ export default function AdminAccounts({
                         />
                       </button>
 
-                      <button className="delete-button">
+                      <button className="accent">
                         <Image
                           src={"/icons/trash.svg"}
                           alt="delete"
@@ -97,16 +112,16 @@ export default function AdminAccounts({
               </tbody>
             </table>
           ) : (
-            <p className="gray">
+            <InfoMessage>
               there are no existing accounts for students yet.
-            </p>
+            </InfoMessage>
           )}
         </div>
 
         <div>
           <h3>teachers</h3>
           {teachersError ? (
-            <p style={{ color: "red" }}>failed to load teacher table</p>
+            <ErrorMessage>failed to load teacher table.</ErrorMessage>
           ) : teachers && teachers.length > 0 ? (
             <table>
               <thead>
@@ -133,38 +148,18 @@ export default function AdminAccounts({
               </tbody>
             </table>
           ) : (
-            <p>there are no existing accounts for teachers yet.</p>
+            <InfoMessage>
+              there are no existing accounts for teachers yet.
+            </InfoMessage>
           )}
         </div>
       </section>
 
       {showModal && (
-        <section className="modal">
-          <div className="modal-content">
-            <h1>create new account</h1>
-
-            <form>
-              <select name="role" defaultValue={"student"}>
-                <option value="student">student</option>
-                <option value="teacher">teacher</option>
-              </select>
-
-              <input type="text" name="name" placeholder="name" />
-
-              <input type="text" name="email" placeholder="email" />
-
-              <input type="password" name="password" placeholder="password" />
-
-              <br />
-
-              <div className="modal-actions">
-                <button onClick={() => setShowModal(false)}>cancel</button>
-
-                <button formAction={createAccount}>create</button>
-              </div>
-            </form>
-          </div>
-        </section>
+        <AdminAccountsModal
+          handleConfirm={handleConfirm}
+          handleCancel={handleCancel}
+        />
       )}
     </>
   );

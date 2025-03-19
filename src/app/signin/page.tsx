@@ -2,27 +2,33 @@
 
 import { useEffect, useState } from "react";
 import { signIn } from "./actions";
-import { useSearchParams } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
+import Image from "next/image";
 import ErrorMessage from "../components/ErrorMessage";
 
 export default function SignIn() {
   const searchParams = useSearchParams();
 
-  const [error, setError] = useState("");
   const [userType, setUserType] = useState("");
+  const [authError, setAuthError] = useState("");
 
   useEffect(() => {
-    const errorMessage = searchParams.get("error");
-    const userType = searchParams.get("user");
+    const userTypeFromParams = searchParams.get("user");
 
-    if (errorMessage) {
-      setError(errorMessage);
-    }
-
-    if (userType) {
-      setUserType(userType);
+    if (userTypeFromParams) {
+      setUserType(userTypeFromParams);
     }
   }, [searchParams]);
+
+  async function handleSubmit(formData: FormData) {
+    const result = await signIn(formData, userType);
+
+    if (result?.error) {
+      setAuthError(result.error.message);
+    } else {
+      redirect("/dashboard");
+    }
+  }
 
   function handleKeyDown(event: React.KeyboardEvent) {
     if (event.key === " ") {
@@ -33,13 +39,14 @@ export default function SignIn() {
   return (
     <main className="signin-page">
       <section className="text-container">
+        <Image src={"/icons/logo.svg"} alt="logo" width={180} height={108} />
         <h1 className="big">welcome back</h1>
         <p className="gray">
           sign in to your account as a <span>{userType}</span>
         </p>
       </section>
 
-      <form action={(formData) => signIn({ formData, userType })}>
+      <form action={handleSubmit}>
         <input
           name="email"
           type="email"
@@ -57,11 +64,18 @@ export default function SignIn() {
 
         <br />
 
-        <ErrorMessage message={error} />
+        {authError && <ErrorMessage>{authError}</ErrorMessage>}
 
         <br />
 
-        <button type="submit">sign in</button>
+        <button type="submit" className="accent">
+          <Image
+            src={"/icons/check.svg"}
+            alt="confirm"
+            width={24}
+            height={24}
+          />
+        </button>
       </form>
     </main>
   );

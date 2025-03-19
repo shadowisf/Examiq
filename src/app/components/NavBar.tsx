@@ -8,7 +8,7 @@ export default async function NavBar() {
   return (
     <nav>
       <section className="logo">
-        <Image src={"/icons/logo.svg"} alt="logo" width={60} height={36} />
+        <Image src={"/icons/logo.svg"} alt="logo" width={50} height={30} />
         <span>examiq</span>
       </section>
 

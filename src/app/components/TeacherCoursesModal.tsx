@@ -59,7 +59,7 @@ export default function TeacherCoursesModal({
             <h4>students:</h4>
 
             {studentsError ? (
-              <ErrorMessage message="failed to load student table" />
+              <ErrorMessage>failed to load student table.</ErrorMessage>
             ) : students && students.length > 0 ? (
               students
                 .sort((a, b) => a.name.localeCompare(b.name))

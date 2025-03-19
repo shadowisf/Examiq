@@ -5,5 +5,5 @@ import { signOut } from "./actions";
 export default function SignOut() {
   signOut();
 
-  return <div className="signout-page" />;
+  return <div className="signout-page"></div>;
 }

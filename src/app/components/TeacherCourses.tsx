@@ -107,7 +107,7 @@ export default function TeacherCourses({
         </div>
 
         {courseError ? (
-          <ErrorMessage message="failed to load courses" />
+          <ErrorMessage>failed to load courses.</ErrorMessage>
         ) : courses && courses.length > 0 ? (
           <table>
             <thead>

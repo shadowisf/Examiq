@@ -1,9 +1,9 @@
 "use client";
 
 type ErrorMessageProps = {
-  message: string;
+  children: string;
 };
 
-export default function ErrorMessage({ message }: ErrorMessageProps) {
-  return <p style={{ color: "red" }}>{message}</p>;
+export default function ErrorMessage({ children }: ErrorMessageProps) {
+  return <p style={{ color: "red" }}>{children}</p>;
 }
