@@ -3,7 +3,7 @@
 import { createClient } from "../utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
-import { generateIdentifier } from "../utils/default/actions";
+import { generateIdentifier, readAllCourses } from "../utils/default/actions";
 
 // ADMIN
 export async function createAccount(formData: FormData) {
@@ -113,6 +113,44 @@ export async function deleteAccount(user: any) {
 
     if (tableUser) {
       throw new Error(tableUser.message);
+    }
+  } catch (e) {
+    const errorMessage = (e as Error).message;
+
+    return { error: { message: errorMessage } };
+  }
+}
+
+export async function deleteStudentFromCourse(user: any) {
+  try {
+    const supabase = await createClient();
+
+    const { data: courses, error: coursesError } = await supabase
+      .from("course")
+      .select("id, students")
+      .contains("students", [user.id]);
+
+    if (coursesError) {
+      console.error("Error fetching courses:", coursesError);
+
+      throw new Error(coursesError.message);
+    }
+
+    for (const course of courses) {
+      const updatedStudents = course.students.filter(
+        (id: string) => id !== user.id
+      );
+
+      const { error: updateError } = await supabase
+        .from("course")
+        .update({ students: updatedStudents })
+        .eq("id", course.id);
+
+      if (updateError) {
+        console.error(`Error updating course ${course.id}:`, updateError);
+
+        throw new Error(updateError.message);
+      }
     }
   } catch (e) {
     const errorMessage = (e as Error).message;

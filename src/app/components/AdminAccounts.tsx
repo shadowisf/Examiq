@@ -4,6 +4,7 @@ import { useState } from "react";
 import {
   createAccount,
   deleteAccount,
+  deleteStudentFromCourse,
   updateAccount,
 } from "../dashboard/actions";
 import Image from "next/image";
@@ -75,10 +76,15 @@ export default function AdminAccounts({
     const result = confirm("are you sure you want to delete this account?");
 
     if (result) {
-      const result = await deleteAccount(user);
+      const userResult = await deleteAccount(user);
+      const courseResult = await deleteStudentFromCourse(user);
 
-      if (result?.error) {
-        setError(result.error.message);
+      if (userResult?.error) {
+        setError(userResult.error.message);
+      }
+
+      if (courseResult?.error) {
+        setError(courseResult.error.message);
       }
     }
 

@@ -63,7 +63,11 @@ export default function TeacherCoursesModal({
               <ErrorMessage>failed to load student table</ErrorMessage>
             ) : students && students.length > 0 ? (
               students
-                .sort((a, b) => a.name.localeCompare(b.name))
+                .sort((a, b) =>
+                  a.user_metadata.display_name.localeCompare(
+                    b.user_metadata.display_name
+                  )
+                )
                 .map((student) => (
                   <label key={student.id} className="student-checkbox">
                     <input
@@ -72,7 +76,7 @@ export default function TeacherCoursesModal({
                       checked={selectedStudents.includes(student.id)}
                       onChange={() => toggleStudentSelection(student.id)}
                     />
-                    {student.name}
+                    {student.user_metadata.display_name}
                   </label>
                 ))
             ) : (

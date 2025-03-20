@@ -72,13 +72,14 @@ export default function TeacherCourses({
     setSelectedStudents(course.students?.uid || []);
   }
 
-  function handleDelete(id: string) {
+  async function handleDelete(id: string) {
     const isConfirmed = window.confirm(
       "are you sure you want to delete this course?"
     );
 
     if (isConfirmed) {
-      deleteCourse(id);
+      const result = await deleteCourse(id);
+      
     }
   }
 
@@ -122,48 +123,46 @@ export default function TeacherCourses({
               </tr>
             </thead>
             <tbody>
-              {courses
-                .sort((a, b) => a.name.localeCompare(b.name))
-                .map((course) => {
-                  return (
-                    <tr key={course.id}>
-                      <td>
-                        <Link href={`course/${course.id}`}>{course.id}</Link>
-                      </td>
-                      <td>{course.name}</td>
-                      <td>{course.students?.uid.length || 0}</td>
-                      <td>{course.exams?.id.length || 0}</td>
-                      <td>
-                        {new Date(course.created_at).toLocaleString("en-US", {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}
-                      </td>
-                      <td className="actions-column">
-                        <button onClick={() => handleEdit(course)}>
-                          <Image
-                            src="/icons/edit.svg"
-                            width={24}
-                            height={24}
-                            alt="edit"
-                          />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(course.id)}
-                          className="accent"
-                        >
-                          <Image
-                            src={"/icons/trash.svg"}
-                            width={24}
-                            height={24}
-                            alt="delete"
-                          />
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
+              {courses.map((course) => {
+                return (
+                  <tr key={course.id}>
+                    <td>
+                      <Link href={`course/${course.id}`}>{course.id}</Link>
+                    </td>
+                    <td>{course.name}</td>
+                    <td>{course.students?.uid.length || 0}</td>
+                    <td>{course.exams?.id.length || 0}</td>
+                    <td>
+                      {new Date(course.created_at).toLocaleString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </td>
+                    <td className="actions-column">
+                      <button onClick={() => handleEdit(course)}>
+                        <Image
+                          src="/icons/edit.svg"
+                          width={24}
+                          height={24}
+                          alt="edit"
+                        />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(course.id)}
+                        className="accent"
+                      >
+                        <Image
+                          src={"/icons/trash.svg"}
+                          width={24}
+                          height={24}
+                          alt="delete"
+                        />
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         ) : (

@@ -15,7 +15,7 @@ type CourseProps = {
 
 export default async function Course({ params }: CourseProps) {
   const { students, studentsError } = await readAllStudents();
-  const { course } = await readSingleCourse(params.id);
+  const { course, courseError } = await readSingleCourse(params.id);
   const { currentUser } = await readCurrentUser();
 
   if (!currentUser.user) {
@@ -31,7 +31,12 @@ export default async function Course({ params }: CourseProps) {
         <p className="gray">{course.description}</p>
       </section>
 
-      <CourseStudents course={course} />
+      <CourseStudents
+        course={course}
+        courseError={courseError}
+        students={students}
+        studentsError={studentsError}
+      />
 
       <CourseOptions
         currentUser={currentUser}

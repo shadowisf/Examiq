@@ -1,28 +1,41 @@
-import { readSingleStudent } from "../utils/default/actions";
+import ErrorMessage from "./ErrorMessage";
 import InfoMessage from "./InfoMessage";
 
 type CourseStudentsProps = {
   course: any;
+  courseError: any;
+  students: any[] | null;
+  studentsError: any;
 };
 
-export default async function CourseStudents({ course }: CourseStudentsProps) {
-  const studentIDs = course?.students?.uid || [];
-  const students = await Promise.all(
-    studentIDs.map(async (id: string) => {
-      const { student } = await readSingleStudent(id);
+export default async function CourseStudents({
+  course,
+  courseError,
+  students,
+  studentsError,
+}: CourseStudentsProps) {
+  const studentIDsInCourse = course?.students?.uid || [];
 
-      return student;
-    })
-  );
+  const filteredStudents =
+    students
+      ?.filter((student: any) => studentIDsInCourse.includes(student.id))
+      .map((student: any) => ({
+        id: student.id,
+        name: student.user_metadata?.display_name || "unknown student",
+      })) || [];
 
-  return (
+  return courseError ? (
+    <ErrorMessage>{courseError.message}</ErrorMessage>
+  ) : (
     <section className="student-list-container">
       <h1>student list</h1>
       <ul>
-        {students.length > 0 ? (
-          students
+        {studentsError ? (
+          <ErrorMessage>{studentsError.message}</ErrorMessage>
+        ) : filteredStudents && filteredStudents.length > 0 ? (
+          filteredStudents
             .sort((a, b) => a.name.localeCompare(b.name))
-            .map((student, index) => <li key={index}>{student.name}</li>)
+            .map((student) => <li key={student.id}>{student.name}</li>)
         ) : (
           <InfoMessage>no students enrolled</InfoMessage>
         )}
