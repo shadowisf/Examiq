@@ -1,4 +1,5 @@
 import { createClient } from "../supabase/server";
+import { createClient as createServiceClient } from "@supabase/supabase-js";
 
 export function generateIdentifier(prefix: string) {
   const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -71,11 +72,16 @@ export async function readAllCourses() {
 }
 
 export async function readAllStudents() {
-  const supabase = await createClient();
+  const supabase = createServiceClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY!
+  );
 
-  const { data: students, error: studentsError } = await supabase
-    .from("student")
-    .select("*");
+  const { data, error: studentsError } = await supabase.auth.admin.listUsers();
+
+  const students = data.users.filter(
+    (user: any) => user.user_metadata.role === "student"
+  );
 
   return {
     students,
@@ -84,11 +90,16 @@ export async function readAllStudents() {
 }
 
 export async function readAllTeachers() {
-  const supabase = await createClient();
+  const supabase = createServiceClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY!
+  );
 
-  const { data: teachers, error: teachersError } = await supabase
-    .from("teacher")
-    .select("*");
+  const { data, error: teachersError } = await supabase.auth.admin.listUsers();
+
+  const teachers = data.users.filter(
+    (user: any) => user.user_metadata.role === "teacher"
+  );
 
   return {
     teachers,

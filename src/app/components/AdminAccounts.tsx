@@ -1,7 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { createAccount } from "../dashboard/actions";
+import {
+  createAccount,
+  deleteAccount,
+  updateAccount,
+} from "../dashboard/actions";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import AdminAccountsModal from "./AdminAccountsModal";
@@ -23,22 +27,27 @@ export default function AdminAccounts({
 }: AdminAccountsProps) {
   const router = useRouter();
 
+  const [error, setError] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [role, setRole] = useState("");
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
+  const [selectedUser, setSelectedUser] = useState<any>(null);
 
   function handleRefresh() {
     setError("");
+    setSelectedUser(null);
     setShowModal(false);
     setIsEditMode(false);
     router.refresh();
   }
 
   async function handleConfirm(formData: FormData) {
-    const result = await createAccount(formData);
+    let result;
+
+    if (isEditMode) {
+      result = await updateAccount(formData, selectedUser);
+    } else {
+      result = await createAccount(formData);
+    }
 
     if (result?.error) {
       setError(result.error.message);
@@ -48,6 +57,7 @@ export default function AdminAccounts({
   }
 
   function handleCreate() {
+    setSelectedUser(null);
     setShowModal(true);
   }
 
@@ -58,16 +68,21 @@ export default function AdminAccounts({
   function handleEdit(user: any) {
     setIsEditMode(true);
     setShowModal(true);
-    setName(user.name);
-    setEmail(user.email);
-    setRole(user.role);
+    setSelectedUser(user);
   }
 
-  function handleDelete(user: any) {
+  async function handleDelete(user: any) {
     const result = confirm("are you sure you want to delete this account?");
 
     if (result) {
+      const result = await deleteAccount(user);
+
+      if (result?.error) {
+        setError(result.error.message);
+      }
     }
+
+    router.refresh();
   }
 
   return (
@@ -115,7 +130,7 @@ export default function AdminAccounts({
                 {students.map((student) => (
                   <tr key={student.id}>
                     <td>{student.id}</td>
-                    <td>{student.name}</td>
+                    <td>{student.user_metadata.display_name}</td>
                     <td>
                       {new Date(student.created_at).toLocaleString("en-US", {
                         year: "numeric",
@@ -174,7 +189,7 @@ export default function AdminAccounts({
                 {teachers.map((teacher) => (
                   <tr key={teacher.id}>
                     <td>{teacher.id}</td>
-                    <td>{teacher.name}</td>
+                    <td>{teacher.user_metadata.display_name}</td>
                     <td>
                       {new Date(teacher.created_at).toLocaleString("en-US", {
                         year: "numeric",
@@ -221,9 +236,9 @@ export default function AdminAccounts({
           handleConfirm={handleConfirm}
           handleCancel={handleCancel}
           isEditMode={isEditMode}
-          name={name}
-          email={email}
-          role={role}
+          name={selectedUser.user_metadata.display_name}
+          email={selectedUser.email}
+          role={selectedUser.user_metadata.role}
         />
       )}
     </>

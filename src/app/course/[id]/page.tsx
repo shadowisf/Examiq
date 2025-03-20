@@ -1,9 +1,9 @@
 import CourseOptions from "@/app/components/CourseOptions";
 import CourseStudents from "../../components/CourseStudents";
 import {
-  readAllStudents,
   readSingleCourse,
   readCurrentUser,
+  readAllStudents,
 } from "@/app/utils/default/actions";
 import { redirect } from "next/navigation";
 

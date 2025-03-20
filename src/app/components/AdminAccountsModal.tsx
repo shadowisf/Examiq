@@ -6,7 +6,7 @@ type AdminAccountsModalProps = {
   handleConfirm: (formData: FormData) => void;
   name: string;
   email: string;
-  role: string
+  role: string;
 };
 
 export default function AdminAccountsModal({
@@ -21,7 +21,7 @@ export default function AdminAccountsModal({
     <section className="modal">
       <div className="modal-content">
         <div className="header">
-          <h1>create new account</h1>
+          <h1>{isEditMode ? "edit account" : "create new account"}</h1>
 
           <button className="none" onClick={handleCancel}>
             <Image

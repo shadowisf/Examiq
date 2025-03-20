@@ -49,7 +49,7 @@ export async function createAccount(formData: FormData) {
   }
 }
 
-export async function updateAccount(formData: FormData, userID: string) {
+export async function updateAccount(formData: FormData, user: any) {
   try {
     const supabase = createServiceClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -61,7 +61,7 @@ export async function updateAccount(formData: FormData, userID: string) {
     const email = formData.get("email") as string;
 
     const { data: authUserData, error: authUserError } =
-      await supabase.auth.admin.updateUserById(userID, {
+      await supabase.auth.admin.updateUserById(user.id, {
         email: email,
         user_metadata: {
           display_name: name,
@@ -84,6 +84,36 @@ export async function updateAccount(formData: FormData, userID: string) {
     }
 
     revalidatePath("/dashboard", "layout");
+  } catch (e) {
+    const errorMessage = (e as Error).message;
+
+    return { error: { message: errorMessage } };
+  }
+}
+
+export async function deleteAccount(user: any) {
+  try {
+    const supabase = createServiceClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY!
+    );
+
+    const { error: authUserError } = await supabase.auth.admin.deleteUser(
+      user.id
+    );
+
+    const { error: tableUser } = await supabase
+      .from(user.user_metadata.role)
+      .delete()
+      .eq("id", user.id);
+
+    if (authUserError) {
+      throw new Error(authUserError.message);
+    }
+
+    if (tableUser) {
+      throw new Error(tableUser.message);
+    }
   } catch (e) {
     const errorMessage = (e as Error).message;
 
