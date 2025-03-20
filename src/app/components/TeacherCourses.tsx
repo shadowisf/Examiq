@@ -7,6 +7,7 @@ import Image from "next/image";
 import ErrorMessage from "./ErrorMessage";
 import Link from "next/link";
 import TeacherCoursesModal from "./TeacherCoursesModal";
+import InfoMessage from "./InfoMessage";
 
 type TeacherCourseProps = {
   students: any[] | null;
@@ -107,7 +108,7 @@ export default function TeacherCourses({
         </div>
 
         {courseError ? (
-          <ErrorMessage>failed to load courses.</ErrorMessage>
+          <ErrorMessage>failed to load courses</ErrorMessage>
         ) : courses && courses.length > 0 ? (
           <table>
             <thead>
@@ -166,7 +167,7 @@ export default function TeacherCourses({
             </tbody>
           </table>
         ) : (
-          <p className="gray">you have not created any courses yet.</p>
+          <InfoMessage>you have not created any courses yet</InfoMessage>
         )}
       </section>
 

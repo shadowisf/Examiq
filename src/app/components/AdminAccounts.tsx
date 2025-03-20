@@ -24,9 +24,27 @@ export default function AdminAccounts({
   const router = useRouter();
 
   const [showModal, setShowModal] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [role, setRole] = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
 
-  function handleConfirm(formData: FormData) {
-    const result = createAccount(formData);
+  function handleRefresh() {
+    setError("");
+    setShowModal(false);
+    setIsEditMode(false);
+    router.refresh();
+  }
+
+  async function handleConfirm(formData: FormData) {
+    const result = await createAccount(formData);
+
+    if (result?.error) {
+      setError(result.error.message);
+    }
+
+    setShowModal(false);
   }
 
   function handleCreate() {
@@ -37,10 +55,27 @@ export default function AdminAccounts({
     setShowModal(false);
   }
 
+  function handleEdit(user: any) {
+    setIsEditMode(true);
+    setShowModal(true);
+    setName(user.name);
+    setEmail(user.email);
+    setRole(user.role);
+  }
+
+  function handleDelete(user: any) {
+    const result = confirm("are you sure you want to delete this account?");
+
+    if (result) {
+    }
+  }
+
   return (
     <>
       <section className="admin-accounts-container">
         <h1 id="accounts">accounts</h1>
+
+        {error && <ErrorMessage>{error}</ErrorMessage>}
 
         <div className="button-container">
           <button className="accent" onClick={handleCreate}>
@@ -52,7 +87,7 @@ export default function AdminAccounts({
             />
           </button>
 
-          <button onClick={() => router.refresh()}>
+          <button onClick={handleRefresh}>
             <Image
               src={"/icons/refresh.svg"}
               alt="referesh"
@@ -65,7 +100,7 @@ export default function AdminAccounts({
         <div>
           <h3>students</h3>
           {studentsError ? (
-            <ErrorMessage>failed to load student table.</ErrorMessage>
+            <ErrorMessage>failed to load student table</ErrorMessage>
           ) : students && students.length > 0 ? (
             <table>
               <thead>
@@ -89,7 +124,7 @@ export default function AdminAccounts({
                       })}
                     </td>
                     <td className="actions-column">
-                      <button>
+                      <button onClick={() => handleEdit(student)}>
                         <Image
                           src={"/icons/edit.svg"}
                           alt="edit"
@@ -98,7 +133,10 @@ export default function AdminAccounts({
                         />
                       </button>
 
-                      <button className="accent">
+                      <button
+                        className="accent"
+                        onClick={() => handleDelete(student)}
+                      >
                         <Image
                           src={"/icons/trash.svg"}
                           alt="delete"
@@ -113,7 +151,7 @@ export default function AdminAccounts({
             </table>
           ) : (
             <InfoMessage>
-              there are no existing accounts for students yet.
+              there are no existing accounts for students yet
             </InfoMessage>
           )}
         </div>
@@ -121,7 +159,7 @@ export default function AdminAccounts({
         <div>
           <h3>teachers</h3>
           {teachersError ? (
-            <ErrorMessage>failed to load teacher table.</ErrorMessage>
+            <ErrorMessage>failed to load teacher table</ErrorMessage>
           ) : teachers && teachers.length > 0 ? (
             <table>
               <thead>
@@ -129,6 +167,7 @@ export default function AdminAccounts({
                   <th>id</th>
                   <th>name</th>
                   <th>date of creation</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -143,13 +182,35 @@ export default function AdminAccounts({
                         day: "numeric",
                       })}
                     </td>
+                    <td className="actions-column">
+                      <button onClick={() => handleEdit(teacher)}>
+                        <Image
+                          src={"/icons/edit.svg"}
+                          alt="edit"
+                          width={24}
+                          height={24}
+                        />
+                      </button>
+
+                      <button
+                        className="accent"
+                        onClick={() => handleDelete(teacher)}
+                      >
+                        <Image
+                          src={"/icons/trash.svg"}
+                          alt="delete"
+                          width={24}
+                          height={24}
+                        />
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           ) : (
             <InfoMessage>
-              there are no existing accounts for teachers yet.
+              there are no existing accounts for teachers yet
             </InfoMessage>
           )}
         </div>
@@ -159,6 +220,10 @@ export default function AdminAccounts({
         <AdminAccountsModal
           handleConfirm={handleConfirm}
           handleCancel={handleCancel}
+          isEditMode={isEditMode}
+          name={name}
+          email={email}
+          role={role}
         />
       )}
     </>

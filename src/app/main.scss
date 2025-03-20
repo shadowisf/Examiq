@@ -1,7 +1,7 @@
 :root {
   --primary-color: rgb(28, 28, 30);
   --secondary-color: rgb(44, 44, 46);
-  --accent-color: rgb(160, 174, 140);
+  --accent-color: #a0ae8c;
   /* --accent-color: #ffd2ed; */
   --border-radius: 4px;
 }
@@ -128,6 +128,7 @@ button {
   background-color: white;
   cursor: pointer;
   text-align: center;
+  font-size: 16px;
 
   display: grid;
   place-items: center;

@@ -1,13 +1,21 @@
 import Image from "next/image";
 
 type AdminAccountsModalProps = {
+  isEditMode: boolean;
   handleCancel: () => void;
   handleConfirm: (formData: FormData) => void;
+  name: string;
+  email: string;
+  role: string
 };
 
 export default function AdminAccountsModal({
   handleCancel,
   handleConfirm,
+  isEditMode,
+  name,
+  email,
+  role,
 }: AdminAccountsModalProps) {
   return (
     <section className="modal">
@@ -26,16 +34,38 @@ export default function AdminAccountsModal({
         </div>
 
         <form action={handleConfirm}>
-          <select name="role" defaultValue={"student"}>
+          <select
+            name="role"
+            defaultValue={isEditMode ? role : "student"}
+            required
+          >
             <option value="student">student</option>
             <option value="teacher">teacher</option>
           </select>
 
-          <input type="text" name="name" placeholder="name" />
+          <input
+            type="text"
+            name="name"
+            placeholder="name"
+            defaultValue={name}
+            required
+          />
 
-          <input type="text" name="email" placeholder="email" />
+          <input
+            type="text"
+            name="email"
+            placeholder="email"
+            defaultValue={email}
+            required
+          />
 
-          <input type="password" name="password" placeholder="password" />
+          <input
+            type="password"
+            name="password"
+            placeholder="password"
+            required
+            disabled={isEditMode ? true : false}
+          />
 
           <br />
 

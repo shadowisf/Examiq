@@ -1,6 +1,5 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { createClient } from "../utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
@@ -8,66 +7,120 @@ import { generateIdentifier } from "../utils/default/actions";
 
 // ADMIN
 export async function createAccount(formData: FormData) {
-  const supabase = createServiceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY!
-  );
+  try {
+    const supabase = createServiceClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY!
+    );
 
-  const role = formData.get("role") as string;
-  const name = formData.get("name") as string;
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
+    const role = formData.get("role") as string;
+    const name = formData.get("name") as string;
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
 
-  const { data: authUserData, error: authUserError } =
-    await supabase.auth.admin.createUser({
-      email: email,
-      password: password,
-      user_metadata: {
-        display_name: name,
-        role: role,
-      },
-      email_confirm: true,
-    });
+    const { data: authUserData, error: authUserError } =
+      await supabase.auth.admin.createUser({
+        email: email,
+        password: password,
+        user_metadata: {
+          display_name: name,
+          role: role,
+        },
+        email_confirm: true,
+      });
 
-  const { error: tableUserError } = await supabase
-    .from(role)
-    .insert([{ id: authUserData.user?.id, name: name }]);
+    const { error: tableUserError } = await supabase
+      .from(role)
+      .insert([{ id: authUserData.user?.id, name: name }]);
 
-  if (authUserError) {
-    redirect(`/dashboard?error=${authUserError.message}`);
+    if (authUserError) {
+      throw new Error(authUserError.message);
+    }
+
+    if (tableUserError) {
+      throw new Error(tableUserError.message);
+    }
+
+    revalidatePath("/dashboard", "layout");
+  } catch (e) {
+    const errorMessage = (e as Error).message;
+
+    return { error: { message: errorMessage } };
   }
+}
 
-  if (tableUserError) {
-    redirect(`/dashboard?error=${tableUserError.message}`);
+export async function updateAccount(formData: FormData, userID: string) {
+  try {
+    const supabase = createServiceClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY!
+    );
+
+    const role = formData.get("role") as string;
+    const name = formData.get("name") as string;
+    const email = formData.get("email") as string;
+
+    const { data: authUserData, error: authUserError } =
+      await supabase.auth.admin.updateUserById(userID, {
+        email: email,
+        user_metadata: {
+          display_name: name,
+          role: role,
+        },
+        email_confirm: true,
+      });
+
+    const { error: tableUserError } = await supabase
+      .from(role)
+      .update({ name: name })
+      .eq("id", authUserData.user?.id);
+
+    if (authUserError) {
+      throw new Error(authUserError.message);
+    }
+
+    if (tableUserError) {
+      throw new Error(tableUserError.message);
+    }
+
+    revalidatePath("/dashboard", "layout");
+  } catch (e) {
+    const errorMessage = (e as Error).message;
+
+    return { error: { message: errorMessage } };
   }
-
-  revalidatePath("/", "layout");
 }
 
 // TEACHER
 export async function createCourse(formData: FormData, students: string[]) {
-  const supabase = await createClient();
+  try {
+    const supabase = await createClient();
 
-  const { data: currentUser } = await supabase.auth.getUser();
+    const { data: currentUser } = await supabase.auth.getUser();
 
-  const { error } = await supabase
-    .from("course")
-    .insert([
-      {
-        id: generateIdentifier("C"),
-        name: formData.get("course name") as string,
-        description: formData.get("course description") as string,
-        author: currentUser.user?.id,
-        students: { uid: students },
-      },
-    ])
-    .select();
+    const { error } = await supabase
+      .from("course")
+      .insert([
+        {
+          id: generateIdentifier("C"),
+          name: formData.get("course name") as string,
+          description: formData.get("course description") as string,
+          author: currentUser.user?.id,
+          students: { uid: students },
+        },
+      ])
+      .select();
 
-  if (error) {
-    redirect(`/dashboard?error=${error.message}`);
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    revalidatePath("/dashboard", "layout");
+  } catch (e) {
+    const errorMessage = (e as Error).message;
+
+    return { error: { message: errorMessage } };
   }
-
-  revalidatePath("/", "layout");
 }
 
 export async function updateCourse(
@@ -75,34 +128,46 @@ export async function updateCourse(
   id: string,
   students: string[]
 ) {
-  const supabase = await createClient();
+  try {
+    const supabase = await createClient();
 
-  const inputData = {
-    name: formData.get("course name") as string,
-    description: formData.get("course description") as string,
-    students: { uid: students },
-  };
+    const inputData = {
+      name: formData.get("course name") as string,
+      description: formData.get("course description") as string,
+      students: { uid: students },
+    };
 
-  const { error } = await supabase
-    .from("course")
-    .update(inputData)
-    .eq("id", id);
+    const { error } = await supabase
+      .from("course")
+      .update(inputData)
+      .eq("id", id);
 
-  if (error) {
-    redirect(`/dashboard?error=${error.message}`);
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    revalidatePath("/dashboard", "layout");
+  } catch (e) {
+    const errorMessage = (e as Error).message;
+
+    return { error: { message: errorMessage } };
   }
-
-  revalidatePath("/", "layout");
 }
 
 export async function deleteCourse(id: string) {
-  const supabase = await createClient();
+  try {
+    const supabase = await createClient();
 
-  const { error } = await supabase.from("course").delete().eq("id", id);
+    const { error } = await supabase.from("course").delete().eq("id", id);
 
-  if (error) {
-    redirect(`/dashboard?error=${error.message}`);
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    revalidatePath("/dashboard", "layout");
+  } catch (e) {
+    const errorMessage = (e as Error).message;
+
+    return { error: { message: errorMessage } };
   }
-
-  revalidatePath("/", "layout");
 }

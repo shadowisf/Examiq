@@ -6,6 +6,7 @@ import { useState } from "react";
 import ErrorMessage from "./ErrorMessage";
 import { createExam, deleteExam, updateExam } from "../course/[id]/actions";
 import Link from "next/link";
+import InfoMessage from "./InfoMessage";
 
 type TeacherExamsProps = {
   courses: any[] | null;
@@ -93,7 +94,7 @@ export default function TeacherExams({
         </div>
 
         {examsError ? (
-          <ErrorMessage>failed to load courses.</ErrorMessage>
+          <ErrorMessage>failed to load courses</ErrorMessage>
         ) : exams && exams.length > 0 ? (
           <table>
             <thead>
@@ -154,7 +155,7 @@ export default function TeacherExams({
             </tbody>
           </table>
         ) : (
-          <p className="gray">you have not created any exams yet.</p>
+          <InfoMessage>you have not created any exams yet</InfoMessage>
         )}
       </section>
 

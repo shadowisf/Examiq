@@ -1,5 +1,6 @@
 import ErrorMessage from "./ErrorMessage";
 import Image from "next/image";
+import InfoMessage from "./InfoMessage";
 
 type TeacherCoursesModalProps = {
   isEditMode: boolean;
@@ -40,7 +41,7 @@ export default function TeacherCoursesModal({
           </button>
         </div>
 
-        <form action={(formData) => handleConfirm(formData)}>
+        <form action={handleConfirm}>
           <input
             name="course name"
             type="text"
@@ -59,7 +60,7 @@ export default function TeacherCoursesModal({
             <h4>students:</h4>
 
             {studentsError ? (
-              <ErrorMessage>failed to load student table.</ErrorMessage>
+              <ErrorMessage>failed to load student table</ErrorMessage>
             ) : students && students.length > 0 ? (
               students
                 .sort((a, b) => a.name.localeCompare(b.name))
@@ -75,7 +76,7 @@ export default function TeacherCoursesModal({
                   </label>
                 ))
             ) : (
-              <p className="gray">there are no existing students yet.</p>
+              <InfoMessage>there are no existing students yet</InfoMessage>
             )}
           </div>
 

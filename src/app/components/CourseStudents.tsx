@@ -1,4 +1,5 @@
 import { readSingleStudent } from "../utils/default/actions";
+import InfoMessage from "./InfoMessage";
 
 type CourseStudentsProps = {
   course: any;
@@ -23,7 +24,7 @@ export default async function CourseStudents({ course }: CourseStudentsProps) {
             .sort((a, b) => a.name.localeCompare(b.name))
             .map((student, index) => <li key={index}>{student.name}</li>)
         ) : (
-          <p className="gray">no students enrolled.</p>
+          <InfoMessage>no students enrolled</InfoMessage>
         )}
       </ul>
     </section>
