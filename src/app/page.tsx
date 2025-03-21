@@ -12,19 +12,29 @@ export default async function Home() {
 
   return (
     <main className="intro-page">
-      <Link href={"/signin?user=student"}>
-        <h1>students</h1>
-        <Image src={"/images/intro.png"} alt="intro" width={350} height={350} />
-      </Link>
-
       <Link href={"/signin?user=teacher"}>
         <h1>teachers</h1>
-        <Image src={"/images/intro.png"} alt="intro" width={350} height={350} />
+        <Image
+          src={"/images/teacher.png"}
+          alt="intro"
+          width={200}
+          height={200}
+        />
+      </Link>
+
+      <Link href={"/signin?user=student"}>
+        <h1>students</h1>
+        <Image
+          src={"/images/student.png"}
+          alt="intro"
+          width={350}
+          height={200}
+        />
       </Link>
 
       <Link href={"/signin?user=admin"}>
         <h1>admin</h1>
-        <Image src={"/images/intro.png"} alt="intro" width={350} height={350} />
+        <Image src={"/images/admin.png"} alt="intro" width={200} height={200} />
       </Link>
     </main>
   );

@@ -193,7 +193,7 @@ export async function createCourse(formData: FormData, students: string[]) {
 
 export async function updateCourse(
   formData: FormData,
-  id: string,
+  course: any,
   students: string[]
 ) {
   try {
@@ -208,7 +208,7 @@ export async function updateCourse(
     const { error } = await supabase
       .from("course")
       .update(inputData)
-      .eq("id", id);
+      .eq("id", course.id);
 
     if (error) {
       throw new Error(error.message);

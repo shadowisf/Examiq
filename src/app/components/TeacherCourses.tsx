@@ -28,10 +28,7 @@ export default function TeacherCourses({
   const [isEditMode, setIsEditMode] = useState(false);
 
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
-  const [selectedCourseID, setSelectedCourseID] = useState("");
-  const [selectedCourseName, setSelectedCourseName] = useState("");
-  const [selectedCourseDescription, setSelectedCourseDescription] =
-    useState("");
+  const [selectedCourse, setSelectedCourse] = useState<any>(null);
 
   function toggleStudentSelection(studentID: string) {
     setSelectedStudents((prev) =>
@@ -55,7 +52,7 @@ export default function TeacherCourses({
 
   function handleConfirm(formData: any) {
     if (isEditMode) {
-      updateCourse(formData, selectedCourseID, selectedStudents);
+      updateCourse(formData, selectedCourse, selectedStudents);
     } else {
       createCourse(formData, selectedStudents);
     }
@@ -66,9 +63,7 @@ export default function TeacherCourses({
   function handleEdit(course: any) {
     setIsEditMode(true);
     setShowModal(true);
-    setSelectedCourseID(course.id);
-    setSelectedCourseName(course.name);
-    setSelectedCourseDescription(course.description);
+    setSelectedCourse(course);
     setSelectedStudents(course.students?.uid || []);
   }
 
@@ -79,7 +74,6 @@ export default function TeacherCourses({
 
     if (isConfirmed) {
       const result = await deleteCourse(id);
-      
     }
   }
 
@@ -174,8 +168,7 @@ export default function TeacherCourses({
         <TeacherCoursesModal
           isEditMode={isEditMode}
           handleConfirm={handleConfirm}
-          selectedCourseName={selectedCourseName}
-          selectedCourseDescription={selectedCourseDescription}
+          selectedCourse={selectedCourse}
           studentsError={studentsError}
           students={students}
           selectedStudents={selectedStudents}

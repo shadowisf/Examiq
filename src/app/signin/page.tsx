@@ -39,11 +39,13 @@ export default function SignIn() {
   return (
     <main className="signin-page">
       <section className="text-container">
-        <Image src={"/icons/logo.svg"} alt="logo" width={180} height={108} />
-        <h1 className="big">welcome back</h1>
-        <p className="gray">
-          sign in to your account as a <span>{userType}</span>
-        </p>
+        <Image src={"/icons/logo.png"} alt="logo" width={225} height={125} />
+        <div>
+          <h1 className="big">welcome back</h1>
+          <p className="gray">
+            sign in to your account as a <span>{userType}</span>
+          </p>
+        </div>
       </section>
 
       <form action={handleSubmit}>

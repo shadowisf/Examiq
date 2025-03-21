@@ -5,25 +5,23 @@ import InfoMessage from "./InfoMessage";
 type TeacherCoursesModalProps = {
   isEditMode: boolean;
   handleConfirm: (formData: FormData) => void;
-  selectedCourseName: string;
-  selectedCourseDescription: string;
-  studentsError: any;
   students: any[] | null;
+  studentsError: any;
   selectedStudents: string[];
   toggleStudentSelection: (studentID: string) => void;
   handleCancel: () => void;
+  selectedCourse: any;
 };
 
 export default function TeacherCoursesModal({
   isEditMode,
   handleConfirm,
-  selectedCourseName,
-  selectedCourseDescription,
   studentsError,
   students,
   selectedStudents,
   toggleStudentSelection,
   handleCancel,
+  selectedCourse,
 }: TeacherCoursesModalProps) {
   return (
     <section className="modal">
@@ -47,13 +45,13 @@ export default function TeacherCoursesModal({
             type="text"
             placeholder="name"
             required
-            defaultValue={isEditMode ? selectedCourseName : ""}
+            defaultValue={isEditMode ? selectedCourse.name : ""}
           />
           <textarea
             name="course description"
             placeholder="description"
             required
-            defaultValue={isEditMode ? selectedCourseDescription : ""}
+            defaultValue={isEditMode ? selectedCourse.description : ""}
           />
 
           <div className="students-container">

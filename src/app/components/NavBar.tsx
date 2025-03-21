@@ -7,19 +7,22 @@ export default async function NavBar() {
 
   return (
     <nav>
-      <section className="logo">
-        <Image src={"/icons/logo.svg"} alt="logo" width={50} height={30} />
+      <Link
+        href={currentUserError || !currentUser.user ? "/" : "/dashboard"}
+        className="logo"
+      >
+        <Image src={"/icons/logo.png"} alt="logo" width={50} height={30} />
         <span>examiq</span>
-      </section>
+      </Link>
 
       <section className="nav-links">
-        {currentUserError || !currentUser?.user ? (
+        {currentUserError || !currentUser.user ? (
           <Link href="/">home</Link>
         ) : (
           <Link href="/dashboard">dashboard</Link>
         )}
 
-        {currentUserError || !currentUser?.user ? null : (
+        {currentUserError || !currentUser.user ? null : (
           <Link href="/signout">sign out</Link>
         )}
       </section>

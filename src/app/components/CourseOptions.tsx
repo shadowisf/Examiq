@@ -74,8 +74,7 @@ export default function CourseOptions({
         <TeacherCoursesModal
           isEditMode={true}
           handleConfirm={handleConfirm}
-          selectedCourseName={course.name}
-          selectedCourseDescription={course.description}
+          selectedCourse={course}
           studentsError={studentsError}
           students={students}
           selectedStudents={selectedStudents}
