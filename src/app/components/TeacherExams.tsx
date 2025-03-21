@@ -4,9 +4,9 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useState } from "react";
 import ErrorMessage from "./ErrorMessage";
-import { createExam, deleteExam, updateExam } from "../course/[id]/actions";
 import Link from "next/link";
 import InfoMessage from "./InfoMessage";
+import { updateExam, createExam, deleteExam } from "../dashboard/actions";
 
 type TeacherExamsProps = {
   courses: any[] | null;

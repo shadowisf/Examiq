@@ -17,7 +17,6 @@ export async function signIn(formData: FormData, userType: string) {
       });
 
     if (userError) {
-      console.error(userError.message);
       throw new Error(userError.message);
     }
 
@@ -29,14 +28,12 @@ export async function signIn(formData: FormData, userType: string) {
         .single();
 
       if (!roleData) {
-        const { error } = await supabase.auth.signOut();
+        const { error: authError } = await supabase.auth.signOut();
 
-        if (error) {
-          console.error(error.message);
-          throw new Error(error.message);
+        if (authError) {
+          throw new Error(authError.message);
         }
 
-        console.error("User not found");
         throw new Error("User not found");
       }
     }

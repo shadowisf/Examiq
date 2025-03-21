@@ -74,6 +74,10 @@ export default function TeacherCourses({
 
     if (isConfirmed) {
       const result = await deleteCourse(id);
+
+      if (result?.error) {
+        alert(result.error.message);
+      }
     }
   }
 
