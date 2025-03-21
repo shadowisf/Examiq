@@ -5,6 +5,7 @@ import { signIn } from "./actions";
 import { redirect, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import ErrorMessage from "../components/ErrorMessage";
+import BigLogo from "../components/BigLogo";
 
 export default function SignIn() {
   const searchParams = useSearchParams();
@@ -39,7 +40,8 @@ export default function SignIn() {
   return (
     <main className="signin-page">
       <section className="text-container">
-        <Image src={"/icons/logo.png"} alt="logo" width={225} height={125} />
+        <BigLogo />
+
         <div>
           <h1 className="big">welcome back</h1>
           <p className="gray">
@@ -70,7 +72,7 @@ export default function SignIn() {
 
         <br />
 
-        <button type="submit" className="accent">
+        <button type="submit">
           <Image
             src={"/icons/check.svg"}
             alt="confirm"

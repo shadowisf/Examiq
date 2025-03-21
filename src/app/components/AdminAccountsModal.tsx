@@ -69,7 +69,7 @@ export default function AdminAccountsModal({
 
           <br />
 
-          <button type="submit" className="accent">
+          <button type="submit">
             <Image
               src={"/icons/check.svg"}
               alt="confirm"

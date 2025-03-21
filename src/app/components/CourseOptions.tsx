@@ -63,7 +63,7 @@ export default function CourseOptions({
         <button onClick={handleEdit}>
           <Image src={"/icons/edit.svg"} width={24} height={24} alt="edit" />
         </button>
-        <button className="accent" onClick={handleDelete}>
+        <button onClick={handleDelete}>
           <Image src={"/icons/trash.svg"} width={24} height={24} alt="delete" />
         </button>
       </div>

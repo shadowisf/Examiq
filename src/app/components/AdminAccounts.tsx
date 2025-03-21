@@ -99,7 +99,7 @@ export default function AdminAccounts({
         {error && <ErrorMessage>{error}</ErrorMessage>}
 
         <div className="button-container">
-          <button className="accent" onClick={handleCreate}>
+          <button onClick={handleCreate}>
             <Image
               src={"/icons/plus.svg"}
               alt="create"
@@ -154,10 +154,7 @@ export default function AdminAccounts({
                         />
                       </button>
 
-                      <button
-                        className="accent"
-                        onClick={() => handleDelete(student)}
-                      >
+                      <button onClick={() => handleDelete(student)}>
                         <Image
                           src={"/icons/trash.svg"}
                           alt="delete"
@@ -213,10 +210,7 @@ export default function AdminAccounts({
                         />
                       </button>
 
-                      <button
-                        className="accent"
-                        onClick={() => handleDelete(teacher)}
-                      >
+                      <button onClick={() => handleDelete(teacher)}>
                         <Image
                           src={"/icons/trash.svg"}
                           alt="delete"

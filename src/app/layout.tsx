@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./main.scss";
 import NavBar from "@/app/components/NavBar";
+import AccentColor from "./components/AccentColor";
 
 export const metadata: Metadata = {
   title: "examiq",
@@ -20,6 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <NavBar />
+        <AccentColor />
 
         {children}
       </body>

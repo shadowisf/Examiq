@@ -79,8 +79,18 @@ nav {
     align-items: center;
     gap: 12px;
 
+    img {
+      filter: grayscale(100%);
+    }
+
     span {
       font-weight: bolder;
+    }
+
+    &:hover {
+      img {
+        filter: grayscale(0%);
+      }
     }
   }
 
@@ -124,7 +134,7 @@ button {
 
   border-radius: var(--border-radius);
   color: black;
-  padding: 12px 24px;
+  padding: 12px;
   background-color: white;
   cursor: pointer;
   text-align: center;
@@ -137,6 +147,14 @@ button {
     all: unset;
 
     cursor: pointer;
+
+    &:hover {
+      background-color: unset;
+    }
+  }
+
+  &:hover {
+    background-color: var(--accent-color);
   }
 }
 
@@ -147,6 +165,7 @@ textarea {
   background-color: var(--secondary-color);
   font-size: 16px;
   text-align: center;
+  outline: none;
 
   border: none;
   padding: 12px;
@@ -213,10 +232,6 @@ textarea {
   }
 }
 
-.accent {
-  background-color: var(--accent-color);
-}
-
 .intro-page {
   all: unset;
 
@@ -240,6 +255,16 @@ textarea {
     h1 {
       text-align: center;
     }
+
+    img {
+      filter: invert(100%) grayscale(100%);
+    }
+
+    &:hover {
+      img {
+        filter: invert(0%) grayscale(0%);
+      }
+    }
   }
 }
 
@@ -253,6 +278,16 @@ textarea {
     display: grid;
     place-items: center;
     gap: 24px;
+
+    img {
+      filter: grayscale(100%);
+    }
+
+    div:hover {
+      img {
+        filter: grayscale(0%);
+      }
+    }
 
     h1,
     p {
@@ -292,12 +327,17 @@ textarea {
   display: grid;
   gap: 100px;
 
-  .nav-container {
+  .header-container {
     display: grid;
+    place-items: center;
     gap: 24px;
 
     .big {
       text-align: center;
+
+      span {
+        border-bottom: 1px solid var(--accent-color);
+      }
     }
 
     .bento-container {
@@ -390,6 +430,18 @@ textarea {
 
     ul {
       padding-left: 24px;
+    }
+  }
+}
+
+.big-logo {
+  img {
+    filter: grayscale(100%);
+  }
+
+  &:hover {
+    img {
+      filter: grayscale(0%);
     }
   }
 }

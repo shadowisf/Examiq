@@ -10,6 +10,8 @@ import {
   readCurrentUser,
 } from "../utils/default/actions";
 import { redirect } from "next/navigation";
+import Image from "next/image";
+import BigLogo from "../components/BigLogo";
 
 export default async function Dashboard() {
   const { currentUser } = await readCurrentUser();
@@ -107,9 +109,14 @@ export default async function Dashboard() {
 
   return (
     <main className="dashboard-page">
-      <section className="nav-container">
+      <section className="header-container">
+        <BigLogo />
+
         <h1 className="big">
-          aloha, {role} {name}
+          aloha,{" "}
+          <span>
+            {role} {name}
+          </span>
         </h1>
 
         {bentoContent}
