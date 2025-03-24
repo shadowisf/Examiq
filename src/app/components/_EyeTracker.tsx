@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useRef, useCallback } from "react";
 import { EyeTracking } from "react-eye-tracking";
 

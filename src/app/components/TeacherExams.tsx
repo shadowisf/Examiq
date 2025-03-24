@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import ErrorMessage from "./_ErrorMessage";
 import Link from "next/link";
 import InfoMessage from "./_InfoMessage";
@@ -25,6 +25,8 @@ export default function TeacherExams({
   examsError,
 }: TeacherExamsProps) {
   const router = useRouter();
+
+  const [isPending, startTransition] = useTransition();
 
   const [showModal, setShowModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -73,6 +75,7 @@ export default function TeacherExams({
   ) {
     const updatedItems = [...examItems];
     updatedItems[index][field] = value as never;
+
     setExamItems(updatedItems);
   }
 
@@ -82,9 +85,11 @@ export default function TeacherExams({
     value: string
   ) {
     const updatedItems = [...examItems];
+
     if (updatedItems[itemIndex].choices) {
       updatedItems[itemIndex].choices![choiceIndex] = value;
     }
+
     setExamItems(updatedItems);
   }
 
@@ -100,6 +105,7 @@ export default function TeacherExams({
     setShowModal(false);
     setIsEditMode(false);
     setSelectedExam(null);
+    setSelectedExamType("multiple-choice");
     setExamItems([]);
   }
 
@@ -111,47 +117,54 @@ export default function TeacherExams({
   }
 
   function handleRefresh() {
-    router.refresh();
-    setShowModal(false);
-    setIsEditMode(false);
-    setError("");
-    setSelectedExam(null);
-    setExamItems([]);
+    startTransition(() => {
+      router.refresh();
+      setShowModal(false);
+      setIsEditMode(false);
+      setError("");
+      setSelectedExam(null);
+      setSelectedExamType("multiple-choice");
+      setExamItems([]);
+    });
   }
 
   async function handleConfirm(formData: any) {
-    let result;
+    startTransition(async () => {
+      let result;
 
-    if (isEditMode) {
-      result = await updateExam(formData, selectedExam, examItems);
-    } else {
-      result = await createExam(formData, examItems);
-    }
-
-    if (result?.error) {
-      setError(result.error.message);
-    }
-
-    setShowModal(false);
-  }
-
-  async function handleDelete(exam: any) {
-    const isConfirmed = window.confirm(
-      "are you sure you want to delete this exam?"
-    );
-
-    if (isConfirmed) {
-      const result = await deleteExam(exam);
+      if (isEditMode) {
+        result = await updateExam(formData, selectedExam, examItems);
+      } else {
+        result = await createExam(formData, examItems);
+      }
 
       if (result?.error) {
         setError(result.error.message);
       }
-    }
+
+      setShowModal(false);
+    });
+  }
+
+  async function handleDelete(exam: any) {
+    startTransition(async () => {
+      const isConfirmed = window.confirm(
+        "are you sure you want to delete this exam?"
+      );
+
+      if (isConfirmed) {
+        const result = await deleteExam(exam);
+
+        if (result?.error) {
+          setError(result.error.message);
+        }
+      }
+    });
   }
 
   return (
     <>
-      {/* <Loading /> */}
+      {isPending && <Loading />}
 
       <section className="teacher-exams-container">
         <h1 id="exams">exams</h1>

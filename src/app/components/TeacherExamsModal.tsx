@@ -1,5 +1,3 @@
-"use client";
-
 import Image from "next/image";
 import ErrorMessage from "./_ErrorMessage";
 import InfoMessage from "./_InfoMessage";

@@ -3,14 +3,12 @@ import InfoMessage from "./_InfoMessage";
 
 type CourseStudentsProps = {
   course: any;
-  courseError: any;
   students: any[] | null;
   studentsError: any;
 };
 
 export default async function CourseStudents({
   course,
-  courseError,
   students,
   studentsError,
 }: CourseStudentsProps) {
@@ -24,14 +22,13 @@ export default async function CourseStudents({
         name: student.user_metadata?.display_name || "unknown student",
       })) || [];
 
-  return courseError ? (
-    <ErrorMessage>{courseError.message}</ErrorMessage>
-  ) : (
+  return (
     <section className="student-list-container">
       <h1>student list</h1>
+
       <ul>
         {studentsError ? (
-          <ErrorMessage>{studentsError.message}</ErrorMessage>
+          <ErrorMessage>failed to load students</ErrorMessage>
         ) : filteredStudents && filteredStudents.length > 0 ? (
           filteredStudents
             .sort((a, b) => a.name.localeCompare(b.name))

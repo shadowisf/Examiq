@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import {
   createAccount,
   deleteAccount,
@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import AdminAccountsModal from "./AdminAccountsModal";
 import ErrorMessage from "./_ErrorMessage";
 import InfoMessage from "./_InfoMessage";
+import Loading from "./_Loading";
 
 type AdminAccountsProps = {
   students: any[] | null;
@@ -28,6 +29,8 @@ export default function AdminAccounts({
 }: AdminAccountsProps) {
   const router = useRouter();
 
+  const [isPending, startTransition] = useTransition();
+
   const [showModal, setShowModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [error, setError] = useState("");
@@ -35,27 +38,13 @@ export default function AdminAccounts({
   const [selectedUser, setSelectedUser] = useState<any>(null);
 
   function handleRefresh() {
-    router.refresh();
-    setShowModal(false);
-    setIsEditMode(false);
-    setError("");
-    setSelectedUser(null);
-  }
-
-  async function handleConfirm(formData: FormData) {
-    let result;
-
-    if (isEditMode) {
-      result = await updateAccount(formData, selectedUser);
-    } else {
-      result = await createAccount(formData);
-    }
-
-    if (result?.error) {
-      setError(result.error.message);
-    }
-
-    setShowModal(false);
+    startTransition(() => {
+      router.refresh();
+      setShowModal(false);
+      setIsEditMode(false);
+      setError("");
+      setSelectedUser(null);
+    });
   }
 
   function handleCreate() {
@@ -74,30 +63,52 @@ export default function AdminAccounts({
     setSelectedUser(user);
   }
 
-  async function handleDelete(user: any) {
-    const isConfirmed = confirm(
-      "are you sure you want to delete this account?"
-    );
+  async function handleConfirm(formData: FormData) {
+    startTransition(async () => {
+      let result;
 
-    if (isConfirmed) {
-      const userResult = await deleteAccount(user);
-
-      if (userResult?.error) {
-        setError(userResult.error.message);
+      if (isEditMode) {
+        result = await updateAccount(formData, selectedUser);
+      } else {
+        result = await createAccount(formData);
       }
 
-      if (user.user_metadata.role === "student") {
-        const courseResult = await deleteStudentFromCourse(user);
+      if (result?.error) {
+        setError(result.error.message);
+      }
 
-        if (courseResult?.error) {
-          setError(courseResult.error.message);
+      setShowModal(false);
+    });
+  }
+
+  async function handleDelete(user: any) {
+    startTransition(async () => {
+      const isConfirmed = confirm(
+        "are you sure you want to delete this account?"
+      );
+
+      if (isConfirmed) {
+        if (user.user_metadata.role === "student") {
+          const courseResult = await deleteStudentFromCourse(user);
+
+          if (courseResult?.error) {
+            setError(courseResult.error.message);
+          }
+        }
+
+        const userResult = await deleteAccount(user);
+
+        if (userResult?.error) {
+          setError(userResult.error.message);
         }
       }
-    }
+    });
   }
 
   return (
     <>
+      {isPending && <Loading />}
+
       <section className="admin-accounts-container">
         <h1 id="accounts">accounts</h1>
 
@@ -126,7 +137,7 @@ export default function AdminAccounts({
         <div>
           <h3>students</h3>
           {studentsError ? (
-            <ErrorMessage>failed to load student table</ErrorMessage>
+            <ErrorMessage>failed to load students</ErrorMessage>
           ) : students && students.length > 0 ? (
             <table>
               <thead>
@@ -182,7 +193,7 @@ export default function AdminAccounts({
         <div>
           <h3>teachers</h3>
           {teachersError ? (
-            <ErrorMessage>failed to load teacher table</ErrorMessage>
+            <ErrorMessage>failed to load teachers</ErrorMessage>
           ) : teachers && teachers.length > 0 ? (
             <table>
               <thead>

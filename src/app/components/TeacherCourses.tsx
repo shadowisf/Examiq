@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useTransition } from "react";
 import { createCourse, deleteCourse, updateCourse } from "../dashboard/actions";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -25,9 +25,10 @@ export default function TeacherCourses({
 }: TeacherCourseProps) {
   const router = useRouter();
 
+  const [isPending, startTransition] = useTransition();
+
   const [showModal, setShowModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
@@ -48,7 +49,6 @@ export default function TeacherCourses({
   function handleCancel() {
     setShowModal(false);
     setIsEditMode(false);
-    setIsLoading(false);
     setSelectedStudents([]);
     setSelectedCourse(null);
   }
@@ -61,48 +61,53 @@ export default function TeacherCourses({
   }
 
   function handleRefresh() {
-    router.refresh();
-    setShowModal(false);
-    setIsEditMode(false);
-    setIsLoading(false);
-    setError("");
-    setSelectedStudents([]);
-    setSelectedCourse(null);
+    startTransition(() => {
+      router.refresh();
+      setShowModal(false);
+      setIsEditMode(false);
+      setError("");
+      setSelectedStudents([]);
+      setSelectedCourse(null);
+    });
   }
 
   async function handleConfirm(formData: any) {
-    let result;
+    startTransition(async () => {
+      let result;
 
-    if (isEditMode) {
-      result = await updateCourse(formData, selectedCourse, selectedStudents);
-    } else {
-      result = await createCourse(formData, selectedStudents);
-    }
-
-    if (result?.error) {
-      setError(result.error.message);
-    }
-
-    setShowModal(false);
-  }
-
-  async function handleDelete(exam: any) {
-    const isConfirmed = window.confirm(
-      "are you sure you want to delete this course?"
-    );
-
-    if (isConfirmed) {
-      const result = await deleteCourse(exam);
+      if (isEditMode) {
+        result = await updateCourse(formData, selectedCourse, selectedStudents);
+      } else {
+        result = await createCourse(formData, selectedStudents);
+      }
 
       if (result?.error) {
         setError(result.error.message);
       }
-    }
+
+      setShowModal(false);
+    });
+  }
+
+  async function handleDelete(exam: any) {
+    startTransition(async () => {
+      const isConfirmed = window.confirm(
+        "are you sure you want to delete this course?"
+      );
+
+      if (isConfirmed) {
+        const result = await deleteCourse(exam);
+
+        if (result?.error) {
+          setError(result.error.message);
+        }
+      }
+    });
   }
 
   return (
     <>
-      {isLoading && <Loading />}
+      {isPending && <Loading />}
 
       <section className="teacher-courses-container">
         <h1 id="courses">courses</h1>
