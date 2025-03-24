@@ -3,13 +3,13 @@
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useState } from "react";
-import ErrorMessage from "./ErrorMessage";
+import ErrorMessage from "./_ErrorMessage";
 import Link from "next/link";
-import InfoMessage from "./InfoMessage";
+import InfoMessage from "./_InfoMessage";
 import { createExam, deleteExam, updateExam } from "../dashboard/actions";
 import { ExamItem } from "../utils/default/types";
 import TeacherExamsModal from "./TeacherExamsModal";
-import Loading from "./Loading";
+import Loading from "./_Loading";
 
 type TeacherExamsProps = {
   courses: any[] | null;

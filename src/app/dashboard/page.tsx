@@ -10,7 +10,7 @@ import {
   readCurrentUser,
 } from "../utils/default/actions";
 import { redirect } from "next/navigation";
-import BigLogo from "../components/BigLogo";
+import BigLogo from "../components/_BigLogo";
 
 export default async function Dashboard() {
   const { currentUser } = await readCurrentUser();

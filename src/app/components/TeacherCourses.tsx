@@ -1,14 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createCourse, deleteCourse, updateCourse } from "../dashboard/actions";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import ErrorMessage from "./ErrorMessage";
+import ErrorMessage from "./_ErrorMessage";
 import Link from "next/link";
 import TeacherCoursesModal from "./TeacherCoursesModal";
-import InfoMessage from "./InfoMessage";
-import Loading from "./Loading";
+import InfoMessage from "./_InfoMessage";
+import Loading from "./_Loading";
 
 type TeacherCourseProps = {
   students: any[] | null;

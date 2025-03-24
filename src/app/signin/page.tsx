@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { signIn } from "./actions";
 import { redirect, useSearchParams } from "next/navigation";
 import Image from "next/image";
-import ErrorMessage from "../components/ErrorMessage";
-import BigLogo from "../components/BigLogo";
+import ErrorMessage from "../components/_ErrorMessage";
+import BigLogo from "../components/_BigLogo";
 
 export default function SignIn() {
   const searchParams = useSearchParams();

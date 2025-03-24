@@ -5,7 +5,7 @@ import { useState } from "react";
 import { updateCourse, deleteCourse } from "../dashboard/actions";
 import TeacherCoursesModal from "./TeacherCoursesModal";
 import { redirect } from "next/navigation";
-import ErrorMessage from "./ErrorMessage";
+import ErrorMessage from "./_ErrorMessage";
 
 type CourseOptionsProps = {
   currentUser: any;

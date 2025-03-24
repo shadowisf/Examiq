@@ -1,5 +1,5 @@
-import ErrorMessage from "./ErrorMessage";
-import InfoMessage from "./InfoMessage";
+import ErrorMessage from "./_ErrorMessage";
+import InfoMessage from "./_InfoMessage";
 
 type CourseStudentsProps = {
   course: any;

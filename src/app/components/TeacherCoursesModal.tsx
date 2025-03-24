@@ -1,6 +1,6 @@
-import ErrorMessage from "./ErrorMessage";
+import ErrorMessage from "./_ErrorMessage";
 import Image from "next/image";
-import InfoMessage from "./InfoMessage";
+import InfoMessage from "./_InfoMessage";
 
 type TeacherCoursesModalProps = {
   isEditMode: boolean;
