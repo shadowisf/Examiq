@@ -17,7 +17,7 @@ type TeacherExamsModalProps = {
   createExamItem: () => void;
   updateExamItem: (index: number, field: keyof ExamItem, value: string) => void;
   updateChoice: (itemIndex: number, choiceIndex: number, value: string) => void;
-  removeExamItem: (index: number) => void;
+  deleteExamItem: (index: number) => void;
 };
 
 export default function TeacherExamsModal({
@@ -32,7 +32,7 @@ export default function TeacherExamsModal({
   createExamItem,
   updateExamItem,
   updateChoice,
-  removeExamItem,
+  deleteExamItem,
 }: TeacherExamsModalProps) {
   return (
     <section className="modal">
@@ -145,7 +145,7 @@ export default function TeacherExamsModal({
                       )}
                     </div>
 
-                    <button type="button" onClick={() => removeExamItem(index)}>
+                    <button type="button" onClick={() => deleteExamItem(index)}>
                       <Image
                         src={"/icons/trash.svg"}
                         width={24}

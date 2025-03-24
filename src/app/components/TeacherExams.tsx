@@ -9,6 +9,7 @@ import InfoMessage from "./InfoMessage";
 import { createExam, deleteExam, updateExam } from "../dashboard/actions";
 import { ExamItem } from "../utils/default/types";
 import TeacherExamsModal from "./TeacherExamsModal";
+import Loading from "./Loading";
 
 type TeacherExamsProps = {
   courses: any[] | null;
@@ -87,8 +88,8 @@ export default function TeacherExams({
     setExamItems(updatedItems);
   }
 
-  function removeExamItem(index: number) {
-    setExamItems(examItems.filter((_, i) => i !== index));
+  function deleteExamItem(index: number) {
+    setExamItems((prevItems) => prevItems.filter((_, i) => i !== index));
   }
 
   function handleCreate() {
@@ -99,12 +100,14 @@ export default function TeacherExams({
     setShowModal(false);
     setIsEditMode(false);
     setSelectedExam(null);
+    setExamItems([]);
   }
 
   function handleEdit(exam: any) {
     setIsEditMode(true);
     setShowModal(true);
     setSelectedExam(exam);
+    setExamItems(exam.items);
   }
 
   function handleRefresh() {
@@ -113,13 +116,14 @@ export default function TeacherExams({
     setIsEditMode(false);
     setError("");
     setSelectedExam(null);
+    setExamItems([]);
   }
 
   async function handleConfirm(formData: any) {
     let result;
 
     if (isEditMode) {
-      result = await updateExam(formData, selectedExam);
+      result = await updateExam(formData, selectedExam, examItems);
     } else {
       result = await createExam(formData, examItems);
     }
@@ -147,6 +151,8 @@ export default function TeacherExams({
 
   return (
     <>
+      {/* <Loading /> */}
+
       <section className="teacher-exams-container">
         <h1 id="exams">exams</h1>
 
@@ -248,7 +254,7 @@ export default function TeacherExams({
           createExamItem={createExamItem}
           updateExamItem={updateExamItem}
           updateChoice={updateExamItemChoice}
-          removeExamItem={removeExamItem}
+          deleteExamItem={deleteExamItem}
         />
       )}
     </>

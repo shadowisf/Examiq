@@ -98,7 +98,10 @@ export async function deleteAccount(user: any) {
 }
 
 // TEACHER
-export async function createCourse(formData: FormData, selectedStudents: string[]) {
+export async function createCourse(
+  formData: FormData,
+  selectedStudents: string[]
+) {
   try {
     const supabase = await createClient();
 
@@ -256,7 +259,11 @@ export async function createExam(formData: FormData, examItems: ExamItem[]) {
   }
 }
 
-export async function updateExam(formData: FormData, exam: any) {
+export async function updateExam(
+  formData: FormData,
+  exam: any,
+  examItems: ExamItem[]
+) {
   try {
     const supabase = await createClient();
 
@@ -265,9 +272,9 @@ export async function updateExam(formData: FormData, exam: any) {
       .update({
         course_id: formData.get("exam course") as string,
         name: formData.get("exam name") as string,
-        items: [],
+        items: examItems,
       })
-      .eq("id", exam.any);
+      .eq("id", exam.id);
 
     if (error) {
       throw new Error(error.message);

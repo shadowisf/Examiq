@@ -10,7 +10,6 @@ import {
   readCurrentUser,
 } from "../utils/default/actions";
 import { redirect } from "next/navigation";
-import Image from "next/image";
 import BigLogo from "../components/BigLogo";
 
 export default async function Dashboard() {

@@ -8,6 +8,7 @@ import ErrorMessage from "./ErrorMessage";
 import Link from "next/link";
 import TeacherCoursesModal from "./TeacherCoursesModal";
 import InfoMessage from "./InfoMessage";
+import Loading from "./Loading";
 
 type TeacherCourseProps = {
   students: any[] | null;
@@ -26,6 +27,7 @@ export default function TeacherCourses({
 
   const [showModal, setShowModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
@@ -46,6 +48,7 @@ export default function TeacherCourses({
   function handleCancel() {
     setShowModal(false);
     setIsEditMode(false);
+    setIsLoading(false);
     setSelectedStudents([]);
     setSelectedCourse(null);
   }
@@ -61,6 +64,7 @@ export default function TeacherCourses({
     router.refresh();
     setShowModal(false);
     setIsEditMode(false);
+    setIsLoading(false);
     setError("");
     setSelectedStudents([]);
     setSelectedCourse(null);
@@ -98,6 +102,8 @@ export default function TeacherCourses({
 
   return (
     <>
+      {isLoading && <Loading />}
+
       <section className="teacher-courses-container">
         <h1 id="courses">courses</h1>
 
