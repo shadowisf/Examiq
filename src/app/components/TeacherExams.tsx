@@ -6,7 +6,9 @@ import { useState } from "react";
 import ErrorMessage from "./ErrorMessage";
 import Link from "next/link";
 import InfoMessage from "./InfoMessage";
-import { updateExam, createExam, deleteExam } from "../dashboard/actions";
+import { createExam, deleteExam, updateExam } from "../dashboard/actions";
+import { ExamItem } from "../utils/default/types";
+import TeacherExamsModal from "./TeacherExamsModal";
 
 type TeacherExamsProps = {
   courses: any[] | null;
@@ -28,8 +30,66 @@ export default function TeacherExams({
   const [error, setError] = useState("");
 
   const [selectedExam, setSelectedExam] = useState<any>(null);
-  const [selectedExamType, setSelectedExamType] = useState("");
-  const [examPreviews, setExamPreviews] = useState<any>(null);
+  const [selectedExamType, setSelectedExamType] = useState("multiple-choice");
+  const [examItems, setExamItems] = useState<ExamItem[]>([]);
+
+  function handleSelectExamType(event: React.ChangeEvent<HTMLSelectElement>) {
+    setSelectedExamType(event.target.value);
+  }
+
+  function createExamItem() {
+    let choices;
+
+    switch (selectedExamType) {
+      case "multiple-choice":
+        choices = ["", "", ""];
+        break;
+
+      case "paragraph":
+        choices = undefined;
+        break;
+
+      case "true-false":
+        choices = undefined;
+        break;
+    }
+
+    const newExamItem: ExamItem = {
+      id: examItems.length,
+      type: selectedExamType,
+      question: "",
+      correctAnswer: "",
+      choices: choices,
+    };
+
+    setExamItems([...examItems, newExamItem]);
+  }
+
+  function updateExamItem<K extends keyof ExamItem>(
+    index: number,
+    field: K,
+    value: ExamItem[K]
+  ) {
+    const updatedItems = [...examItems];
+    updatedItems[index][field] = value as never;
+    setExamItems(updatedItems);
+  }
+
+  function updateExamItemChoice(
+    itemIndex: number,
+    choiceIndex: number,
+    value: string
+  ) {
+    const updatedItems = [...examItems];
+    if (updatedItems[itemIndex].choices) {
+      updatedItems[itemIndex].choices![choiceIndex] = value;
+    }
+    setExamItems(updatedItems);
+  }
+
+  function removeExamItem(index: number) {
+    setExamItems(examItems.filter((_, i) => i !== index));
+  }
 
   function handleCreate() {
     setShowModal(true);
@@ -55,19 +115,13 @@ export default function TeacherExams({
     setSelectedExam(null);
   }
 
-  function handleSelectExamType(event: React.ChangeEvent<HTMLSelectElement>) {
-    setSelectedExamType(event.target.value);
-  }
-
-  function createExamPreview(formData: FormData) {}
-
   async function handleConfirm(formData: any) {
     let result;
 
     if (isEditMode) {
       result = await updateExam(formData, selectedExam);
     } else {
-      result = await createExam(formData);
+      result = await createExam(formData, examItems);
     }
 
     if (result?.error) {
@@ -134,7 +188,7 @@ export default function TeacherExams({
             </thead>
             <tbody>
               {exams
-                .sort((a, b) => a.name - b.name)
+                .sort((a, b) => a.name.localeCompare(b.name))
                 .map((exam) => {
                   return (
                     <tr key={exam.id}>
@@ -154,7 +208,7 @@ export default function TeacherExams({
                         })}
                       </td>
                       <td className="actions-column">
-                        <button onClick={() => {}}>
+                        <button onClick={() => handleEdit(exam)}>
                           <Image
                             src="/icons/edit.svg"
                             width={24}
@@ -162,7 +216,7 @@ export default function TeacherExams({
                             alt="edit"
                           />
                         </button>
-                        <button onClick={() => handleDelete(exam.id)}>
+                        <button onClick={() => handleDelete(exam)}>
                           <Image
                             src={"/icons/trash.svg"}
                             width={24}
@@ -182,81 +236,20 @@ export default function TeacherExams({
       </section>
 
       {showModal && (
-        <section className="modal">
-          <div className="modal-content">
-            <div className="header">
-              <h1>{isEditMode ? "edit exam" : "create new exam"}</h1>
-
-              <button className="none" onClick={handleCancel}>
-                <Image
-                  src={"/icons/close.svg"}
-                  alt="cancel"
-                  width={24}
-                  height={24}
-                />
-              </button>
-            </div>
-
-            {coursesError ? (
-              <ErrorMessage>failed to load courses</ErrorMessage>
-            ) : courses && courses.length > 0 ? (
-              <form action={(formData) => handleConfirm(formData)}>
-                <select name="exam course" required>
-                  {courses?.map((course) => {
-                    return (
-                      <option key={course.id} value={course.id}>
-                        {course.name}
-                      </option>
-                    );
-                  })}
-                </select>
-
-                <input
-                  name="exam name"
-                  type="text"
-                  placeholder="name"
-                  required
-                  defaultValue={isEditMode ? selectedExam.name : ""}
-                />
-
-                <div className="exam-create-container">
-                  <h4>exam items:</h4>
-
-                  <div className="controls">
-                    <select onChange={handleSelectExamType}>
-                      <option value="multiple-choice">multiple choice</option>
-                      <option value="paragraph">paragraph</option>
-                      <option value="fill-in-the-blank">
-                        fill in the blank
-                      </option>
-                    </select>
-                    <button>
-                      <Image
-                        src={"/icons/plus.svg"}
-                        width={24}
-                        height={24}
-                        alt="create"
-                      />
-                    </button>
-                  </div>
-                </div>
-
-                <br />
-
-                <button type="submit" className="confirm-button">
-                  <Image
-                    src={"/icons/check.svg"}
-                    alt="confirm"
-                    width={24}
-                    height={24}
-                  />
-                </button>
-              </form>
-            ) : (
-              <InfoMessage>you must create a course first</InfoMessage>
-            )}
-          </div>
-        </section>
+        <TeacherExamsModal
+          isEditMode={isEditMode}
+          handleConfirm={handleConfirm}
+          handleCancel={handleCancel}
+          courses={courses}
+          coursesError={coursesError}
+          selectedExam={selectedExam}
+          examItems={examItems}
+          handleSelectExamType={handleSelectExamType}
+          createExamItem={createExamItem}
+          updateExamItem={updateExamItem}
+          updateChoice={updateExamItemChoice}
+          removeExamItem={removeExamItem}
+        />
       )}
     </>
   );

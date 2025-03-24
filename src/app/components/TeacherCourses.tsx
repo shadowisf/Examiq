@@ -82,13 +82,13 @@ export default function TeacherCourses({
     setShowModal(false);
   }
 
-  async function handleDelete(id: string) {
+  async function handleDelete(exam: any) {
     const isConfirmed = window.confirm(
       "are you sure you want to delete this course?"
     );
 
     if (isConfirmed) {
-      const result = await deleteCourse(id);
+      const result = await deleteCourse(exam);
 
       if (result?.error) {
         setError(result.error.message);
@@ -163,7 +163,7 @@ export default function TeacherCourses({
                           alt="edit"
                         />
                       </button>
-                      <button onClick={() => handleDelete(course.id)}>
+                      <button onClick={() => handleDelete(course)}>
                         <Image
                           src={"/icons/trash.svg"}
                           width={24}

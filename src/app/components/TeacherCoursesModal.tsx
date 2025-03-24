@@ -55,8 +55,6 @@ export default function TeacherCoursesModal({
           />
 
           <div className="students-container">
-            <h4>students:</h4>
-
             {studentsError ? (
               <ErrorMessage>failed to load student table</ErrorMessage>
             ) : students && students.length > 0 ? (

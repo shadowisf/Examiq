@@ -4,6 +4,7 @@ import { createClient } from "../utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { generateIdentifier, readCurrentUser } from "../utils/default/actions";
+import { ExamItem } from "../utils/default/types";
 
 // ADMIN
 export async function createAccount(formData: FormData) {
@@ -18,27 +19,18 @@ export async function createAccount(formData: FormData) {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
-    const { data: userData, error: userError } =
-      await supabase.auth.admin.createUser({
-        email: email,
-        password: password,
-        user_metadata: {
-          display_name: name,
-          role: role,
-        },
-        email_confirm: true,
-      });
+    const { error } = await supabase.auth.admin.createUser({
+      email: email,
+      password: password,
+      user_metadata: {
+        display_name: name,
+        role: role,
+      },
+      email_confirm: true,
+    });
 
-    const { error: tableError } = await supabase
-      .from(role)
-      .insert([{ id: userData.user?.id, name: name }]);
-
-    if (userError) {
-      throw new Error(userError.message);
-    }
-
-    if (tableError) {
-      throw new Error(tableError.message);
+    if (error) {
+      throw new Error(error.message);
     }
 
     revalidatePath("/dashboard", "layout");
@@ -61,27 +53,17 @@ export async function updateAccount(formData: FormData, user: any) {
     const name = formData.get("name") as string;
     const email = formData.get("email") as string;
 
-    const { data: userData, error: userError } =
-      await supabase.auth.admin.updateUserById(user.id, {
-        email: email,
-        user_metadata: {
-          display_name: name,
-          role: role,
-        },
-        email_confirm: true,
-      });
+    const { error } = await supabase.auth.admin.updateUserById(user.id, {
+      email: email,
+      user_metadata: {
+        display_name: name,
+        role: role,
+      },
+      email_confirm: true,
+    });
 
-    const { error: tableError } = await supabase
-      .from(role)
-      .update({ name: name })
-      .eq("id", userData.user?.id);
-
-    if (userError) {
-      throw new Error(userError.message);
-    }
-
-    if (tableError) {
-      throw new Error(tableError.message);
+    if (error) {
+      throw new Error(error.message);
     }
 
     revalidatePath("/dashboard", "layout");
@@ -100,19 +82,10 @@ export async function deleteAccount(user: any) {
       process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY!
     );
 
-    const { error: authError } = await supabase.auth.admin.deleteUser(user.id);
+    const { error } = await supabase.auth.admin.deleteUser(user.id);
 
-    const { error: tableUser } = await supabase
-      .from(user.user_metadata.role)
-      .delete()
-      .eq("id", user.id);
-
-    if (authError) {
-      throw new Error(authError.message);
-    }
-
-    if (tableUser) {
-      throw new Error(tableUser.message);
+    if (error) {
+      throw new Error(error.message);
     }
 
     revalidatePath("/dashboard", "layout");
@@ -125,7 +98,7 @@ export async function deleteAccount(user: any) {
 }
 
 // TEACHER
-export async function createCourse(formData: FormData, students: string[]) {
+export async function createCourse(formData: FormData, selectedStudents: string[]) {
   try {
     const supabase = await createClient();
 
@@ -139,7 +112,7 @@ export async function createCourse(formData: FormData, students: string[]) {
           name: formData.get("course name") as string,
           description: formData.get("course description") as string,
           author: currentUser.user?.id,
-          students: { uid: students },
+          students: { uid: selectedStudents },
         },
       ])
       .select();
@@ -164,22 +137,22 @@ export async function createCourse(formData: FormData, students: string[]) {
 export async function updateCourse(
   formData: FormData,
   course: any,
-  students: string[]
+  selectedStudents: string[]
 ) {
   try {
     const supabase = await createClient();
 
-    const { error: tableError } = await supabase
+    const { error } = await supabase
       .from("course")
       .update({
         name: formData.get("course name") as string,
         description: formData.get("course description") as string,
-        students: { uid: students },
+        students: { uid: selectedStudents },
       })
       .eq("id", course.id);
 
-    if (tableError) {
-      throw new Error(tableError.message);
+    if (error) {
+      throw new Error(error.message);
     }
 
     revalidatePath("/dashboard", "layout");
@@ -191,17 +164,17 @@ export async function updateCourse(
   }
 }
 
-export async function deleteCourse(id: string) {
+export async function deleteCourse(course: any) {
   try {
     const supabase = await createClient();
 
-    const { error: tableError } = await supabase
+    const { error } = await supabase
       .from("course")
       .delete()
-      .eq("id", id);
+      .eq("id", course.id);
 
-    if (tableError) {
-      throw new Error(tableError.message);
+    if (error) {
+      throw new Error(error.message);
     }
 
     revalidatePath("/dashboard", "layout");
@@ -217,27 +190,27 @@ export async function deleteStudentFromCourse(user: any) {
   try {
     const supabase = await createClient();
 
-    const { data: courses, error: coursesError } = await supabase
+    const { data, error } = await supabase
       .from("course")
       .select("id, students")
       .filter("students->uid", "cs", `["${user.id}"]`);
 
-    if (coursesError) {
-      throw new Error(coursesError.message);
+    if (error) {
+      throw new Error(error.message);
     }
 
-    for (const course of courses) {
+    for (const course of data) {
       const updatedStudents = {
         uid: course.students.uid.filter((id: string) => id !== user.id),
       };
 
-      const { error: tableError } = await supabase
+      const { error } = await supabase
         .from("course")
         .update({ students: updatedStudents })
         .eq("id", course.id);
 
-      if (tableError) {
-        throw new Error(tableError.message);
+      if (error) {
+        throw new Error(error.message);
       }
     }
 
@@ -250,7 +223,7 @@ export async function deleteStudentFromCourse(user: any) {
   }
 }
 
-export async function createExam(formData: FormData) {
+export async function createExam(formData: FormData, examItems: ExamItem[]) {
   try {
     const supabase = await createClient();
 
@@ -262,7 +235,7 @@ export async function createExam(formData: FormData) {
         course_id: formData.get("exam course") as string,
         name: formData.get("exam name") as string,
         author: currentUser.user?.id,
-        items: [],
+        items: examItems,
       },
     ]);
 
@@ -283,21 +256,21 @@ export async function createExam(formData: FormData) {
   }
 }
 
-export async function updateExam(formData: FormData, id: string) {
+export async function updateExam(formData: FormData, exam: any) {
   try {
     const supabase = await createClient();
 
-    const { error: tableError } = await supabase
+    const { error } = await supabase
       .from("exam")
       .update({
         course_id: formData.get("exam course") as string,
         name: formData.get("exam name") as string,
         items: [],
       })
-      .eq("id", id);
+      .eq("id", exam.any);
 
-    if (tableError) {
-      throw new Error(tableError.message);
+    if (error) {
+      throw new Error(error.message);
     }
 
     revalidatePath("/dashboard", "layout");
@@ -309,17 +282,14 @@ export async function updateExam(formData: FormData, id: string) {
   }
 }
 
-export async function deleteExam(id: string) {
+export async function deleteExam(exam: any) {
   try {
     const supabase = await createClient();
 
-    const { error: tableError } = await supabase
-      .from("exam")
-      .delete()
-      .eq("id", id);
+    const { error } = await supabase.from("exam").delete().eq("id", exam.id);
 
-    if (tableError) {
-      throw new Error(tableError.message);
+    if (error) {
+      throw new Error(error.message);
     }
 
     revalidatePath("/dashboard", "layout");
