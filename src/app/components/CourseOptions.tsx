@@ -5,6 +5,7 @@ import { useState } from "react";
 import { updateCourse, deleteCourse } from "../dashboard/actions";
 import TeacherCoursesModal from "./TeacherCoursesModal";
 import { redirect } from "next/navigation";
+import ErrorMessage from "./ErrorMessage";
 
 type CourseOptionsProps = {
   currentUser: any;
@@ -19,6 +20,7 @@ export default function CourseOptions({
   students,
   studentsError,
 }: CourseOptionsProps) {
+  const [error, setError] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
 
@@ -35,8 +37,12 @@ export default function CourseOptions({
     setSelectedStudents([]);
   }
 
-  function handleConfirm(formData: any) {
-    updateCourse(formData, course.id, selectedStudents);
+  async function handleConfirm(formData: any) {
+    const result = await updateCourse(formData, course, selectedStudents);
+
+    if (result?.error) {
+      setError(result.error.message);
+    }
 
     setShowModal(false);
   }
@@ -46,19 +52,26 @@ export default function CourseOptions({
     setSelectedStudents(course.students.uid || []);
   }
 
-  function handleDelete() {
+  async function handleDelete() {
     const isConfirmed = window.confirm(
       "are you sure you want to delete this course?"
     );
 
     if (isConfirmed) {
-      deleteCourse(course.id);
-      redirect("/dashboard");
+      const result = await deleteCourse(course.id);
+
+      if (result?.error) {
+        setError(result.error.message);
+      } else {
+        redirect("/dashboard");
+      }
     }
   }
 
   return currentUser.user.user_metadata.role === "teacher" ? (
     <>
+      {error && <ErrorMessage>{error}</ErrorMessage>}
+
       <div className="button-container">
         <button onClick={handleEdit}>
           <Image src={"/icons/edit.svg"} width={24} height={24} alt="edit" />

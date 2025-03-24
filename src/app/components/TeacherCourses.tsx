@@ -26,6 +26,7 @@ export default function TeacherCourses({
 
   const [showModal, setShowModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [error, setError] = useState("");
 
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
   const [selectedCourse, setSelectedCourse] = useState<any>(null);
@@ -50,11 +51,23 @@ export default function TeacherCourses({
     setShowModal(true);
   }
 
-  function handleConfirm(formData: any) {
+  async function handleConfirm(formData: any) {
     if (isEditMode) {
-      updateCourse(formData, selectedCourse, selectedStudents);
+      const result = await updateCourse(
+        formData,
+        selectedCourse,
+        selectedStudents
+      );
+
+      if (result?.error) {
+        setError(result.error.message);
+      }
     } else {
-      createCourse(formData, selectedStudents);
+      const result = await createCourse(formData, selectedStudents);
+
+      if (result?.error) {
+        setError(result.error.message);
+      }
     }
 
     setShowModal(false);
@@ -76,7 +89,7 @@ export default function TeacherCourses({
       const result = await deleteCourse(id);
 
       if (result?.error) {
-        alert(result.error.message);
+        setError(result.error.message);
       }
     }
   }
@@ -85,6 +98,8 @@ export default function TeacherCourses({
     <>
       <section className="teacher-courses-container">
         <h1 id="courses">courses</h1>
+
+        {error && <ErrorMessage>{error}</ErrorMessage>}
 
         <div className="button-container">
           <button onClick={handleCreate}>

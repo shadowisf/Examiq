@@ -4,18 +4,14 @@ type AdminAccountsModalProps = {
   isEditMode: boolean;
   handleCancel: () => void;
   handleConfirm: (formData: FormData) => void;
-  name: string;
-  email: string;
-  role: string;
+  selectedUser: any;
 };
 
 export default function AdminAccountsModal({
   handleCancel,
   handleConfirm,
   isEditMode,
-  name,
-  email,
-  role,
+  selectedUser,
 }: AdminAccountsModalProps) {
   return (
     <section className="modal">
@@ -36,7 +32,9 @@ export default function AdminAccountsModal({
         <form action={handleConfirm}>
           <select
             name="role"
-            defaultValue={isEditMode ? role : "student"}
+            defaultValue={
+              isEditMode ? selectedUser.user_metadata.role : "student"
+            }
             required
           >
             <option value="student">student</option>
@@ -47,7 +45,9 @@ export default function AdminAccountsModal({
             type="text"
             name="name"
             placeholder="name"
-            defaultValue={name}
+            defaultValue={
+              isEditMode ? selectedUser.user_metadata.display_name : ""
+            }
             required
           />
 
@@ -55,7 +55,7 @@ export default function AdminAccountsModal({
             type="text"
             name="email"
             placeholder="email"
-            defaultValue={email}
+            defaultValue={isEditMode ? selectedUser.email : ""}
             required
           />
 

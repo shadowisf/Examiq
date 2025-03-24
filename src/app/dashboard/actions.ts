@@ -220,16 +220,16 @@ export async function deleteStudentFromCourse(user: any) {
     const { data: courses, error: coursesError } = await supabase
       .from("course")
       .select("id, students")
-      .contains("students", [user.id]);
+      .filter("students->uid", "cs", `["${user.id}"]`);
 
     if (coursesError) {
       throw new Error(coursesError.message);
     }
 
     for (const course of courses) {
-      const updatedStudents = course.students.filter(
-        (id: string) => id !== user.id
-      );
+      const updatedStudents = {
+        uid: course.students.uid.filter((id: string) => id !== user.id),
+      };
 
       const { error: tableError } = await supabase
         .from("course")

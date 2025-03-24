@@ -28,21 +28,6 @@ export async function readSingleCourse(id: string) {
   };
 }
 
-export async function readSingleStudent(id: string) {
-  const supabase = await createClient();
-
-  const { data: student, error: studentError } = await supabase
-    .from("student")
-    .select("*")
-    .eq("id", id)
-    .single();
-
-  return {
-    student,
-    studentError,
-  };
-}
-
 export async function readCurrentUser() {
   const supabase = await createClient();
 

@@ -23,12 +23,11 @@ export default function TeacherExams({
 }: TeacherExamsProps) {
   const router = useRouter();
 
+  const [error, setError] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
 
-  const [selectedExamID, setSelectedExamID] = useState("");
-  const [selectedExamName, setSelectedExamName] = useState("");
-  const [selectedCourse, setSelectedCourse] = useState("");
+  const [selectedExam, setSelectedExam] = useState<any>(null);
 
   function handleCancel() {
     setShowModal(false);
@@ -40,11 +39,19 @@ export default function TeacherExams({
     setShowModal(true);
   }
 
-  function handleConfirm(formData: any) {
+  async function handleConfirm(formData: any) {
     if (isEditMode) {
-      updateExam(formData, selectedExamID);
+      const result = await updateExam(formData, selectedExam);
+
+      if (result?.error) {
+        setError(result.error.message);
+      }
     } else {
-      createExam(formData);
+      const result = await createExam(formData);
+
+      if (result?.error) {
+        setError(result.error.message);
+      }
     }
 
     setShowModal(false);
@@ -53,18 +60,24 @@ export default function TeacherExams({
   function handleEdit(exam: any) {
     setIsEditMode(true);
     setShowModal(true);
-    setSelectedExamID(exam.id);
-    setSelectedExamName(exam.name);
-    setSelectedCourse(exam.course_id);
+    setSelectedExam(exam);
   }
 
-  function handleDelete(id: string) {
+  function handleRefresh() {
+    router.refresh();
+  }
+
+  async function handleDelete(exam: any) {
     const isConfirmed = window.confirm(
       "are you sure you want to delete this exam?"
     );
 
     if (isConfirmed) {
-      deleteExam(id);
+      const result = await deleteExam(exam);
+
+      if (result?.error) {
+        setError(result.error.message);
+      }
     }
   }
 
@@ -72,6 +85,8 @@ export default function TeacherExams({
     <>
       <section className="teacher-exams-container">
         <h1 id="exams">exams</h1>
+
+        {error && <ErrorMessage>{error}</ErrorMessage>}
 
         <div className="button-container">
           <button onClick={handleCreate}>
@@ -83,7 +98,7 @@ export default function TeacherExams({
             />
           </button>
 
-          <button onClick={() => router.refresh()}>
+          <button onClick={handleRefresh}>
             <Image
               src={"/icons/refresh.svg"}
               width={24}
@@ -94,7 +109,7 @@ export default function TeacherExams({
         </div>
 
         {examsError ? (
-          <ErrorMessage>failed to load courses</ErrorMessage>
+          <ErrorMessage>failed to load exams</ErrorMessage>
         ) : exams && exams.length > 0 ? (
           <table>
             <thead>
@@ -172,36 +187,42 @@ export default function TeacherExams({
               </button>
             </div>
 
-            <form action={(formData) => handleConfirm(formData)}>
-              <select name="exam course" required>
-                {courses?.map((course) => {
-                  return (
-                    <option key={course.id} value={course.id}>
-                      {course.name}
-                    </option>
-                  );
-                })}
-              </select>
+            {coursesError ? (
+              <ErrorMessage>failed to load courses</ErrorMessage>
+            ) : courses && courses.length > 0 ? (
+              <form action={(formData) => handleConfirm(formData)}>
+                <select name="exam course" required>
+                  {courses?.map((course) => {
+                    return (
+                      <option key={course.id} value={course.id}>
+                        {course.name}
+                      </option>
+                    );
+                  })}
+                </select>
 
-              <input
-                name="exam name"
-                type="text"
-                placeholder="name"
-                required
-                defaultValue={isEditMode ? selectedExamName : ""}
-              />
-
-              <br />
-
-              <button type="submit" className="confirm-button">
-                <Image
-                  src={"/icons/check.svg"}
-                  alt="confirm"
-                  width={24}
-                  height={24}
+                <input
+                  name="exam name"
+                  type="text"
+                  placeholder="name"
+                  required
+                  defaultValue={isEditMode ? selectedExam.name : ""}
                 />
-              </button>
-            </form>
+
+                <br />
+
+                <button type="submit" className="confirm-button">
+                  <Image
+                    src={"/icons/check.svg"}
+                    alt="confirm"
+                    width={24}
+                    height={24}
+                  />
+                </button>
+              </form>
+            ) : (
+              <InfoMessage>you must create a course first</InfoMessage>
+            )}
           </div>
         </section>
       )}

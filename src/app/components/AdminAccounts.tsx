@@ -73,22 +73,25 @@ export default function AdminAccounts({
   }
 
   async function handleDelete(user: any) {
-    const result = confirm("are you sure you want to delete this account?");
+    const isConfirmed = confirm(
+      "are you sure you want to delete this account?"
+    );
 
-    if (result) {
+    if (isConfirmed) {
       const userResult = await deleteAccount(user);
-      const courseResult = await deleteStudentFromCourse(user);
 
       if (userResult?.error) {
         setError(userResult.error.message);
       }
 
-      if (courseResult?.error) {
-        setError(courseResult.error.message);
+      if (user.user_metadata.role === "student") {
+        const courseResult = await deleteStudentFromCourse(user);
+
+        if (courseResult?.error) {
+          setError(courseResult.error.message);
+        }
       }
     }
-
-    router.refresh();
   }
 
   return (
@@ -236,9 +239,7 @@ export default function AdminAccounts({
           handleConfirm={handleConfirm}
           handleCancel={handleCancel}
           isEditMode={isEditMode}
-          name={selectedUser.user_metadata.display_name}
-          email={selectedUser.email}
-          role={selectedUser.user_metadata.role}
+          selectedUser={selectedUser}
         />
       )}
     </>
