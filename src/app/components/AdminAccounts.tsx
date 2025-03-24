@@ -28,17 +28,18 @@ export default function AdminAccounts({
 }: AdminAccountsProps) {
   const router = useRouter();
 
-  const [error, setError] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [error, setError] = useState("");
+
   const [selectedUser, setSelectedUser] = useState<any>(null);
 
   function handleRefresh() {
-    setError("");
-    setSelectedUser(null);
+    router.refresh();
     setShowModal(false);
     setIsEditMode(false);
-    router.refresh();
+    setError("");
+    setSelectedUser(null);
   }
 
   async function handleConfirm(formData: FormData) {
@@ -58,17 +59,18 @@ export default function AdminAccounts({
   }
 
   function handleCreate() {
-    setSelectedUser(null);
     setShowModal(true);
   }
 
   function handleCancel() {
     setShowModal(false);
+    setIsEditMode(false);
+    setSelectedUser(null);
   }
 
   function handleEdit(user: any) {
-    setIsEditMode(true);
     setShowModal(true);
+    setIsEditMode(true);
     setSelectedUser(user);
   }
 

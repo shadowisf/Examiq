@@ -39,45 +39,47 @@ export default function TeacherCourses({
     );
   }
 
+  function handleCreate() {
+    setShowModal(true);
+  }
+
   function handleCancel() {
     setShowModal(false);
     setIsEditMode(false);
     setSelectedStudents([]);
-  }
-
-  function handleCreate() {
-    setIsEditMode(false);
-    setSelectedStudents([]);
-    setShowModal(true);
-  }
-
-  async function handleConfirm(formData: any) {
-    if (isEditMode) {
-      const result = await updateCourse(
-        formData,
-        selectedCourse,
-        selectedStudents
-      );
-
-      if (result?.error) {
-        setError(result.error.message);
-      }
-    } else {
-      const result = await createCourse(formData, selectedStudents);
-
-      if (result?.error) {
-        setError(result.error.message);
-      }
-    }
-
-    setShowModal(false);
+    setSelectedCourse(null);
   }
 
   function handleEdit(course: any) {
     setIsEditMode(true);
     setShowModal(true);
     setSelectedCourse(course);
-    setSelectedStudents(course.students?.uid || []);
+    setSelectedStudents(course.students?.uid);
+  }
+
+  function handleRefresh() {
+    router.refresh();
+    setShowModal(false);
+    setIsEditMode(false);
+    setError("");
+    setSelectedStudents([]);
+    setSelectedCourse(null);
+  }
+
+  async function handleConfirm(formData: any) {
+    let result;
+
+    if (isEditMode) {
+      result = await updateCourse(formData, selectedCourse, selectedStudents);
+    } else {
+      result = await createCourse(formData, selectedStudents);
+    }
+
+    if (result?.error) {
+      setError(result.error.message);
+    }
+
+    setShowModal(false);
   }
 
   async function handleDelete(id: string) {
@@ -111,7 +113,7 @@ export default function TeacherCourses({
             />
           </button>
 
-          <button onClick={() => router.refresh()}>
+          <button onClick={handleRefresh}>
             <Image
               src={"/icons/refresh.svg"}
               width={24}

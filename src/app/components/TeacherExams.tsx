@@ -23,38 +23,22 @@ export default function TeacherExams({
 }: TeacherExamsProps) {
   const router = useRouter();
 
-  const [error, setError] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [error, setError] = useState("");
 
   const [selectedExam, setSelectedExam] = useState<any>(null);
+  const [selectedExamType, setSelectedExamType] = useState("");
+  const [examPreviews, setExamPreviews] = useState<any>(null);
+
+  function handleCreate() {
+    setShowModal(true);
+  }
 
   function handleCancel() {
     setShowModal(false);
     setIsEditMode(false);
-  }
-
-  function handleCreate() {
-    setIsEditMode(false);
-    setShowModal(true);
-  }
-
-  async function handleConfirm(formData: any) {
-    if (isEditMode) {
-      const result = await updateExam(formData, selectedExam);
-
-      if (result?.error) {
-        setError(result.error.message);
-      }
-    } else {
-      const result = await createExam(formData);
-
-      if (result?.error) {
-        setError(result.error.message);
-      }
-    }
-
-    setShowModal(false);
+    setSelectedExam(null);
   }
 
   function handleEdit(exam: any) {
@@ -65,6 +49,32 @@ export default function TeacherExams({
 
   function handleRefresh() {
     router.refresh();
+    setShowModal(false);
+    setIsEditMode(false);
+    setError("");
+    setSelectedExam(null);
+  }
+
+  function handleSelectExamType(event: React.ChangeEvent<HTMLSelectElement>) {
+    setSelectedExamType(event.target.value);
+  }
+
+  function createExamPreview(formData: FormData) {}
+
+  async function handleConfirm(formData: any) {
+    let result;
+
+    if (isEditMode) {
+      result = await updateExam(formData, selectedExam);
+    } else {
+      result = await createExam(formData);
+    }
+
+    if (result?.error) {
+      setError(result.error.message);
+    }
+
+    setShowModal(false);
   }
 
   async function handleDelete(exam: any) {
@@ -208,6 +218,28 @@ export default function TeacherExams({
                   required
                   defaultValue={isEditMode ? selectedExam.name : ""}
                 />
+
+                <div className="exam-create-container">
+                  <h4>exam items:</h4>
+
+                  <div className="controls">
+                    <select onChange={handleSelectExamType}>
+                      <option value="multiple-choice">multiple choice</option>
+                      <option value="paragraph">paragraph</option>
+                      <option value="fill-in-the-blank">
+                        fill in the blank
+                      </option>
+                    </select>
+                    <button>
+                      <Image
+                        src={"/icons/plus.svg"}
+                        width={24}
+                        height={24}
+                        alt="create"
+                      />
+                    </button>
+                  </div>
+                </div>
 
                 <br />
 

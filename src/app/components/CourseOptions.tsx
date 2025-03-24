@@ -20,8 +20,10 @@ export default function CourseOptions({
   students,
   studentsError,
 }: CourseOptionsProps) {
-  const [error, setError] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [error, setError] = useState("");
+
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
 
   function toggleStudentSelection(studentID: string) {
@@ -34,6 +36,7 @@ export default function CourseOptions({
 
   function handleCancel() {
     setShowModal(false);
+    setIsEditMode(false);
     setSelectedStudents([]);
   }
 
@@ -49,6 +52,7 @@ export default function CourseOptions({
 
   function handleEdit() {
     setShowModal(true);
+    setIsEditMode(false);
     setSelectedStudents(course.students.uid || []);
   }
 

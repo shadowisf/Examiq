@@ -229,6 +229,24 @@ textarea {
       border-radius: var(--border-radius);
       background-color: var(--secondary-color);
     }
+
+    .exam-create-container {
+      max-height: 300px;
+      overflow-y: auto;
+      padding: 12px;
+      border-radius: var(--border-radius);
+      background-color: var(--secondary-color);
+
+      .controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        select {
+          background-color: var(--primary-color);
+        }
+      }
+    }
   }
 }
 
