@@ -1,5 +1,5 @@
 type InfoMessageProps = {
-  children: string;
+  children: any | any[];
 };
 
 export default function InfoMessage({ children }: InfoMessageProps) {

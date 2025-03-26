@@ -20,25 +20,17 @@ export async function signIn(formData: FormData, userType: string) {
       throw new Error(userError.message);
     }
 
-    if (userType !== "admin" && userData.user) {
-      const { data: roleData } = await supabase
-        .from(userType)
-        .select("id")
-        .eq("id", userData.user?.id)
-        .single();
+    if (userData.user.user_metadata.role !== userType && userType !== "admin") {
+      const { error: authError } = await supabase.auth.signOut();
 
-      if (!roleData) {
-        const { error: authError } = await supabase.auth.signOut();
-
-        if (authError) {
-          throw new Error(authError.message);
-        }
-
-        throw new Error("User not found");
+      if (authError) {
+        throw new Error(authError.message);
       }
+
+      throw new Error("user not found");
     }
 
-    revalidatePath("/dashboard", "layout");
+    revalidatePath("/signin", "layout");
   } catch (e) {
     const errorMessage = (e as Error).message;
 

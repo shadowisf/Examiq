@@ -4,9 +4,11 @@ import {
   readSingleCourse,
   readCurrentUser,
   readAllStudents,
+  readAllExams,
 } from "@/app/utils/default/actions";
 import { redirect } from "next/navigation";
 import ErrorMessage from "@/app/components/_ErrorMessage";
+import CourseExams from "@/app/components/CourseExams";
 
 type CourseProps = {
   params: {
@@ -17,6 +19,7 @@ type CourseProps = {
 export default async function Course({ params }: CourseProps) {
   const { students, studentsError } = await readAllStudents();
   const { course, courseError } = await readSingleCourse(params.id);
+  const { exams, examsError } = await readAllExams();
   const { currentUser } = await readCurrentUser();
 
   if (!currentUser.user) {
@@ -30,20 +33,26 @@ export default async function Course({ params }: CourseProps) {
       ) : (
         <>
           <section>
+            <CourseOptions
+              currentUser={currentUser}
+              course={course}
+              students={students}
+              studentsError={studentsError}
+            />
+
             <h1 className="big">{course.name}</h1>
             <p>{course.id}</p>
             <br />
             <p className="gray">{course.description}</p>
           </section>
 
-          <CourseStudents
+          <CourseExams
             course={course}
-            students={students}
-            studentsError={studentsError}
+            exams={exams || []}
+            examsError={examsError}
           />
 
-          <CourseOptions
-            currentUser={currentUser}
+          <CourseStudents
             course={course}
             students={students}
             studentsError={studentsError}

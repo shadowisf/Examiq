@@ -11,10 +11,12 @@ import InfoMessage from "./_InfoMessage";
 import Loading from "./_Loading";
 
 type TeacherCourseProps = {
-  students: any[] | null;
+  students: any[];
   studentsError: any;
-  courses: any[] | null;
+  courses: any[];
   courseError: any;
+  exams: any[];
+  examsError: any;
 };
 
 export default function TeacherCourses({
@@ -22,6 +24,8 @@ export default function TeacherCourses({
   studentsError,
   courses,
   courseError,
+  exams,
+  examsError,
 }: TeacherCourseProps) {
   const router = useRouter();
 
@@ -44,6 +48,9 @@ export default function TeacherCourses({
 
   function handleCreate() {
     setShowModal(true);
+    setIsEditMode(false);
+    setSelectedStudents([]);
+    setSelectedCourse(null);
   }
 
   function handleCancel() {
@@ -137,57 +144,13 @@ export default function TeacherCourses({
         {courseError ? (
           <ErrorMessage>failed to load courses</ErrorMessage>
         ) : courses && courses.length > 0 ? (
-          <table>
-            <thead>
-              <tr>
-                <th className="id-column">id</th>
-                <th>name</th>
-                <th>total students</th>
-                <th>total exams</th>
-                <th>date of creation</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {courses.map((course) => {
-                return (
-                  <tr key={course.id}>
-                    <td>
-                      <Link href={`course/${course.id}`}>{course.id}</Link>
-                    </td>
-                    <td>{course.name}</td>
-                    <td>{course.students?.uid.length || 0}</td>
-                    <td>{course.exams?.id.length || 0}</td>
-                    <td>
-                      {new Date(course.created_at).toLocaleString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
-                    </td>
-                    <td className="actions-column">
-                      <button onClick={() => handleEdit(course)}>
-                        <Image
-                          src="/icons/edit.svg"
-                          width={24}
-                          height={24}
-                          alt="edit"
-                        />
-                      </button>
-                      <button onClick={() => handleDelete(course)}>
-                        <Image
-                          src={"/icons/trash.svg"}
-                          width={24}
-                          height={24}
-                          alt="delete"
-                        />
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <CourseTable
+            courses={courses}
+            exams={exams}
+            examsError={examsError}
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
+          />
         ) : (
           <InfoMessage>you have not created any courses yet</InfoMessage>
         )}
@@ -206,5 +169,82 @@ export default function TeacherCourses({
         />
       )}
     </>
+  );
+}
+
+type CourseTableProps = {
+  courses: any[];
+  exams: any[];
+  examsError: any;
+  handleEdit: (course: any) => void;
+  handleDelete: (course: any) => void;
+};
+
+function CourseTable({
+  courses,
+  exams,
+  examsError,
+  handleEdit,
+  handleDelete,
+}: CourseTableProps) {
+  return (
+    <table>
+      <thead>
+        <tr>
+          <th className="id-column">id</th>
+          <th>name</th>
+          <th>total students</th>
+          <th>total exams</th>
+          <th>date of creation</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {courses
+          .sort((a, b) => b.name.localeCompare(a.name))
+          .map((course) => {
+            return (
+              <tr key={course.id}>
+                <td>
+                  <Link href={`course/${course.id}`}>{course.id}</Link>
+                </td>
+                <td>{course.name}</td>
+                <td>{course.students?.uid.length || 0}</td>
+                <td>
+                  {examsError
+                    ? "?"
+                    : exams.filter((exam) => exam.course_id === course.id)
+                        .length}
+                </td>
+                <td>
+                  {new Date(course.created_at).toLocaleString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </td>
+                <td className="actions-column">
+                  <button onClick={() => handleEdit(course)}>
+                    <Image
+                      src="/icons/edit.svg"
+                      width={24}
+                      height={24}
+                      alt="edit"
+                    />
+                  </button>
+                  <button onClick={() => handleDelete(course)}>
+                    <Image
+                      src={"/icons/trash.svg"}
+                      width={24}
+                      height={24}
+                      alt="delete"
+                    />
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
+      </tbody>
+    </table>
   );
 }

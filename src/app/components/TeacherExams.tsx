@@ -12,9 +12,9 @@ import TeacherExamsModal from "./TeacherExamsModal";
 import Loading from "./_Loading";
 
 type TeacherExamsProps = {
-  courses: any[] | null;
+  courses: any[];
   coursesError: any;
-  exams: any[] | null;
+  exams: any[];
   examsError: any;
 };
 
@@ -99,6 +99,10 @@ export default function TeacherExams({
 
   function handleCreate() {
     setShowModal(true);
+    setIsEditMode(false);
+    setSelectedExam(null);
+    setSelectedExamType("multiple-choice");
+    setExamItems([]);
   }
 
   function handleCancel() {
@@ -194,61 +198,11 @@ export default function TeacherExams({
         {examsError ? (
           <ErrorMessage>failed to load exams</ErrorMessage>
         ) : exams && exams.length > 0 ? (
-          <table>
-            <thead>
-              <tr>
-                <th className="id-column">id</th>
-                <th className="id-column">course id</th>
-                <th>name</th>
-                <th>total items</th>
-                <th>date of creation</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {exams
-                .sort((a, b) => a.name.localeCompare(b.name))
-                .map((exam) => {
-                  return (
-                    <tr key={exam.id}>
-                      <td>{exam.id}</td>
-                      <td>
-                        <Link href={`/course/${exam.course_id}`}>
-                          {exam.course_id}
-                        </Link>
-                      </td>
-                      <td>{exam.name}</td>
-                      <td>{exam.items ? exam.items.length : 0}</td>
-                      <td>
-                        {new Date(exam.created_at).toLocaleString("en-US", {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}
-                      </td>
-                      <td className="actions-column">
-                        <button onClick={() => handleEdit(exam)}>
-                          <Image
-                            src="/icons/edit.svg"
-                            width={24}
-                            height={24}
-                            alt="edit"
-                          />
-                        </button>
-                        <button onClick={() => handleDelete(exam)}>
-                          <Image
-                            src={"/icons/trash.svg"}
-                            width={24}
-                            height={24}
-                            alt="delete"
-                          />
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-            </tbody>
-          </table>
+          <ExamTable
+            exams={exams}
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
+          />
         ) : (
           <InfoMessage>you have not created any exams yet</InfoMessage>
         )}
@@ -271,5 +225,71 @@ export default function TeacherExams({
         />
       )}
     </>
+  );
+}
+
+type ExamTableProps = {
+  exams: any[];
+  handleEdit: (exam: any) => void;
+  handleDelete: (exam: any) => void;
+};
+
+function ExamTable({ exams, handleEdit, handleDelete }: ExamTableProps) {
+  return (
+    <table>
+      <thead>
+        <tr>
+          <th className="id-column">id</th>
+          <th className="id-column">course id</th>
+          <th>name</th>
+          <th>total items</th>
+          <th>date of creation</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {exams
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map((exam) => {
+            return (
+              <tr key={exam.id}>
+                <td>{exam.id}</td>
+                <td>
+                  <Link href={`/course/${exam.course_id}`}>
+                    {exam.course_id}
+                  </Link>
+                </td>
+                <td>{exam.name}</td>
+                <td>{exam.items ? exam.items.length : 0}</td>
+                <td>
+                  {new Date(exam.created_at).toLocaleString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </td>
+                <td className="actions-column">
+                  <button onClick={() => handleEdit(exam)}>
+                    <Image
+                      src="/icons/edit.svg"
+                      width={24}
+                      height={24}
+                      alt="edit"
+                    />
+                  </button>
+                  <button onClick={() => handleDelete(exam)}>
+                    <Image
+                      src={"/icons/trash.svg"}
+                      width={24}
+                      height={24}
+                      alt="delete"
+                    />
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
+      </tbody>
+    </table>
   );
 }

@@ -11,7 +11,7 @@ import Loading from "./_Loading";
 type CourseOptionsProps = {
   currentUser: any;
   course: any;
-  students: any[] | null;
+  students: any[];
   studentsError: any;
 };
 

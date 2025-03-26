@@ -15,13 +15,15 @@ import InfoMessage from "./_InfoMessage";
 import Loading from "./_Loading";
 
 type AdminAccountsProps = {
-  students: any[] | null;
+  currentUser: any;
+  students: any[];
   studentsError: any;
-  teachers: any[] | null;
+  teachers: any[];
   teachersError: any;
 };
 
 export default function AdminAccounts({
+  currentUser,
   students,
   studentsError,
   teachers,
@@ -37,18 +39,10 @@ export default function AdminAccounts({
 
   const [selectedUser, setSelectedUser] = useState<any>(null);
 
-  function handleRefresh() {
-    startTransition(() => {
-      router.refresh();
-      setShowModal(false);
-      setIsEditMode(false);
-      setError("");
-      setSelectedUser(null);
-    });
-  }
-
   function handleCreate() {
     setShowModal(true);
+    setIsEditMode(false);
+    setSelectedUser(null);
   }
 
   function handleCancel() {
@@ -61,6 +55,16 @@ export default function AdminAccounts({
     setShowModal(true);
     setIsEditMode(true);
     setSelectedUser(user);
+  }
+
+  function handleRefresh() {
+    startTransition(() => {
+      router.refresh();
+      setShowModal(false);
+      setIsEditMode(false);
+      setError("");
+      setSelectedUser(null);
+    });
   }
 
   async function handleConfirm(formData: FormData) {
@@ -106,155 +110,131 @@ export default function AdminAccounts({
   }
 
   return (
-    <>
-      {isPending && <Loading />}
+    currentUser.user.user_metadata.role !== "teacher" &&
+    currentUser.user.user_metadata.role !== "student" && (
+      <>
+        {isPending && <Loading />}
 
-      <section className="admin-accounts-container">
-        <h1 id="accounts">accounts</h1>
+        <section className="admin-accounts-container">
+          {error && <ErrorMessage>{error}</ErrorMessage>}
 
-        {error && <ErrorMessage>{error}</ErrorMessage>}
+          <div className="button-container">
+            <button onClick={handleCreate}>
+              <Image
+                src={"/icons/plus.svg"}
+                alt="create"
+                width={24}
+                height={24}
+              />
+            </button>
 
-        <div className="button-container">
-          <button onClick={handleCreate}>
-            <Image
-              src={"/icons/plus.svg"}
-              alt="create"
-              width={24}
-              height={24}
-            />
-          </button>
+            <button onClick={handleRefresh}>
+              <Image
+                src={"/icons/refresh.svg"}
+                alt="referesh"
+                width={24}
+                height={24}
+              />
+            </button>
+          </div>
 
-          <button onClick={handleRefresh}>
-            <Image
-              src={"/icons/refresh.svg"}
-              alt="referesh"
-              width={24}
-              height={24}
-            />
-          </button>
-        </div>
+          <h1 id="students">students</h1>
+          <div>
+            {studentsError ? (
+              <ErrorMessage>failed to load students</ErrorMessage>
+            ) : students && students.length > 0 ? (
+              <EntityTable
+                entity={students}
+                handleDelete={handleDelete}
+                handleEdit={handleEdit}
+              />
+            ) : (
+              <InfoMessage>there are no existing students yet</InfoMessage>
+            )}
+          </div>
 
-        <div>
-          <h3>students</h3>
-          {studentsError ? (
-            <ErrorMessage>failed to load students</ErrorMessage>
-          ) : students && students.length > 0 ? (
-            <table>
-              <thead>
-                <tr>
-                  <th>id</th>
-                  <th>name</th>
-                  <th>date of creation</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                {students.map((student) => (
-                  <tr key={student.id}>
-                    <td>{student.id}</td>
-                    <td>{student.user_metadata.display_name}</td>
-                    <td>
-                      {new Date(student.created_at).toLocaleString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
-                    </td>
-                    <td className="actions-column">
-                      <button onClick={() => handleEdit(student)}>
-                        <Image
-                          src={"/icons/edit.svg"}
-                          alt="edit"
-                          width={24}
-                          height={24}
-                        />
-                      </button>
+          <br />
 
-                      <button onClick={() => handleDelete(student)}>
-                        <Image
-                          src={"/icons/trash.svg"}
-                          alt="delete"
-                          width={24}
-                          height={24}
-                        />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <InfoMessage>
-              there are no existing accounts for students yet
-            </InfoMessage>
-          )}
-        </div>
+          <h1 id="teachers">teachers</h1>
+          <div>
+            {teachersError ? (
+              <ErrorMessage>failed to load teachers</ErrorMessage>
+            ) : teachers && teachers.length > 0 ? (
+              <EntityTable
+                entity={teachers}
+                handleDelete={handleDelete}
+                handleEdit={handleEdit}
+              />
+            ) : (
+              <InfoMessage>there are no existing teachers yet</InfoMessage>
+            )}
+          </div>
+        </section>
 
-        <div>
-          <h3>teachers</h3>
-          {teachersError ? (
-            <ErrorMessage>failed to load teachers</ErrorMessage>
-          ) : teachers && teachers.length > 0 ? (
-            <table>
-              <thead>
-                <tr>
-                  <th>id</th>
-                  <th>name</th>
-                  <th>date of creation</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                {teachers.map((teacher) => (
-                  <tr key={teacher.id}>
-                    <td>{teacher.id}</td>
-                    <td>{teacher.user_metadata.display_name}</td>
-                    <td>
-                      {new Date(teacher.created_at).toLocaleString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
-                    </td>
-                    <td className="actions-column">
-                      <button onClick={() => handleEdit(teacher)}>
-                        <Image
-                          src={"/icons/edit.svg"}
-                          alt="edit"
-                          width={24}
-                          height={24}
-                        />
-                      </button>
+        {showModal && (
+          <AdminAccountsModal
+            handleConfirm={handleConfirm}
+            handleCancel={handleCancel}
+            isEditMode={isEditMode}
+            selectedUser={selectedUser}
+          />
+        )}
+      </>
+    )
+  );
+}
 
-                      <button onClick={() => handleDelete(teacher)}>
-                        <Image
-                          src={"/icons/trash.svg"}
-                          alt="delete"
-                          width={24}
-                          height={24}
-                        />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <InfoMessage>
-              there are no existing accounts for teachers yet
-            </InfoMessage>
-          )}
-        </div>
-      </section>
+type EntityTableProps = {
+  entity: any[];
+  handleEdit: (student: any) => void;
+  handleDelete: (student: any) => void;
+};
 
-      {showModal && (
-        <AdminAccountsModal
-          handleConfirm={handleConfirm}
-          handleCancel={handleCancel}
-          isEditMode={isEditMode}
-          selectedUser={selectedUser}
-        />
-      )}
-    </>
+function EntityTable({ entity, handleEdit, handleDelete }: EntityTableProps) {
+  return (
+    <table>
+      <thead>
+        <tr>
+          <th>id</th>
+          <th>name</th>
+          <th>date of creation</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {entity.map((student) => (
+          <tr key={student.id}>
+            <td>{student.id}</td>
+            <td>{student.user_metadata.display_name}</td>
+            <td>
+              {new Date(student.created_at).toLocaleString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </td>
+            <td className="actions-column">
+              <button onClick={() => handleEdit(student)}>
+                <Image
+                  src={"/icons/edit.svg"}
+                  alt="edit"
+                  width={24}
+                  height={24}
+                />
+              </button>
+
+              <button onClick={() => handleDelete(student)}>
+                <Image
+                  src={"/icons/trash.svg"}
+                  alt="delete"
+                  width={24}
+                  height={24}
+                />
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }

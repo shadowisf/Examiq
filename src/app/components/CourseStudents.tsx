@@ -3,7 +3,7 @@ import InfoMessage from "./_InfoMessage";
 
 type CourseStudentsProps = {
   course: any;
-  students: any[] | null;
+  students: any[];
   studentsError: any;
 };
 
@@ -25,7 +25,6 @@ export default async function CourseStudents({
   return (
     <section className="student-list-container">
       <h1>student list</h1>
-
       <ul>
         {studentsError ? (
           <ErrorMessage>failed to load students</ErrorMessage>

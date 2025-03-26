@@ -40,9 +40,14 @@ export default async function Dashboard() {
   if (role === undefined) {
     bentoContent = (
       <div className="bento-container">
-        <Link href="#accounts">
-          <h1>accounts</h1>
-          <p className="gray">create accounts for students & teachers</p>
+        <Link href="#students">
+          <h1>students</h1>
+          <p className="gray">create accounts for students</p>
+        </Link>
+
+        <Link href="#teachers">
+          <h1>teachers</h1>
+          <p className="gray">create accounts for teachers</p>
         </Link>
       </div>
     );
@@ -50,6 +55,7 @@ export default async function Dashboard() {
     mainContent = (
       <>
         <AdminAccountCreation
+          currentUser={currentUser}
           students={students}
           studentsError={studentsError}
           teachers={teachers}
@@ -85,14 +91,16 @@ export default async function Dashboard() {
         <TeacherCourses
           students={students}
           studentsError={studentsError}
-          courses={courses}
+          courses={courses || []}
           courseError={coursesError}
+          exams={exams || []}
+          examsError={examsError}
         />
 
         <TeacherExams
-          courses={courses}
+          courses={courses || []}
           coursesError={coursesError}
-          exams={exams}
+          exams={exams || []}
           examsError={examsError}
         />
       </>
