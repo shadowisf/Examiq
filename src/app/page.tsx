@@ -1,12 +1,12 @@
 import Link from "next/link";
-import { readCurrentUser } from "./utils/default/actions";
 import { redirect } from "next/navigation";
 import Image from "next/image";
+import { readCurrentUser } from "./utils/default/read";
 
 export default async function Home() {
   const { currentUser } = await readCurrentUser();
 
-  if (currentUser.user) {
+  if (currentUser?.user) {
     redirect("/dashboard");
   }
 

@@ -1,15 +1,15 @@
 import CourseOptions from "@/app/components/CourseOptions";
 import CourseStudents from "../../components/CourseStudents";
-import {
-  readSingleCourse,
-  readCurrentUser,
-  readAllStudents,
-  readAllExams,
-} from "@/app/utils/default/actions";
 import { redirect } from "next/navigation";
 import ErrorMessage from "@/app/components/_ErrorMessage";
 import CourseExams from "@/app/components/CourseExams";
 import InfoMessage from "@/app/components/_InfoMessage";
+import { readSingleCourse } from "./actions";
+import {
+  readAllExams,
+  readAllStudents,
+  readCurrentUser,
+} from "@/app/utils/default/read";
 
 type CourseProps = {
   params: {
@@ -18,12 +18,12 @@ type CourseProps = {
 };
 
 export default async function Course({ params }: CourseProps) {
+  const { currentUser } = await readCurrentUser();
   const { students, studentsError } = await readAllStudents();
   const { course, courseError } = await readSingleCourse(params.id);
   const { exams, examsError } = await readAllExams();
-  const { currentUser } = await readCurrentUser();
 
-  if (!currentUser.user) {
+  if (!currentUser?.user) {
     redirect("/");
   }
 
@@ -37,7 +37,7 @@ export default async function Course({ params }: CourseProps) {
             <CourseOptions
               currentUser={currentUser}
               course={course}
-              students={students}
+              students={students || []}
               studentsError={studentsError}
             />
 
@@ -55,7 +55,7 @@ export default async function Course({ params }: CourseProps) {
 
           <CourseStudents
             course={course}
-            students={students}
+            students={students || []}
             studentsError={studentsError}
           />
         </>

@@ -1,26 +1,26 @@
 import { createClient } from "@/app/utils/supabase/server";
 
-export async function readSingleExam(id: string) {
+export async function readSingleCourse(id: string) {
   try {
     const supabase = await createClient();
 
-    const { data: exam, error: examError } = await supabase
-      .from("exam")
+    const { data: course, error: courseError } = await supabase
+      .from("course")
       .select("*")
       .eq("id", id)
       .single();
 
-    if (examError) {
-      throw new Error(examError.message);
+    if (courseError) {
+      throw new Error(courseError.message);
     }
 
     return {
-      exam,
+      course,
     };
   } catch (e) {
     const errorMessage = (e as Error).message;
 
     console.error(errorMessage);
-    return { examError: { message: errorMessage } };
+    return { courseError: { message: errorMessage } };
   }
 }

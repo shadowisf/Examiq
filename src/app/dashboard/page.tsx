@@ -2,15 +2,15 @@ import Link from "next/link";
 import AdminAccountCreation from "../components/AdminAccounts";
 import TeacherCourses from "../components/TeacherCourses";
 import TeacherExams from "../components/TeacherExams";
-import {
-  readAllCourses,
-  readAllExams,
-  readAllStudents,
-  readAllTeachers,
-  readCurrentUser,
-} from "../utils/default/actions";
 import { redirect } from "next/navigation";
 import BigLogo from "../components/_BigLogo";
+import {
+  readCurrentUser,
+  readAllTeachers,
+  readAllStudents,
+  readAllCourses,
+  readAllExams,
+} from "../utils/default/read";
 
 export default async function Dashboard() {
   const { currentUser } = await readCurrentUser();
@@ -19,7 +19,7 @@ export default async function Dashboard() {
   const { courses, coursesError } = await readAllCourses();
   const { exams, examsError } = await readAllExams();
 
-  if (!currentUser.user) {
+  if (!currentUser?.user) {
     redirect("/");
   }
 
@@ -53,9 +53,9 @@ export default async function Dashboard() {
       <>
         <AdminAccountCreation
           currentUser={currentUser}
-          students={students}
+          students={students || []}
           studentsError={studentsError}
-          teachers={teachers}
+          teachers={teachers || []}
           teachersError={teachersError}
         />
       </>
@@ -86,7 +86,7 @@ export default async function Dashboard() {
     mainContent = (
       <>
         <TeacherCourses
-          students={students}
+          students={students || []}
           studentsError={studentsError}
           courses={courses || []}
           courseError={coursesError}

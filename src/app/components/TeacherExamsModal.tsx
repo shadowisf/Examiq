@@ -1,7 +1,6 @@
 import Image from "next/image";
 import ErrorMessage from "./_ErrorMessage";
 import InfoMessage from "./_InfoMessage";
-import { ExamItem } from "../utils/default/types";
 
 type TeacherExamsModalProps = {
   isEditMode: boolean;
@@ -10,10 +9,10 @@ type TeacherExamsModalProps = {
   courses: any[];
   coursesError: any;
   selectedExam: any;
-  examItems: ExamItem[];
+  examItems: any[];
   handleSelectExamType: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   createExamItem: () => void;
-  updateExamItem: (index: number, field: keyof ExamItem, value: string) => void;
+  updateExamItem: (index: number, field: keyof any, value: string) => void;
   updateChoice: (itemIndex: number, choiceIndex: number, value: string) => void;
   deleteExamItem: (index: number) => void;
 };
@@ -75,11 +74,11 @@ type ExamFormProps = {
   isEditMode: boolean;
   selectedExam: any;
   courses: any[];
-  examItems: ExamItem[];
+  examItems: any[];
   handleConfirm: (formData: FormData) => void;
   handleSelectExamType: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   createExamItem: () => void;
-  updateExamItem: (index: number, field: keyof ExamItem, value: string) => void;
+  updateExamItem: (index: number, field: keyof any, value: string) => void;
   updateChoice: (itemIndex: number, choiceIndex: number, value: string) => void;
   deleteExamItem: (index: number) => void;
 };
@@ -127,7 +126,7 @@ function ExamForm({
           <option value="multiple-choice">multiple choice</option>
           <option value="paragraph">paragraph</option>
           <option value="fill-in-the-blank">fill in the blank</option>
-          <option value="true-false">true or false</option>
+          <option value="true-or-false">true or false</option>
         </select>
 
         <button type="button" onClick={createExamItem}>
@@ -154,11 +153,11 @@ function ExamForm({
 
                 {item.type === "multiple-choice" && (
                   <>
-                    {item.choices?.map((choice, choiceIndex) => (
+                    {item.choices?.map((choice: any, choiceIndex: any) => (
                       <input
                         key={choiceIndex}
                         type="text"
-                        placeholder={`choice ${choiceIndex + 1}`}
+                        placeholder={`option ${choiceIndex + 1}`}
                         value={choice}
                         onChange={(e) =>
                           updateChoice(index, choiceIndex, e.target.value)

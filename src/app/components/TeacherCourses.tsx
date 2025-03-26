@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { createCourse, deleteCourse, updateCourse } from "../dashboard/actions";
-import { useRouter } from "next/navigation";
+import { redirect, usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import ErrorMessage from "./_ErrorMessage";
 import Link from "next/link";
@@ -28,6 +28,7 @@ export default function TeacherCourses({
   examsError,
 }: TeacherCourseProps) {
   const router = useRouter();
+  const path = usePathname();
 
   const [isPending, startTransition] = useTransition();
 

@@ -1,8 +1,9 @@
 import ErrorMessage from "@/app/components/_ErrorMessage";
 import InfoMessage from "@/app/components/_InfoMessage";
 import ExamForm from "@/app/components/ExamForm";
-import { readCurrentUser, readSingleExam } from "@/app/utils/default/actions";
 import { redirect } from "next/navigation";
+import { readSingleExam } from "./actions";
+import { readCurrentUser } from "@/app/utils/default/read";
 
 type ExamProps = {
   params: {
@@ -14,7 +15,7 @@ export default async function Course({ params }: ExamProps) {
   const { exam, examError } = await readSingleExam(params.id);
   const { currentUser } = await readCurrentUser();
 
-  if (!currentUser.user) {
+  if (!currentUser?.user) {
     redirect("/");
   }
 
@@ -27,6 +28,10 @@ export default async function Course({ params }: ExamProps) {
           <section>
             <h1 className="big">{exam.name}</h1>
             <InfoMessage>{exam.id}</InfoMessage>
+
+            <br />
+
+            <p>total item: {exam.items.length}</p>
           </section>
 
           <ExamForm exam={exam} currentUser={currentUser} />

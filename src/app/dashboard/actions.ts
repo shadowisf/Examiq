@@ -3,8 +3,19 @@
 import { createClient } from "../utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
-import { generateIdentifier, readCurrentUser } from "../utils/default/actions";
-import { ExamItem } from "../utils/default/types";
+import { readCurrentUser } from "../utils/default/read";
+
+function generateIdentifier(prefix: string) {
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let result = "";
+  const charactersLength = characters.length;
+
+  for (let i = 0; i < 8; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+
+  return `${prefix}-` + result;
+}
 
 // ADMIN
 export async function createAccount(formData: FormData) {
@@ -114,7 +125,7 @@ export async function createCourse(
           id: generateIdentifier("C"),
           name: formData.get("course name") as string,
           description: formData.get("course description") as string,
-          author: currentUser.user?.id,
+          author: currentUser?.user.id,
           students: { uid: selectedStudents },
         },
       ])
@@ -159,6 +170,7 @@ export async function updateCourse(
     }
 
     revalidatePath("/dashboard", "layout");
+    revalidatePath("/course", "layout");
   } catch (e) {
     const errorMessage = (e as Error).message;
 
@@ -226,7 +238,7 @@ export async function deleteStudentFromCourse(user: any) {
   }
 }
 
-export async function createExam(formData: FormData, examItems: ExamItem[]) {
+export async function createExam(formData: FormData, examItems: any[]) {
   try {
     const supabase = await createClient();
 
@@ -237,7 +249,7 @@ export async function createExam(formData: FormData, examItems: ExamItem[]) {
         id: generateIdentifier("E"),
         course_id: formData.get("exam course") as string,
         name: formData.get("exam name") as string,
-        author: currentUser.user?.id,
+        author: currentUser?.user.id,
         items: examItems,
       },
     ]);
@@ -262,7 +274,7 @@ export async function createExam(formData: FormData, examItems: ExamItem[]) {
 export async function updateExam(
   formData: FormData,
   exam: any,
-  examItems: ExamItem[]
+  examItems: any[]
 ) {
   try {
     const supabase = await createClient();
@@ -281,6 +293,7 @@ export async function updateExam(
     }
 
     revalidatePath("/dashboard", "layout");
+    revalidatePath("/exam", "layout");
   } catch (e) {
     const errorMessage = (e as Error).message;
 

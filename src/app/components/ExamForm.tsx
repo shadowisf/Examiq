@@ -25,7 +25,12 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
             <div className="choices">
               {item.choices.map((choice: string, choiceIndex: number) => (
                 <label key={choiceIndex}>
-                  <input type="radio" value={choice} required />
+                  <input
+                    type="radio"
+                    name={`question-${item.index}`}
+                    value={choice}
+                    required
+                  />
                   {choice}
                 </label>
               ))}
@@ -41,17 +46,31 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
           )}
 
           {item.type === "fill-in-the-blank" && (
-            <input placeholder="answer" required />
+            <input
+              name={`question-${item.index}`}
+              placeholder="answer"
+              required
+            />
           )}
 
           {item.type === "true-or-false" && (
             <div className="choices">
               <label>
-                <input type="radio" value={"true"} required />
+                <input
+                  name={`question-${item.index}`}
+                  type="radio"
+                  value={"true"}
+                  required
+                />
                 true
               </label>
               <label>
-                <input type="radio" value={"false"} required />
+                <input
+                  name={`question-${item.index}`}
+                  type="radio"
+                  value={"false"}
+                  required
+                />
                 false
               </label>
             </div>

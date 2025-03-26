@@ -7,7 +7,6 @@ import ErrorMessage from "./_ErrorMessage";
 import Link from "next/link";
 import InfoMessage from "./_InfoMessage";
 import { createExam, deleteExam, updateExam } from "../dashboard/actions";
-import { ExamItem } from "../utils/default/types";
 import TeacherExamsModal from "./TeacherExamsModal";
 import Loading from "./_Loading";
 
@@ -34,44 +33,29 @@ export default function TeacherExams({
 
   const [selectedExam, setSelectedExam] = useState<any>(null);
   const [selectedExamType, setSelectedExamType] = useState("multiple-choice");
-  const [examItems, setExamItems] = useState<ExamItem[]>([]);
+  const [examItems, setExamItems] = useState<any[]>([]);
 
   function handleSelectExamType(event: React.ChangeEvent<HTMLSelectElement>) {
     setSelectedExamType(event.target.value);
   }
 
   function createExamItem() {
-    let choices;
-
-    switch (selectedExamType) {
-      case "multiple-choice":
-        choices = ["", "", ""];
-        break;
-
-      case "paragraph":
-        choices = undefined;
-        break;
-
-      case "true-false":
-        choices = undefined;
-        break;
-    }
-
-    const newExamItem: ExamItem = {
+    const newExamItem: any = {
       id: examItems.length,
       type: selectedExamType,
       question: "",
       correctAnswer: "",
-      choices: choices,
+      choices:
+        selectedExamType === "multiple-choice" ? ["", "", ""] : undefined,
     };
 
     setExamItems([...examItems, newExamItem]);
   }
 
-  function updateExamItem<K extends keyof ExamItem>(
+  function updateExamItem<K extends keyof any>(
     index: number,
     field: K,
-    value: ExamItem[K]
+    value: any[K]
   ) {
     const updatedItems = [...examItems];
     updatedItems[index][field] = value as never;

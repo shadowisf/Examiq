@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { readCurrentUser } from "../utils/default/actions";
 import Image from "next/image";
+import { readCurrentUser } from "../utils/default/read";
 
 export default async function NavBar() {
   const { currentUser, currentUserError } = await readCurrentUser();

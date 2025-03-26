@@ -25,7 +25,13 @@ export default async function CourseStudents({
   return (
     <section className="student-list-container">
       <h1>student list</h1>
-      <ul>
+      <ul
+        style={
+          filteredStudents && filteredStudents.length > 0
+            ? { marginLeft: "16px" }
+            : {}
+        }
+      >
         {studentsError ? (
           <ErrorMessage>failed to load students</ErrorMessage>
         ) : filteredStudents && filteredStudents.length > 0 ? (
