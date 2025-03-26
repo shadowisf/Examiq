@@ -6,13 +6,13 @@ import {
   deleteAccount,
   deleteStudentFromCourse,
   updateAccount,
-} from "../dashboard/actions";
+} from "../actions";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import AdminAccountsModal from "./AdminAccountsModal";
-import ErrorMessage from "./_ErrorMessage";
-import InfoMessage from "./_InfoMessage";
-import Loading from "./_Loading";
+import ErrorMessage from "../../components/ErrorMessage";
+import InfoMessage from "../../components/InfoMessage";
+import Loading from "../../components/Loading";
 
 type AdminAccountsProps = {
   currentUser: any;

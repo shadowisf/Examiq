@@ -1,9 +1,9 @@
-import CourseOptions from "@/app/components/CourseOptions";
-import CourseStudents from "../../components/CourseStudents";
+import CourseOptions from "@/app/course/[id]/components/CourseOptions";
+import CourseStudents from "./components/CourseStudents";
 import { redirect } from "next/navigation";
-import ErrorMessage from "@/app/components/_ErrorMessage";
-import CourseExams from "@/app/components/CourseExams";
-import InfoMessage from "@/app/components/_InfoMessage";
+import ErrorMessage from "@/app/components/ErrorMessage";
+import CourseExams from "@/app/course/[id]/components/CourseExams";
+import InfoMessage from "@/app/components/InfoMessage";
 import { readSingleCourse } from "./actions";
 import {
   readAllExams,

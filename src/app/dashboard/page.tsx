@@ -1,9 +1,7 @@
 import Link from "next/link";
-import AdminAccountCreation from "../components/AdminAccounts";
-import TeacherCourses from "../components/TeacherCourses";
-import TeacherExams from "../components/TeacherExams";
+import AdminAccountCreation from "./components/AdminAccounts";
 import { redirect } from "next/navigation";
-import BigLogo from "../components/_BigLogo";
+import BigLogo from "../components/BigLogo";
 import {
   readCurrentUser,
   readAllTeachers,
@@ -11,6 +9,8 @@ import {
   readAllCourses,
   readAllExams,
 } from "../utils/default/read";
+import TeacherCourses from "./components/TeacherCourses";
+import TeacherExams from "./components/TeacherExams";
 
 export default async function Dashboard() {
   const { currentUser } = await readCurrentUser();

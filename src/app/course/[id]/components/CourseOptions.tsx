@@ -2,11 +2,11 @@
 
 import Image from "next/image";
 import { useState, useTransition } from "react";
-import { updateCourse, deleteCourse } from "../dashboard/actions";
-import TeacherCoursesModal from "./TeacherCoursesModal";
+import { updateCourse, deleteCourse } from "../../../dashboard/actions";
+import TeacherCoursesModal from "../../../dashboard/components/TeacherCoursesModal";
 import { redirect } from "next/navigation";
-import ErrorMessage from "./_ErrorMessage";
-import Loading from "./_Loading";
+import ErrorMessage from "../../../components/ErrorMessage";
+import Loading from "../../../components/Loading";
 
 type CourseOptionsProps = {
   currentUser: any;

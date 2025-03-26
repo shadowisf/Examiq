@@ -1,6 +1,6 @@
-import ErrorMessage from "@/app/components/_ErrorMessage";
-import InfoMessage from "@/app/components/_InfoMessage";
-import ExamForm from "@/app/components/ExamForm";
+import ErrorMessage from "@/app/components/ErrorMessage";
+import InfoMessage from "@/app/components/InfoMessage";
+import ExamForm from "@/app/exam/[id]/components/ExamForm";
 import { redirect } from "next/navigation";
 import { readSingleExam } from "./actions";
 import { readCurrentUser } from "@/app/utils/default/read";

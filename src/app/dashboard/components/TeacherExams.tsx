@@ -3,12 +3,12 @@
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useState, useTransition } from "react";
-import ErrorMessage from "./_ErrorMessage";
+import ErrorMessage from "../../components/ErrorMessage";
 import Link from "next/link";
-import InfoMessage from "./_InfoMessage";
-import { createExam, deleteExam, updateExam } from "../dashboard/actions";
+import InfoMessage from "../../components/InfoMessage";
+import { createExam, deleteExam, updateExam } from "../actions";
 import TeacherExamsModal from "./TeacherExamsModal";
-import Loading from "./_Loading";
+import Loading from "../../components/Loading";
 
 type TeacherExamsProps = {
   courses: any[];

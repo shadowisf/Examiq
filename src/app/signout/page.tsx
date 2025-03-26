@@ -3,8 +3,8 @@
 import { useEffect, useState, useTransition } from "react";
 import { signOut } from "./actions";
 import { useRouter } from "next/navigation";
-import Loading from "../components/_Loading";
-import ErrorMessage from "../components/_ErrorMessage";
+import Loading from "../components/Loading";
+import ErrorMessage from "../components/ErrorMessage";
 
 export default function SignOut() {
   const router = useRouter();

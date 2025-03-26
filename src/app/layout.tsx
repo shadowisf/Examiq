@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./main.scss";
-import NavBar from "@/app/components/_NavBar";
-import AccentColor from "./components/_AccentColor";
+import NavBar from "@/app/components/NavBar";
+import AccentColor from "./components/AccentColor";
 
 export const metadata: Metadata = {
   title: "examiq",
