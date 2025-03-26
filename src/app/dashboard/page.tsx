@@ -25,19 +25,16 @@ export default async function Dashboard() {
 
   const displayName = currentUser.user.user_metadata?.display_name;
   const firstName = displayName ? displayName.split(" ")[0] : "";
-
   const email = currentUser.user.email;
   const username = email?.split("@")[0];
-
   const name = displayName ? firstName : username;
-
   const role = currentUser.user.user_metadata?.role;
 
   let bentoContent;
   let mainContent;
 
   // admin role
-  if (role === undefined) {
+  if (role === undefined || role === "admin") {
     bentoContent = (
       <div className="bento-container">
         <Link href="#students">

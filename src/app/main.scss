@@ -480,7 +480,7 @@ textarea {
       border-bottom: 1px solid var(--accent-color);
     }
 
-    .exam {
+    a {
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -502,6 +502,45 @@ textarea {
   &:hover {
     img {
       filter: grayscale(0%);
+    }
+  }
+}
+
+.exam-page {
+  display: grid;
+  gap: 64px;
+
+  form {
+    display: grid;
+    gap: 64px;
+  }
+
+  .question {
+    display: grid;
+    gap: 4px;
+
+    .choices {
+      display: grid;
+
+      label {
+        padding-left: 20px;
+        display: flex;
+        gap: 4px;
+      }
+
+      label,
+      input {
+        cursor: pointer;
+      }
+    }
+
+    textarea {
+      min-height: 100px;
+    }
+
+    input,
+    textarea {
+      text-align: left;
     }
   }
 }

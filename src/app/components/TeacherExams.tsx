@@ -253,7 +253,9 @@ function ExamTable({ exams, handleEdit, handleDelete }: ExamTableProps) {
           .map((exam) => {
             return (
               <tr key={exam.id}>
-                <td>{exam.id}</td>
+                <td>
+                  <Link href={`/exam/${exam.id}`}>{exam.id}</Link>
+                </td>
                 <td>
                   <Link href={`/course/${exam.course_id}`}>
                     {exam.course_id}

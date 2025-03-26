@@ -117,7 +117,6 @@ export default function AdminAccounts({
 
         <section className="admin-accounts-container">
           {error && <ErrorMessage>{error}</ErrorMessage>}
-
           <div className="button-container">
             <button onClick={handleCreate}>
               <Image
@@ -138,6 +137,8 @@ export default function AdminAccounts({
             </button>
           </div>
 
+          <br />
+
           <h1 id="students">students</h1>
           <div>
             {studentsError ? (
@@ -152,9 +153,7 @@ export default function AdminAccounts({
               <InfoMessage>there are no existing students yet</InfoMessage>
             )}
           </div>
-
           <br />
-
           <h1 id="teachers">teachers</h1>
           <div>
             {teachersError ? (

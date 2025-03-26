@@ -3,6 +3,7 @@
 import Image from "next/image";
 import InfoMessage from "./_InfoMessage";
 import ErrorMessage from "./_ErrorMessage";
+import Link from "next/link";
 
 type CourseExamsProps = {
   course: any;
@@ -24,7 +25,7 @@ export default function CourseExams({
       ) : (
         filteredExams.map((exam) => {
           return (
-            <div className="exam" key={exam.id}>
+            <Link href={`/exam/${exam.id}`} key={exam.id}>
               <Image
                 src={"/icons/file.svg"}
                 width={32}
@@ -36,7 +37,7 @@ export default function CourseExams({
                 <h4>{exam.name}</h4>
                 <InfoMessage>exam</InfoMessage>
               </div>
-            </div>
+            </Link>
           );
         })
       )}

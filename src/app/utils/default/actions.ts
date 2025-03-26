@@ -13,6 +13,21 @@ export function generateIdentifier(prefix: string) {
   return `${prefix}-` + result;
 }
 
+export async function readSingleExam(id: string) {
+  const supabase = await createClient();
+
+  const { data: exam, error: examError } = await supabase
+    .from("exam")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  return {
+    exam,
+    examError,
+  };
+}
+
 export async function readSingleCourse(id: string) {
   const supabase = await createClient();
 

@@ -9,6 +9,7 @@ import {
 import { redirect } from "next/navigation";
 import ErrorMessage from "@/app/components/_ErrorMessage";
 import CourseExams from "@/app/components/CourseExams";
+import InfoMessage from "@/app/components/_InfoMessage";
 
 type CourseProps = {
   params: {
@@ -43,7 +44,7 @@ export default async function Course({ params }: CourseProps) {
             <h1 className="big">{course.name}</h1>
             <p>{course.id}</p>
             <br />
-            <p className="gray">{course.description}</p>
+            <InfoMessage>{course.description}</InfoMessage>
           </section>
 
           <CourseExams
