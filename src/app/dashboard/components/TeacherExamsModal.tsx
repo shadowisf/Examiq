@@ -118,6 +118,13 @@ function ExamForm({
         required
         defaultValue={isEditMode ? selectedExam.name : ""}
       />
+      <input
+        name="exam duration"
+        type="number"
+        placeholder="duration"
+        required
+        defaultValue={isEditMode ? selectedExam.duration : ""}
+      />
 
       <br />
 

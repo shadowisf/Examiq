@@ -3,7 +3,9 @@ import InfoMessage from "@/app/components/InfoMessage";
 import ExamForm from "@/app/exam/[id]/components/ExamForm";
 import { redirect } from "next/navigation";
 import { readSingleExam } from "./actions";
-import { readCurrentUser } from "@/app/utils/default/read";
+import { readAllCourses, readCurrentUser } from "@/app/utils/default/read";
+import CourseOptions from "@/app/course/[id]/components/CourseOptions";
+import ExamOptions from "./components/ExamOptions";
 
 type ExamProps = {
   params: {
@@ -12,6 +14,7 @@ type ExamProps = {
 };
 
 export default async function Course({ params }: ExamProps) {
+  const { courses, coursesError } = await readAllCourses();
   const { exam, examError } = await readSingleExam(params.id);
   const { currentUser } = await readCurrentUser();
 
@@ -26,6 +29,13 @@ export default async function Course({ params }: ExamProps) {
       ) : (
         <>
           <section>
+            <ExamOptions
+              currentUser={currentUser}
+              exam={exam}
+              courses={courses || []}
+              coursesError={coursesError}
+            />
+
             <h1 className="big">{exam.name}</h1>
             <InfoMessage>{exam.id}</InfoMessage>
 

@@ -510,6 +510,11 @@ textarea {
   display: grid;
   gap: 64px;
 
+  .button-container {
+    display: flex;
+    gap: 8px;
+  }
+
   form {
     display: grid;
     gap: 64px;

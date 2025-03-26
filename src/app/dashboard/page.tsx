@@ -75,11 +75,6 @@ export default async function Dashboard() {
           <h1>exams</h1>
           <p className="gray">finalize scores of students</p>
         </Link>
-
-        <Link href="#profile">
-          <h1>profile</h1>
-          <p className="gray">update your information</p>
-        </Link>
       </div>
     );
 

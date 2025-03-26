@@ -226,6 +226,7 @@ function ExamTable({ exams, handleEdit, handleDelete }: ExamTableProps) {
           <th className="id-column">id</th>
           <th className="id-column">course id</th>
           <th>name</th>
+          <th>duration</th>
           <th>total items</th>
           <th>date of creation</th>
           <th></th>
@@ -246,6 +247,9 @@ function ExamTable({ exams, handleEdit, handleDelete }: ExamTableProps) {
                   </Link>
                 </td>
                 <td>{exam.name}</td>
+                <td>
+                  {exam.duration} {exam.duration === 1 ? "hour" : "hours"}
+                </td>
                 <td>{exam.items ? exam.items.length : 0}</td>
                 <td>
                   {new Date(exam.created_at).toLocaleString("en-US", {

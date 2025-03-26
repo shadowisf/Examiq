@@ -249,6 +249,7 @@ export async function createExam(formData: FormData, examItems: any[]) {
         id: generateIdentifier("E"),
         course_id: formData.get("exam course") as string,
         name: formData.get("exam name") as string,
+        duration: formData.get("exam duration") as string,
         author: currentUser?.user.id,
         items: examItems,
       },
@@ -284,6 +285,7 @@ export async function updateExam(
       .update({
         course_id: formData.get("exam course") as string,
         name: formData.get("exam name") as string,
+        duration: formData.get("exam duration") as string,
         items: examItems,
       })
       .eq("id", exam.id);
