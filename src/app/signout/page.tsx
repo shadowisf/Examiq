@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import Loading from "../components/Loading";
 import ErrorMessage from "../components/ErrorMessage";
 
-export default function SignOut() {
+export default async function SignOut() {
   const router = useRouter();
 
   const [isPending, startTransition] = useTransition();
@@ -21,7 +21,7 @@ export default function SignOut() {
         setError(result.error.message);
       }
 
-      router.push("/");
+      router.replace("/");
       router.refresh();
     });
   }

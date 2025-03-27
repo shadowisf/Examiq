@@ -4,7 +4,6 @@ import ExamForm from "@/app/exam/[id]/components/ExamForm";
 import { redirect } from "next/navigation";
 import { readSingleExam } from "./actions";
 import { readAllCourses, readCurrentUser } from "@/app/utils/default/read";
-import CourseOptions from "@/app/course/[id]/components/CourseOptions";
 import ExamOptions from "./components/ExamOptions";
 import { readSingleCourse } from "@/app/course/[id]/actions";
 

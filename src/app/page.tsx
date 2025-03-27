@@ -4,9 +4,9 @@ import Image from "next/image";
 import { readCurrentUser } from "./utils/default/read";
 
 export default async function Home() {
-  const { currentUser } = await readCurrentUser();
+  const { currentUser, currentUserError } = await readCurrentUser();
 
-  if (currentUser?.user) {
+  if (currentUser?.user || currentUserError) {
     redirect("/dashboard");
   }
 

@@ -2,9 +2,8 @@
 
 import Image from "next/image";
 import { useState, useTransition } from "react";
-import { updateCourse, deleteCourse } from "../../../dashboard/actions";
+import { updateCourse } from "../../../dashboard/actions";
 import TeacherCoursesModal from "../../../dashboard/components/TeacherCoursesModal";
-import { redirect } from "next/navigation";
 import ErrorMessage from "../../../components/ErrorMessage";
 import Loading from "../../../components/Loading";
 
