@@ -185,14 +185,16 @@ textarea {
   min-height: 200px;
 }
 
-.loading-page {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.75);
-  z-index: 1000;
+.big-logo {
+  img {
+    filter: grayscale(100%);
+  }
+
+  &:hover {
+    img {
+      filter: grayscale(0%);
+    }
+  }
 }
 
 .modal {
@@ -286,6 +288,16 @@ textarea {
       }
     }
   }
+}
+
+.loading-page {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.75);
+  z-index: 1000;
 }
 
 .intro-page {
@@ -400,68 +412,68 @@ textarea {
       }
     }
   }
-}
 
-.teacher-courses-container {
-  display: grid;
-  gap: 24px;
-
-  .button-container {
-    display: flex;
-    gap: 8px;
-  }
-
-  h1 {
-    border-bottom: 1px solid var(--accent-color);
-  }
-}
-
-.teacher-exams-container {
-  display: grid;
-  gap: 24px;
-
-  .button-container {
-    display: flex;
-    gap: 8px;
-  }
-
-  h1 {
-    border-bottom: 1px solid var(--accent-color);
-  }
-}
-
-.admin-accounts-container {
-  display: grid;
-  gap: 24px;
-
-  .button-container {
-    display: flex;
-    gap: 8px;
-  }
-
-  h1 {
-    border-bottom: 0.5px solid var(--accent-color);
-  }
-
-  form {
+  .admin-accounts-container {
     display: grid;
-    gap: 8px;
+    gap: 24px;
 
-    input,
-    select {
-      width: 300px;
+    .button-container {
+      display: flex;
+      gap: 8px;
     }
+
+    h1 {
+      border-bottom: 0.5px solid var(--accent-color);
+    }
+
+    form {
+      display: grid;
+      gap: 8px;
+
+      input,
+      select {
+        width: 300px;
+      }
+    }
+  }
+
+  .teacher-courses-container {
+    display: grid;
+    gap: 24px;
+
+    .button-container {
+      display: flex;
+      gap: 8px;
+    }
+
+    h1 {
+      border-bottom: 1px solid var(--accent-color);
+    }
+  }
+
+  .teacher-exams-container {
+    display: grid;
+    gap: 24px;
+
+    .button-container {
+      display: flex;
+      gap: 8px;
+    }
+
+    h1 {
+      border-bottom: 1px solid var(--accent-color);
+    }
+  }
+
+  .student-timeline-container {
+    display: grid;
+    gap: 24px;
   }
 }
 
 .course-page {
   display: grid;
   gap: 100px;
-
-  .button-container {
-    display: flex;
-    gap: 8px;
-  }
 
   .student-list-container {
     display: grid;
@@ -494,26 +506,9 @@ textarea {
   }
 }
 
-.big-logo {
-  img {
-    filter: grayscale(100%);
-  }
-
-  &:hover {
-    img {
-      filter: grayscale(0%);
-    }
-  }
-}
-
 .exam-page {
   display: grid;
   gap: 64px;
-
-  .button-container {
-    display: flex;
-    gap: 8px;
-  }
 
   form {
     display: grid;

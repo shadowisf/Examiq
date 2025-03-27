@@ -5,16 +5,16 @@ export async function readCurrentUser() {
   try {
     const supabase = await createClient();
 
-    const { data: currentUser, error: currentUserError } =
-      await supabase.auth.getUser();
+    const {
+      data: { session },
+      error,
+    } = await supabase.auth.getSession();
 
-    if (currentUserError) {
-      throw new Error(currentUserError.message);
+    if (error) {
+      return { currentUser: null };
     }
 
-    return {
-      currentUser,
-    };
+    return { currentUser: session };
   } catch (e) {
     const errorMessage = (e as Error).message;
 

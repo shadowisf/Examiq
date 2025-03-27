@@ -98,24 +98,6 @@ export default function ExamOptions({
     });
   }
 
-  async function handleDelete() {
-    startTransition(async () => {
-      const isConfirmed = window.confirm(
-        "are you sure you want to delete this exam?"
-      );
-
-      if (isConfirmed) {
-        const result = await deleteExam(exam);
-
-        if (result?.error) {
-          setError(result.error.message);
-        } else {
-          redirect("/dashboard");
-        }
-      }
-    });
-  }
-
   return (
     currentUser.user.user_metadata.role === "teacher" && (
       <>
@@ -123,19 +105,9 @@ export default function ExamOptions({
 
         {error && <ErrorMessage>{error}</ErrorMessage>}
 
-        <div className="button-container">
-          <button onClick={handleEdit}>
-            <Image src={"/icons/edit.svg"} width={24} height={24} alt="edit" />
-          </button>
-          <button onClick={handleDelete}>
-            <Image
-              src={"/icons/trash.svg"}
-              width={24}
-              height={24}
-              alt="delete"
-            />
-          </button>
-        </div>
+        <button onClick={handleEdit}>
+          <Image src={"/icons/edit.svg"} width={24} height={24} alt="edit" />
+        </button>
 
         <br />
 

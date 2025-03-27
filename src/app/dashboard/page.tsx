@@ -11,6 +11,7 @@ import {
 } from "../utils/default/read";
 import TeacherCourses from "./components/TeacherCourses";
 import TeacherExams from "./components/TeacherExams";
+import StudentTimeline from "./components/StudentTimeline";
 
 export default async function Dashboard() {
   const { currentUser } = await readCurrentUser();
@@ -36,7 +37,7 @@ export default async function Dashboard() {
   // admin role
   if (role === undefined || role === "admin") {
     bentoContent = (
-      <div className="bento-container">
+      <>
         <Link href="#students">
           <h1>students</h1>
           <p className="gray">create accounts for students</p>
@@ -46,7 +47,7 @@ export default async function Dashboard() {
           <h1>teachers</h1>
           <p className="gray">create accounts for teachers</p>
         </Link>
-      </div>
+      </>
     );
 
     mainContent = (
@@ -65,7 +66,7 @@ export default async function Dashboard() {
   // teacher role
   if (role === "teacher") {
     bentoContent = (
-      <div className="bento-container">
+      <>
         <Link href="#courses">
           <h1>courses</h1>
           <p className="gray">view the courses you manage</p>
@@ -75,7 +76,7 @@ export default async function Dashboard() {
           <h1>exams</h1>
           <p className="gray">finalize scores of students</p>
         </Link>
-      </div>
+      </>
     );
 
     mainContent = (
@@ -101,9 +102,30 @@ export default async function Dashboard() {
 
   // student role
   if (role === "student") {
-    bentoContent = <></>;
+    bentoContent = (
+      <>
+        <Link href="#courses">
+          <h1>courses</h1>
+          <p className="gray">view the courses you manage</p>
+        </Link>
 
-    mainContent = <></>;
+        <Link href="#exams">
+          <h1>exams</h1>
+          <p className="gray">finalize scores of students</p>
+        </Link>
+      </>
+    );
+
+    mainContent = (
+      <>
+        <StudentTimeline
+          courses={courses || []}
+          coursesError={coursesError}
+          exams={exams || []}
+          examsError={examsError}
+        />
+      </>
+    );
   }
 
   return (
@@ -118,7 +140,7 @@ export default async function Dashboard() {
           </span>
         </h1>
 
-        {bentoContent}
+        <div className="bento-container">{bentoContent}</div>
       </section>
 
       {mainContent}

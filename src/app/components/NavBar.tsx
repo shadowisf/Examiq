@@ -8,7 +8,7 @@ export default async function NavBar() {
   return (
     <nav>
       <Link
-        href={currentUserError || !currentUser.user ? "/" : "/dashboard"}
+        href={currentUserError || !currentUser?.user ? "/" : "/dashboard"}
         className="logo"
       >
         <Image src={"/icons/logo.png"} alt="logo" width={50} height={30} />
@@ -16,13 +16,13 @@ export default async function NavBar() {
       </Link>
 
       <section className="nav-links">
-        {currentUserError || !currentUser.user ? (
+        {currentUserError || !currentUser?.user ? (
           <Link href="/">home</Link>
         ) : (
           <Link href="/dashboard">dashboard</Link>
         )}
 
-        {currentUserError || !currentUser.user ? null : (
+        {currentUserError || !currentUser?.user ? null : (
           <Link href="/signout">sign out</Link>
         )}
       </section>

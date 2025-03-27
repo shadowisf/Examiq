@@ -6,6 +6,7 @@ import { readSingleExam } from "./actions";
 import { readAllCourses, readCurrentUser } from "@/app/utils/default/read";
 import CourseOptions from "@/app/course/[id]/components/CourseOptions";
 import ExamOptions from "./components/ExamOptions";
+import { readSingleCourse } from "@/app/course/[id]/actions";
 
 type ExamProps = {
   params: {
@@ -17,6 +18,7 @@ export default async function Course({ params }: ExamProps) {
   const { courses, coursesError } = await readAllCourses();
   const { exam, examError } = await readSingleExam(params.id);
   const { currentUser } = await readCurrentUser();
+  const { course, courseError } = await readSingleCourse(exam.course_id);
 
   if (!currentUser?.user) {
     redirect("/");
@@ -37,11 +39,15 @@ export default async function Course({ params }: ExamProps) {
             />
 
             <h1 className="big">{exam.name}</h1>
-            <InfoMessage>{exam.id}</InfoMessage>
+            <p>{exam.id}</p>
 
             <br />
 
-            <p>total item: {exam.items.length}</p>
+            <InfoMessage>course name: {course.name}</InfoMessage>
+            <InfoMessage>
+              duration: {exam.duration} {exam.duration === 1 ? "hour" : "hours"}
+            </InfoMessage>
+            <InfoMessage>total item: {exam.items.length}</InfoMessage>
           </section>
 
           <ExamForm exam={exam} currentUser={currentUser} />
