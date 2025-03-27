@@ -342,6 +342,10 @@ textarea {
   gap: 50px;
   align-items: center;
 
+  span {
+    border-bottom: 1px solid var(--accent-color);
+  }
+
   .text-container {
     display: grid;
     place-items: center;

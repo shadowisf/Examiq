@@ -7,14 +7,28 @@ import { useSearchParams, redirect } from "next/navigation";
 import { useTransition, useState, useEffect } from "react";
 import { signIn } from "../actions";
 import Image from "next/image";
+import InfoMessage from "@/app/components/InfoMessage";
+import Link from "next/link";
 
-export default function SignInForm() {
+type SignInFormProps = {
+  currentUser: any;
+  currentUserError: any;
+};
+
+export default function SignInForm({
+  currentUser,
+  currentUserError,
+}: SignInFormProps) {
   const searchParams = useSearchParams();
 
   const [isPending, startTransition] = useTransition();
 
   const [userType, setUserType] = useState("");
   const [error, setError] = useState("");
+
+  const role = currentUser?.user.user_metadata?.role;
+  const displayName = currentUser?.user.user_metadata?.display_name;
+  const firstName = displayName ? displayName.split(" ")[0] : "";
 
   useEffect(() => {
     const userTypeFromParams = searchParams.get("user");
@@ -47,48 +61,69 @@ export default function SignInForm() {
       {isPending && <Loading />}
 
       <main className="signin-page">
-        <section className="text-container">
-          <BigLogo />
+        {!currentUser.user || currentUserError ? (
+          <>
+            <section className="text-container">
+              <BigLogo />
 
-          <div>
-            <h1 className="big">welcome back</h1>
-            <p className="gray">
-              sign in to your account as a <span>{userType}</span>
-            </p>
-          </div>
-        </section>
+              <div>
+                <h1 className="big">welcome back</h1>
+                <p className="gray">
+                  sign in to your account as a <span>{userType}</span>
+                </p>
+              </div>
+            </section>
 
-        <form action={handleSignIn}>
-          <input
-            name="email"
-            type="email"
-            onKeyDown={handleKeyDown}
-            placeholder="email"
-            required
-          />
-          <input
-            name="password"
-            type="password"
-            onKeyDown={handleKeyDown}
-            placeholder="password"
-            required
-          />
+            <form action={handleSignIn}>
+              <input
+                name="email"
+                type="email"
+                onKeyDown={handleKeyDown}
+                placeholder="email"
+                required
+              />
+              <input
+                name="password"
+                type="password"
+                onKeyDown={handleKeyDown}
+                placeholder="password"
+                required
+              />
 
-          <br />
+              <br />
 
-          {error && <ErrorMessage>{error}</ErrorMessage>}
+              {error && <ErrorMessage>{error}</ErrorMessage>}
 
-          <br />
+              <br />
 
-          <button type="submit">
-            <Image
-              src={"/icons/check.svg"}
-              alt="confirm"
-              width={24}
-              height={24}
-            />
-          </button>
-        </form>
+              <button type="submit">
+                <Image
+                  src={"/icons/check.svg"}
+                  alt="confirm"
+                  width={24}
+                  height={24}
+                />
+              </button>
+            </form>
+          </>
+        ) : (
+          <>
+            <h1>
+              you are already signed in as{" "}
+              <span>
+                {role} {firstName}
+              </span>
+            </h1>
+
+            <h1>
+              <Link href={"/dashboard"}>click here to go to dashboard</Link>
+            </h1>
+
+            <InfoMessage>
+              or use the navigation buttons on the top right
+            </InfoMessage>
+          </>
+        )}
       </main>
     </>
   );

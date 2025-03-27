@@ -1,40 +1,13 @@
-"use client";
-
-import { useEffect, useState, useTransition } from "react";
-import { signOut } from "./actions";
-import { useRouter } from "next/navigation";
-import Loading from "../components/Loading";
-import ErrorMessage from "../components/ErrorMessage";
+import { redirect } from "next/navigation";
+import SignOutScreen from "./components/SignOutScreen";
+import { readCurrentUser } from "../utils/default/read";
 
 export default async function SignOut() {
-  const router = useRouter();
+  const { currentUser, currentUserError } = await readCurrentUser();
 
-  const [isPending, startTransition] = useTransition();
-
-  const [error, setError] = useState("");
-
-  async function handleSignOut() {
-    startTransition(async () => {
-      const result = await signOut();
-
-      if (result?.error) {
-        setError(result.error.message);
-      }
-
-      router.replace("/");
-      router.refresh();
-    });
+  if (!currentUser?.user || currentUserError) {
+    redirect("/");
   }
 
-  useEffect(() => {
-    handleSignOut();
-  }, []);
-
-  return (
-    <main>
-      {isPending && <Loading />}
-
-      {error && <ErrorMessage>{error}</ErrorMessage>}
-    </main>
-  );
+  return <SignOutScreen />;
 }
