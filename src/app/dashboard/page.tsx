@@ -11,17 +11,58 @@ import {
 } from "../utils/default/read";
 import TeacherCourses from "./components/TeacherCourses";
 import TeacherExams from "./components/TeacherExams";
-import StudentTimeline from "./components/StudentTimeline";
+import StudentExams from "./components/StudentExams";
+import InfoMessage from "../components/InfoMessage";
+import StudentCourses from "./components/StudentCourses";
 
 export default async function Dashboard() {
-  const { currentUser } = await readCurrentUser();
-  const { teachers, teachersError } = await readAllTeachers();
-  const { students, studentsError } = await readAllStudents();
+  const { currentUser, currentUserError } = await readCurrentUser();
+  const { teachers = [], teachersError } = await readAllTeachers();
+  const { students = [], studentsError } = await readAllStudents();
   const { courses, coursesError } = await readAllCourses();
   const { exams, examsError } = await readAllExams();
 
-  if (!currentUser?.user) {
+  let filteredCourses: any;
+  let filteredExams: any;
+
+  if (!currentUser?.user || currentUserError) {
     redirect("/");
+  }
+
+  switch (currentUser.user.user_metadata?.role) {
+    case "student":
+      filteredCourses =
+        courses?.filter((course) =>
+          course.students?.id?.includes(currentUser.user.id)
+        ) || [];
+      var filteredCourseIDs =
+        filteredCourses?.map((course: any) => course.id) || [];
+      filteredExams =
+        exams
+          ?.filter((exam) => filteredCourseIDs.includes(exam.course_id))
+          .map((exam) => ({
+            ...exam,
+            course_name: filteredCourses.find(
+              (course: any) => course.id === exam.course_id
+            )?.name,
+          })) || [];
+      break;
+    case "teacher":
+      filteredCourses =
+        courses?.filter((course) => course.author === currentUser.user.id) ||
+        [];
+      var filteredCourseIDs =
+        filteredCourses?.map((course: any) => course.id) || [];
+      filteredExams =
+        exams
+          ?.filter((exam) => exam.author === currentUser.user.id)
+          .map((exam) => ({
+            ...exam,
+            course_name: filteredCourses.find(
+              (course: any) => course.id === exam.course_id
+            )?.name,
+          })) || [];
+      break;
   }
 
   const displayName = currentUser.user.user_metadata?.display_name;
@@ -54,9 +95,9 @@ export default async function Dashboard() {
       <>
         <AdminAccountCreation
           currentUser={currentUser}
-          students={students || []}
+          students={students}
           studentsError={studentsError}
-          teachers={teachers || []}
+          teachers={teachers}
           teachersError={teachersError}
         />
       </>
@@ -74,7 +115,7 @@ export default async function Dashboard() {
 
         <Link href="#exams">
           <h1>exams</h1>
-          <p className="gray">finalize scores of students</p>
+          <p className="gray">view the exams under courses you manage</p>
         </Link>
       </>
     );
@@ -82,18 +123,18 @@ export default async function Dashboard() {
     mainContent = (
       <>
         <TeacherCourses
-          students={students || []}
+          students={students}
           studentsError={studentsError}
-          courses={courses || []}
+          courses={filteredCourses}
           courseError={coursesError}
-          exams={exams || []}
+          exams={filteredExams}
           examsError={examsError}
         />
 
         <TeacherExams
-          courses={courses || []}
+          courses={filteredCourses}
           coursesError={coursesError}
-          exams={exams || []}
+          exams={filteredExams}
           examsError={examsError}
         />
       </>
@@ -104,25 +145,29 @@ export default async function Dashboard() {
   if (role === "student") {
     bentoContent = (
       <>
-        <Link href="#courses">
-          <h1>courses</h1>
-          <p className="gray">view the courses you manage</p>
-        </Link>
-
         <Link href="#exams">
           <h1>exams</h1>
-          <p className="gray">finalize scores of students</p>
+          <InfoMessage>
+            take the required exams of the courses are you enrolled in
+          </InfoMessage>
+        </Link>
+
+        <Link href="#courses">
+          <h1>courses</h1>
+          <InfoMessage>view the courses you are enrolled in</InfoMessage>
         </Link>
       </>
     );
 
     mainContent = (
       <>
-        <StudentTimeline
-          courses={courses || []}
-          coursesError={coursesError}
-          exams={exams || []}
+        <StudentExams exams={filteredExams} examsError={examsError} />
+
+        <StudentCourses
+          exams={filteredExams}
           examsError={examsError}
+          courses={filteredCourses}
+          coursesError={coursesError}
         />
       </>
     );

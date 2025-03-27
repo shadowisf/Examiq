@@ -18,14 +18,25 @@ type CourseProps = {
 };
 
 export default async function Course({ params }: CourseProps) {
-  const { currentUser } = await readCurrentUser();
-  const { students, studentsError } = await readAllStudents();
+  const { currentUser, currentUserError } = await readCurrentUser();
+  const { students = [], studentsError } = await readAllStudents();
   const { course, courseError } = await readSingleCourse(params.id);
   const { exams, examsError } = await readAllExams();
 
-  if (!currentUser?.user) {
+  if (!currentUser?.user || currentUserError) {
     redirect("/");
   }
+
+  const studentIDsInCourse = course?.students?.id || [];
+  const filteredStudents =
+    students
+      ?.filter((student: any) => studentIDsInCourse.includes(student.id))
+      .map((student: any) => ({
+        id: student.id,
+        name: student.user_metadata?.display_name || "unknown student",
+      })) || [];
+  const filteredExams =
+    exams?.filter((exam) => exam.course_id === course.id) || [];
 
   return (
     <main className="course-page">
@@ -37,7 +48,7 @@ export default async function Course({ params }: CourseProps) {
             <CourseOptions
               currentUser={currentUser}
               course={course}
-              students={students || []}
+              students={students}
               studentsError={studentsError}
             />
 
@@ -47,15 +58,10 @@ export default async function Course({ params }: CourseProps) {
             <InfoMessage>{course.description}</InfoMessage>
           </section>
 
-          <CourseExams
-            course={course}
-            exams={exams || []}
-            examsError={examsError}
-          />
+          <CourseExams exams={filteredExams} examsError={examsError} />
 
           <CourseStudents
-            course={course}
-            students={students || []}
+            students={filteredStudents}
             studentsError={studentsError}
           />
         </>

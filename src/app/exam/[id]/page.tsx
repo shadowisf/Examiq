@@ -15,12 +15,12 @@ type ExamProps = {
 };
 
 export default async function Course({ params }: ExamProps) {
-  const { courses, coursesError } = await readAllCourses();
+  const { currentUser, currentUserError } = await readCurrentUser();
+  const { courses = [], coursesError } = await readAllCourses();
   const { exam, examError } = await readSingleExam(params.id);
-  const { currentUser } = await readCurrentUser();
   const { course, courseError } = await readSingleCourse(exam.course_id);
 
-  if (!currentUser?.user) {
+  if (!currentUser?.user || currentUserError) {
     redirect("/");
   }
 
@@ -34,16 +34,19 @@ export default async function Course({ params }: ExamProps) {
             <ExamOptions
               currentUser={currentUser}
               exam={exam}
-              courses={courses || []}
+              courses={courses}
               coursesError={coursesError}
             />
-
             <h1 className="big">{exam.name}</h1>
             <p>{exam.id}</p>
 
             <br />
 
-            <InfoMessage>course name: {course.name}</InfoMessage>
+            {courseError ? (
+              <ErrorMessage>failed to load course</ErrorMessage>
+            ) : (
+              <InfoMessage>course name: {course.name}</InfoMessage>
+            )}
             <InfoMessage>
               duration: {exam.duration} {exam.duration === 1 ? "hour" : "hours"}
             </InfoMessage>

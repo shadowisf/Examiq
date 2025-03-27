@@ -5,8 +5,7 @@ import { useState, useTransition } from "react";
 import ErrorMessage from "../../../components/ErrorMessage";
 import Loading from "../../../components/Loading";
 import TeacherExamsModal from "@/app/dashboard/components/TeacherExamsModal";
-import { updateExam, deleteExam } from "@/app/dashboard/actions";
-import { redirect } from "next/navigation";
+import { updateExam } from "@/app/dashboard/actions";
 
 type ExamOptions = {
   currentUser: any;

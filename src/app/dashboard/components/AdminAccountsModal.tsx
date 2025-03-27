@@ -29,67 +29,56 @@ export default function AdminAccountsModal({
           </button>
         </div>
 
-        <AccountForm
-          isEditMode={isEditMode}
-          handleConfirm={handleConfirm}
-          selectedUser={selectedUser}
-        />
+        <form action={handleConfirm}>
+          <select
+            name="role"
+            defaultValue={
+              isEditMode ? selectedUser.user_metadata.role : "student"
+            }
+            required
+          >
+            <option value="student">student</option>
+            <option value="teacher">teacher</option>
+          </select>
+
+          <input
+            type="text"
+            name="name"
+            placeholder="name"
+            defaultValue={
+              isEditMode ? selectedUser.user_metadata.display_name : ""
+            }
+            required
+          />
+
+          <input
+            type="text"
+            name="email"
+            placeholder="email"
+            defaultValue={isEditMode ? selectedUser.email : ""}
+            required
+          />
+
+          <input
+            type="password"
+            name="password"
+            placeholder="password"
+            required
+            disabled={isEditMode ? true : false}
+          />
+
+          <br />
+
+          <button type="submit">
+            <Image
+              src={"/icons/check.svg"}
+              alt="confirm"
+              width={24}
+              height={24}
+            />
+          </button>
+        </form>
       </div>
     </section>
-  );
-}
-
-type AccountFormProps = {
-  isEditMode: boolean;
-  handleConfirm: (formData: FormData) => void;
-  selectedUser: any;
-};
-
-function AccountForm({
-  isEditMode,
-  handleConfirm,
-  selectedUser,
-}: AccountFormProps) {
-  return (
-    <form action={handleConfirm}>
-      <select
-        name="role"
-        defaultValue={isEditMode ? selectedUser.user_metadata.role : "student"}
-        required
-      >
-        <option value="student">student</option>
-        <option value="teacher">teacher</option>
-      </select>
-
-      <input
-        type="text"
-        name="name"
-        placeholder="name"
-        defaultValue={isEditMode ? selectedUser.user_metadata.display_name : ""}
-        required
-      />
-
-      <input
-        type="text"
-        name="email"
-        placeholder="email"
-        defaultValue={isEditMode ? selectedUser.email : ""}
-        required
-      />
-
-      <input
-        type="password"
-        name="password"
-        placeholder="password"
-        required
-        disabled={isEditMode ? true : false}
-      />
-
-      <br />
-
-      <button type="submit">
-        <Image src={"/icons/check.svg"} alt="confirm" width={24} height={24} />
-      </button>
-    </form>
   );
 }

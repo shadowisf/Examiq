@@ -38,7 +38,7 @@ export default function CourseOptions({
 
   function handleEdit() {
     setShowModal(true);
-    setSelectedStudents(course.students.uid || []);
+    setSelectedStudents(course.students.id || []);
   }
 
   function handleCancel() {

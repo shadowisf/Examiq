@@ -6,24 +6,17 @@ import ErrorMessage from "../../../components/ErrorMessage";
 import Link from "next/link";
 
 type CourseExamsProps = {
-  course: any;
   exams: any[];
   examsError: any;
 };
 
-export default function CourseExams({
-  course,
-  exams,
-  examsError,
-}: CourseExamsProps) {
-  const filteredExams = exams.filter((exam) => exam.course_id === course.id);
-
+export default function CourseExams({ exams, examsError }: CourseExamsProps) {
   return (
     <section className="exams-container">
       {examsError ? (
         <ErrorMessage>failed to load exams</ErrorMessage>
       ) : (
-        filteredExams.map((exam) => {
+        exams.map((exam) => {
           return (
             <Link href={`/exam/${exam.id}`} key={exam.id}>
               <Image

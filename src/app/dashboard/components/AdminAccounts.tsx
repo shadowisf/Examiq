@@ -13,6 +13,7 @@ import AdminAccountsModal from "./AdminAccountsModal";
 import ErrorMessage from "../../components/ErrorMessage";
 import InfoMessage from "../../components/InfoMessage";
 import Loading from "../../components/Loading";
+import { EntityTable } from "./_EntityTable";
 
 type AdminAccountsProps = {
   currentUser: any;
@@ -145,7 +146,7 @@ export default function AdminAccounts({
               <ErrorMessage>failed to load students</ErrorMessage>
             ) : students && students.length > 0 ? (
               <EntityTable
-                entity={students}
+                entities={students}
                 handleDelete={handleDelete}
                 handleEdit={handleEdit}
               />
@@ -160,7 +161,7 @@ export default function AdminAccounts({
               <ErrorMessage>failed to load teachers</ErrorMessage>
             ) : teachers && teachers.length > 0 ? (
               <EntityTable
-                entity={teachers}
+                entities={teachers}
                 handleDelete={handleDelete}
                 handleEdit={handleEdit}
               />
@@ -180,60 +181,5 @@ export default function AdminAccounts({
         )}
       </>
     )
-  );
-}
-
-type EntityTableProps = {
-  entity: any[];
-  handleEdit: (student: any) => void;
-  handleDelete: (student: any) => void;
-};
-
-function EntityTable({ entity, handleEdit, handleDelete }: EntityTableProps) {
-  return (
-    <table>
-      <thead>
-        <tr>
-          <th>id</th>
-          <th>name</th>
-          <th>date of creation</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {entity.map((student) => (
-          <tr key={student.id}>
-            <td>{student.id}</td>
-            <td>{student.user_metadata.display_name}</td>
-            <td>
-              {new Date(student.created_at).toLocaleString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </td>
-            <td className="actions-column">
-              <button onClick={() => handleEdit(student)}>
-                <Image
-                  src={"/icons/edit.svg"}
-                  alt="edit"
-                  width={24}
-                  height={24}
-                />
-              </button>
-
-              <button onClick={() => handleDelete(student)}>
-                <Image
-                  src={"/icons/trash.svg"}
-                  alt="delete"
-                  width={24}
-                  height={24}
-                />
-              </button>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
   );
 }

@@ -256,7 +256,7 @@ textarea {
     }
 
     .exam-create-container {
-      max-height: 500px;
+      max-height: 375px;
       overflow-y: auto;
       padding: 12px;
       border-radius: var(--border-radius);
@@ -465,9 +465,44 @@ textarea {
     }
   }
 
-  .student-timeline-container {
+  .student-exams-container {
     display: grid;
     gap: 24px;
+
+    h1 {
+      border-bottom: 1px solid var(--accent-color);
+    }
+
+    .exams-container {
+      display: grid;
+      gap: 8px;
+
+      h1 {
+        border-bottom: 1px solid var(--accent-color);
+      }
+
+      a {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: fit-content;
+        height: fit-content;
+        border-radius: var(--border-radius);
+        background-color: var(--secondary-color);
+        padding: 16px;
+        width: 100%;
+      }
+    }
+  }
+
+  .student-courses-container {
+    display: grid;
+    gap: 24px;
+
+    h1 {
+      border-bottom: 1px solid var(--accent-color);
+    }
   }
 }
 
@@ -502,6 +537,7 @@ textarea {
       border-radius: var(--border-radius);
       background-color: var(--secondary-color);
       padding: 16px;
+      width: 100%;
     }
   }
 }

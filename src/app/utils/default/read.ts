@@ -85,12 +85,9 @@ export async function readAllCourses() {
   try {
     const supabase = await createClient();
 
-    const { currentUser } = await readCurrentUser();
-
     const { data: courses, error: coursesError } = await supabase
       .from("course")
-      .select("*")
-      .eq("author", currentUser?.user.id);
+      .select("*");
 
     if (coursesError) {
       throw new Error(coursesError.message);
@@ -111,12 +108,9 @@ export async function readAllExams() {
   try {
     const supabase = await createClient();
 
-    const { currentUser } = await readCurrentUser();
-
     const { data: exams, error: examsError } = await supabase
       .from("exam")
-      .select("*")
-      .eq("author", currentUser?.user.id);
+      .select("*");
 
     if (examsError) {
       throw new Error(examsError.message);

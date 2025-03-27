@@ -108,6 +108,43 @@ export async function deleteAccount(user: any) {
   }
 }
 
+export async function deleteStudentFromCourse(user: any) {
+  try {
+    const supabase = await createClient();
+
+    const { data, error } = await supabase
+      .from("course")
+      .select("id, students")
+      .filter("students->id", "cs", `["${user.id}"]`);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    for (const course of data) {
+      const updatedStudents = {
+        id: course.students.id.filter((id: string) => id !== user.id),
+      };
+
+      const { error } = await supabase
+        .from("course")
+        .update({ students: updatedStudents })
+        .eq("id", course.id);
+
+      if (error) {
+        throw new Error(error.message);
+      }
+    }
+
+    revalidatePath("/dashboard", "layout");
+  } catch (e) {
+    const errorMessage = (e as Error).message;
+
+    console.error(errorMessage);
+    return { error: { message: errorMessage } };
+  }
+}
+
 // TEACHER
 export async function createCourse(
   formData: FormData,
@@ -126,7 +163,7 @@ export async function createCourse(
           name: formData.get("course name") as string,
           description: formData.get("course description") as string,
           author: currentUser?.user.id,
-          students: { uid: selectedStudents },
+          students: { id: selectedStudents },
         },
       ])
       .select();
@@ -161,7 +198,7 @@ export async function updateCourse(
       .update({
         name: formData.get("course name") as string,
         description: formData.get("course description") as string,
-        students: { uid: selectedStudents },
+        students: { id: selectedStudents },
       })
       .eq("id", course.id);
 
@@ -190,43 +227,6 @@ export async function deleteCourse(course: any) {
 
     if (error) {
       throw new Error(error.message);
-    }
-
-    revalidatePath("/dashboard", "layout");
-  } catch (e) {
-    const errorMessage = (e as Error).message;
-
-    console.error(errorMessage);
-    return { error: { message: errorMessage } };
-  }
-}
-
-export async function deleteStudentFromCourse(user: any) {
-  try {
-    const supabase = await createClient();
-
-    const { data, error } = await supabase
-      .from("course")
-      .select("id, students")
-      .filter("students->uid", "cs", `["${user.id}"]`);
-
-    if (error) {
-      throw new Error(error.message);
-    }
-
-    for (const course of data) {
-      const updatedStudents = {
-        uid: course.students.uid.filter((id: string) => id !== user.id),
-      };
-
-      const { error } = await supabase
-        .from("course")
-        .update({ students: updatedStudents })
-        .eq("id", course.id);
-
-      if (error) {
-        throw new Error(error.message);
-      }
     }
 
     revalidatePath("/dashboard", "layout");
