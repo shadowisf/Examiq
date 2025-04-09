@@ -3,12 +3,13 @@
 import BigLogo from "@/app/components/BigLogo";
 import ErrorMessage from "@/app/components/ErrorMessage";
 import Loading from "@/app/components/Loading";
-import { useSearchParams, redirect } from "next/navigation";
+import { useSearchParams, redirect, usePathname } from "next/navigation";
 import { useTransition, useState, useEffect } from "react";
 import { signIn } from "../actions";
 import Image from "next/image";
 import InfoMessage from "@/app/components/InfoMessage";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 type SignInFormProps = {
   currentUser: any;
@@ -19,6 +20,7 @@ export default function SignInForm({
   currentUser,
   currentUserError,
 }: SignInFormProps) {
+  const path = usePathname();
   const searchParams = useSearchParams();
 
   const [isPending, startTransition] = useTransition();
@@ -26,8 +28,8 @@ export default function SignInForm({
   const [userType, setUserType] = useState("");
   const [error, setError] = useState("");
 
-  const role = currentUser?.user.user_metadata?.role;
-  const displayName = currentUser?.user.user_metadata?.display_name;
+  const role = currentUser?.user?.user_metadata?.role ?? "guest";
+  const displayName = currentUser?.user?.user_metadata?.display_name ?? "";
   const firstName = displayName ? displayName.split(" ")[0] : "";
 
   useEffect(() => {
@@ -37,6 +39,12 @@ export default function SignInForm({
       setUserType(userTypeFromParams);
     }
   }, [searchParams]);
+
+  useEffect(() => {
+    if (path === "/signin" && searchParams.toString() === "") {
+      redirect("/");
+    }
+  }, [path, searchParams]);
 
   function handleKeyDown(event: React.KeyboardEvent) {
     if (event.key === " ") {
@@ -61,7 +69,7 @@ export default function SignInForm({
       {isPending && <Loading />}
 
       <main className="signin-page">
-        {!currentUser.user || currentUserError ? (
+        {!currentUser?.user || currentUserError ? (
           <>
             <section className="text-container">
               <BigLogo />

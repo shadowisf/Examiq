@@ -1,6 +1,8 @@
 "use client";
 
+import EyeTracker from "@/app/exam/[id]/components/EyeTracker";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 type ExamFormProps = {
   exam: any;
@@ -8,11 +10,13 @@ type ExamFormProps = {
 };
 
 export default function ExamForm({ exam, currentUser }: ExamFormProps) {
+  const [startExam, setStartExam] = useState(true);
+
   async function handleSubmit(formData: FormData) {
     console.log(formData);
   }
 
-  return (
+  return startExam || currentUser.user.user_metadata.role === "teacher" ? (
     <form action={handleSubmit}>
       {exam.items.map((item: any, index: number) => (
         <div key={item.id} className="question">
@@ -30,6 +34,7 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
                     name={`question-${item.index}`}
                     value={choice}
                     required
+                    disabled={currentUser.user.user_metadata.role === "teacher"}
                   />
                   {choice}
                 </label>
@@ -42,6 +47,7 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
               name={`question-${item.index}`}
               placeholder="answer"
               required
+              disabled={currentUser.user.user_metadata.role === "teacher"}
             />
           )}
 
@@ -50,6 +56,7 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
               name={`question-${item.index}`}
               placeholder="answer"
               required
+              disabled={currentUser.user.user_metadata.role === "teacher"}
             />
           )}
 
@@ -61,6 +68,7 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
                   type="radio"
                   value={"true"}
                   required
+                  disabled={currentUser.user.user_metadata.role === "teacher"}
                 />
                 true
               </label>
@@ -70,6 +78,7 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
                   type="radio"
                   value={"false"}
                   required
+                  disabled={currentUser.user.user_metadata.role === "teacher"}
                 />
                 false
               </label>
@@ -84,5 +93,11 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
         </button>
       )}
     </form>
+  ) : (
+    currentUser.user.user_metadata.role === "teacher " && (
+      <section className="eyetracker-calibration-page">
+        {/* <EyeTracker setStartExam={setStartExam} /> */}
+      </section>
+    )
   );
 }

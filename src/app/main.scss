@@ -365,10 +365,6 @@ textarea {
     p {
       text-align: center;
     }
-
-    span {
-      text-decoration: underline;
-    }
   }
 
   form {
@@ -583,4 +579,39 @@ textarea {
       text-align: left;
     }
   }
+}
+
+.eyetracker-calibration-page {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--primary-color);
+}
+
+#webgazerVideoContainer {
+  margin-top: 100px;
+}
+
+#myNavbar {
+  ul:nth-of-type(2) {
+    display: none;
+  }
+}
+
+.sc-dVBluf {
+  margin-top: 100px;
+}
+
+#plotting_canvas {
+  background-color: var(--primary-color);
+}
+
+.sc-dkBYrC {
+  display: none;
+}
+
+#closeBtn {
+  display: none;
 }
