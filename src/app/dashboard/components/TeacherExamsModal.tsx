@@ -50,12 +50,15 @@ export default function TeacherExamsModal({
         {coursesError ? (
           <ErrorMessage>failed to load courses</ErrorMessage>
         ) : courses && courses.length > 0 ? (
-          <form action={(formData) => handleConfirm(formData)}>
+          <form action={handleConfirm}>
             <select
               name="exam course"
               defaultValue={isEditMode ? selectedExam.course_id : ""}
               required
             >
+              <option value="" disabled hidden defaultChecked>
+                course
+              </option>
               {courses?.map((course) => {
                 return (
                   <option key={course.id} value={course.id}>
@@ -72,9 +75,11 @@ export default function TeacherExamsModal({
               required
               defaultValue={isEditMode ? selectedExam.name : ""}
             />
+
             <input
               name="exam duration"
               type="number"
+              min={1}
               placeholder="duration"
               required
               defaultValue={isEditMode ? selectedExam.duration : ""}
@@ -83,7 +88,10 @@ export default function TeacherExamsModal({
             <br />
 
             <div className="exam-create-controls">
-              <select onChange={handleSelectExamType}>
+              <select defaultValue={""} onChange={handleSelectExamType}>
+                <option value="" disabled hidden>
+                  exam type
+                </option>
                 <option value="multiple-choice">multiple choice</option>
                 <option value="paragraph">paragraph</option>
                 <option value="fill-in-the-blank">fill in the blank</option>
@@ -111,7 +119,7 @@ export default function TeacherExamsModal({
 
                       <textarea
                         placeholder="question"
-                        value={item.question}
+                        defaultValue={isEditMode ? item.question : ""}
                         onChange={(e) =>
                           updateExamItem(index, "question", e.target.value)
                         }
@@ -125,7 +133,7 @@ export default function TeacherExamsModal({
                                 key={choiceIndex}
                                 type="text"
                                 placeholder={`option ${choiceIndex + 1}`}
-                                value={choice}
+                                defaultValue={isEditMode ? choice : ""}
                                 onChange={(e) =>
                                   updateChoice(
                                     index,
@@ -136,14 +144,37 @@ export default function TeacherExamsModal({
                               />
                             )
                           )}
+
+                          <select
+                            required
+                            onChange={(e) =>
+                              updateExamItem(
+                                index,
+                                "correctAnswer",
+                                e.target.value
+                              )
+                            }
+                            defaultValue={isEditMode ? item.correctAnswer : ""}
+                          >
+                            <option value="" disabled hidden defaultChecked>
+                              correct answer
+                            </option>
+                            <option value="option-1">option 1</option>
+                            <option value="option-2">option 2</option>
+                            <option value="option-3">option 3</option>
+                          </select>
                         </>
                       )}
 
-                      {item.type !== "paragraph" && (
+                      {item.type === "fill-in-the-blank" && (
                         <input
+                          pattern={`^(${[
+                            ...new Set(item.question.match(/\b\w+\b/g)),
+                          ].join("|")})$`}
+                          required
                           type="text"
                           placeholder="correct answer"
-                          value={item.correctAnswer}
+                          defaultValue={isEditMode ? item.correctAnswer : ""}
                           onChange={(e) =>
                             updateExamItem(
                               index,
@@ -152,6 +183,26 @@ export default function TeacherExamsModal({
                             )
                           }
                         />
+                      )}
+
+                      {item.type === "true-or-false" && (
+                        <select
+                          required
+                          onChange={(e) =>
+                            updateExamItem(
+                              index,
+                              "correctAnswer",
+                              e.target.value
+                            )
+                          }
+                          defaultValue={isEditMode ? item.correctAnswer : ""}
+                        >
+                          <option value="" disabled hidden defaultChecked>
+                            correct answer
+                          </option>
+                          <option value="true">true</option>
+                          <option value="false">false</option>
+                        </select>
                       )}
                     </div>
 

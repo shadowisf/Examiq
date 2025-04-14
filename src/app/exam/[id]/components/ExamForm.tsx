@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
-import { EyeTracking } from "react-eye-tracking";
+import { useRef, useState } from "react";
+import EyeTracker from "./EyeTracker";
 
 type ExamFormProps = {
   exam: any;
@@ -11,52 +11,18 @@ type ExamFormProps = {
 
 export default function ExamForm({ exam, currentUser }: ExamFormProps) {
   const [startExam, setStartExam] = useState(false);
-  const [calibration, setCalibration] = useState(false);
-  const [lastNotifiedCorner, setLastNotifiedCorner] = useState<string | null>(
-    null
-  );
+  const gazeCountsRef = useRef<Record<string, number>>({
+    topleft: 0,
+    topright: 0,
+    bottomleft: 0,
+    bottomright: 0,
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+  });
 
-  const handleGazeData = useCallback(
-    (data: any, elapsedTime: number) => {
-      if (!data || typeof data.x !== "number" || typeof data.y !== "number")
-        return;
-
-      const screenWidth = window.innerWidth;
-      const screenHeight = window.innerHeight;
-
-      const thresholdX = startExam ? 0.05 : -1; // 10% from left or right (sides of the screen)
-      const thresholdY = startExam ? 0.05 : -1; // 10% from top or bottom (sides of the screen)
-
-      const isLeft = data.x < screenWidth * thresholdX;
-      const isRight = data.x > screenWidth * (1 - thresholdX);
-      const isTop = data.y < screenHeight * thresholdY;
-      const isBottom = data.y > screenHeight * (1 - thresholdY);
-
-      let currentArea: string | null = null;
-
-      if (isLeft && isTop) currentArea = "top-left";
-      else if (isRight && isTop) currentArea = "top-right";
-      else if (isLeft && isBottom) currentArea = "bottom-left";
-      else if (isRight && isBottom) currentArea = "bottom-right";
-      else if (isLeft) currentArea = "left";
-      else if (isRight) currentArea = "right";
-      else if (isTop) currentArea = "top";
-      else if (isBottom) currentArea = "bottom";
-
-      if (currentArea && currentArea !== lastNotifiedCorner) {
-        alert(`You're looking at the ${currentArea} area!`);
-        setLastNotifiedCorner(currentArea);
-
-        // Reset lastNotifiedCorner after 3 seconds to allow new alerts
-        setTimeout(() => setLastNotifiedCorner(null), 3000);
-      }
-    },
-    [lastNotifiedCorner, startExam]
-  );
-
-  async function handleSubmit(formData: FormData) {
-    console.log(formData);
-  }
+  async function handleSubmit(formData: FormData) {}
 
   return startExam || currentUser.user.user_metadata.role === "teacher" ? (
     <form action={handleSubmit}>
@@ -64,7 +30,13 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
         <div key={item.id} className="question">
           <h4>
             <span>{index + 1}. </span>
-            {item.question}
+
+            {item.type == "fill-in-the-blank"
+              ? item.question.replace(
+                  new RegExp(item.correctAnswer, "i"),
+                  "_____"
+                )
+              : item.question}
           </h4>
 
           {item.type === "multiple-choice" && (
@@ -74,7 +46,7 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
                   <input
                     type="radio"
                     name={`question-${item.index}`}
-                    value={choice}
+                    value={"option-" + choiceIndex}
                     required
                     disabled={currentUser.user.user_metadata.role === "teacher"}
                   />
@@ -112,7 +84,7 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
                   required
                   disabled={currentUser.user.user_metadata.role === "teacher"}
                 />
-                true
+                True
               </label>
               <label>
                 <input
@@ -122,7 +94,7 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
                   required
                   disabled={currentUser.user.user_metadata.role === "teacher"}
                 />
-                false
+                False
               </label>
             </div>
           )}
@@ -137,18 +109,7 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
     </form>
   ) : (
     currentUser.user.user_metadata.role === "student" && (
-      <section className="eyetracker-calibration-page">
-        <button onClick={() => setCalibration(true)}>Calibrate</button>
-        <button onClick={() => setStartExam(true)}>Start Exam</button>
-
-        <EyeTracking
-          show={calibration}
-          setShow={setCalibration}
-          showCamera={true}
-          showPoint={true}
-          listener={handleGazeData}
-        />
-      </section>
+      <EyeTracker setStartExam={setStartExam} gazeCountsRef={gazeCountsRef} />
     )
   );
 }

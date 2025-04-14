@@ -13,7 +13,7 @@ export default async function Home() {
   return (
     <main className="intro-page">
       <Link href={"/signin?user=teacher"}>
-        <h1>teachers</h1>
+        <h1>teacher</h1>
         <Image
           src={"/images/teacher.png"}
           alt="intro"
@@ -23,7 +23,7 @@ export default async function Home() {
       </Link>
 
       <Link href={"/signin?user=student"}>
-        <h1>students</h1>
+        <h1>student</h1>
         <Image
           src={"/images/student.png"}
           alt="intro"

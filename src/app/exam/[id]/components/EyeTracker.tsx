@@ -1,71 +1,78 @@
-import { useState, useCallback, useEffect } from "react";
+import InfoMessage from "@/app/components/InfoMessage";
+import { useState, useCallback } from "react";
 import { EyeTracking } from "react-eye-tracking";
 
 type EyeTrackerProps = {
-  startExam: boolean;
-  setStartExam: (start: boolean) => void;
+  gazeCountsRef: any;
+  setStartExam: (v: boolean) => void;
 };
 
 export default function EyeTracker({
-  startExam,
+  gazeCountsRef,
   setStartExam,
 }: EyeTrackerProps) {
   const [calibration, setCalibration] = useState(false);
-  const [lastNotifiedCorner, setLastNotifiedCorner] = useState<string | null>(
-    null
-  );
-  const [antiCheat, setAntiCheat] = useState(false);
+  const [calibrationCount, setCalibrationCount] = useState(0);
 
-  useEffect(() => {
-    if (startExam) {
-      setAntiCheat(true);
+  const handleGazeData = useCallback((data: any) => {
+    if (!data || typeof data.x !== "number" || typeof data.y !== "number") {
+      return;
     }
-  }, [startExam]);
 
-  const handleGazeData = useCallback(
-    (data: any, elapsedTime: number) => {
-      if (!data || typeof data.x !== "number" || typeof data.y !== "number")
-        return;
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
 
-      const screenWidth = window.innerWidth;
-      const screenHeight = window.innerHeight;
+    const thresholdX = 0.015; // 1% from left or right
+    const thresholdY = 0.015; // 1% from top or bottom
 
-      const thresholdX = -1; // 10% from left or right (sides of the screen)
-      const thresholdY = -1; // 10% from top or bottom (sides of the screen)
+    const isLeft = data.x < screenWidth * thresholdX;
+    const isRight = data.x > screenWidth * (1 - thresholdX);
+    const isTop = data.y < screenHeight * thresholdY;
+    const isBottom = data.y > screenHeight * (1 - thresholdY);
 
-      const isLeft = data.x < screenWidth * thresholdX;
-      const isRight = data.x > screenWidth * (1 - thresholdX);
-      const isTop = data.y < screenHeight * thresholdY;
-      const isBottom = data.y > screenHeight * (1 - thresholdY);
+    let currentArea: string | null = null;
 
-      let currentArea: string | null = null;
+    if (isLeft && isTop) currentArea = "topleft";
+    else if (isRight && isTop) currentArea = "topright";
+    else if (isLeft && isBottom) currentArea = "bottomleft";
+    else if (isRight && isBottom) currentArea = "bottomright";
+    else if (isLeft) currentArea = "left";
+    else if (isRight) currentArea = "right";
+    else if (isTop) currentArea = "top";
+    else if (isBottom) currentArea = "bottom";
 
-      if (isLeft && isTop) currentArea = "top-left";
-      else if (isRight && isTop) currentArea = "top-right";
-      else if (isLeft && isBottom) currentArea = "bottom-left";
-      else if (isRight && isBottom) currentArea = "bottom-right";
-      else if (isLeft) currentArea = "left";
-      else if (isRight) currentArea = "right";
-      else if (isTop) currentArea = "top";
-      else if (isBottom) currentArea = "bottom";
-
-      if (currentArea && currentArea !== lastNotifiedCorner) {
-        alert(`You're looking at the ${currentArea} area!`);
-        setLastNotifiedCorner(currentArea);
-
-        // Reset lastNotifiedCorner after 3 seconds to allow new alerts
-        setTimeout(() => setLastNotifiedCorner(null), 3000);
-      }
-    },
-    [lastNotifiedCorner, startExam]
-  );
+    if (currentArea) {
+      gazeCountsRef.current[currentArea] += 1;
+    }
+  }, []);
 
   return (
     <>
-      <main className="eyetracker">
-        <button onClick={() => setCalibration(true)}>Calibrate</button>
-        <button onClick={() => setStartExam(true)}>Start Exam</button>
-      </main>
+      <section className="eyetracker-calibration-page">
+        <h2>PRE-REQUISITES:</h2>
+        <InfoMessage>
+          - functioning camera and good lighting is required.
+          <br />- this window must be in fullscreen.
+          <br />- calibration is required before starting the exam.
+        </InfoMessage>
+
+        <div>
+          <button
+            onClick={() => {
+              setCalibrationCount(calibrationCount + 1);
+              setCalibration(true);
+            }}
+          >
+            Calibrate
+          </button>
+          <button
+            disabled={calibrationCount < 1}
+            onClick={() => setStartExam(true)}
+          >
+            Start Exam
+          </button>
+        </div>
+      </section>
 
       {/* <EyeTracking
         show={calibration}

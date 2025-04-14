@@ -32,7 +32,7 @@ export default function TeacherExams({
   const [error, setError] = useState("");
 
   const [selectedExam, setSelectedExam] = useState<any>(null);
-  const [selectedExamType, setSelectedExamType] = useState("multiple-choice");
+  const [selectedExamType, setSelectedExamType] = useState("");
   const [examItems, setExamItems] = useState<any[]>([]);
 
   function handleSelectExamType(event: React.ChangeEvent<HTMLSelectElement>) {
@@ -40,6 +40,10 @@ export default function TeacherExams({
   }
 
   function createExamItem() {
+    if (!selectedExamType) {
+      return;
+    }
+
     const newExamItem: any = {
       id: examItems.length,
       type: selectedExamType,
@@ -85,7 +89,7 @@ export default function TeacherExams({
     setShowModal(true);
     setIsEditMode(false);
     setSelectedExam(null);
-    setSelectedExamType("multiple-choice");
+    setSelectedExamType("");
     setExamItems([]);
   }
 
@@ -93,7 +97,7 @@ export default function TeacherExams({
     setShowModal(false);
     setIsEditMode(false);
     setSelectedExam(null);
-    setSelectedExamType("multiple-choice");
+    setSelectedExamType("");
     setExamItems([]);
   }
 
@@ -111,7 +115,7 @@ export default function TeacherExams({
       setIsEditMode(false);
       setError("");
       setSelectedExam(null);
-      setSelectedExamType("multiple-choice");
+      setSelectedExamType("");
       setExamItems([]);
     });
   }

@@ -156,6 +156,15 @@ button {
   &:hover {
     background-color: var(--accent-color);
   }
+
+  &:disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+
+    &:hover {
+      background-color: white;
+    }
+  }
 }
 
 input,
@@ -177,6 +186,10 @@ textarea {
   &::-ms-reveal,
   &::-webkit-calendar-picker-indicator {
     filter: invert(100%);
+  }
+
+  &:has(option[value=""]:checked) {
+    color: gray;
   }
 }
 
@@ -248,7 +261,7 @@ textarea {
 
     .exam-create-controls {
       display: flex;
-      gap: 8px;
+      gap: 24px;
 
       select {
         width: 100%;
@@ -278,7 +291,8 @@ textarea {
         }
 
         textarea,
-        input {
+        input,
+        select {
           background-color: var(--primary-color);
         }
 
@@ -579,15 +593,18 @@ textarea {
       text-align: left;
     }
   }
-}
 
-.eyetracker-calibration-page {
-  /* position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%; */
-  background-color: var(--primary-color);
+  .eyetracker-calibration-page {
+    display: grid;
+    gap: 16px;
+
+    background-color: var(--primary-color);
+
+    div {
+      display: flex;
+      gap: 8px;
+    }
+  }
 }
 
 #webgazerVideoContainer {

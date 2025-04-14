@@ -115,7 +115,7 @@ export default async function Dashboard() {
 
         <Link href="#exams">
           <h1>exams</h1>
-          <p className="gray">view the exams under courses you manage</p>
+          <p className="gray">view the exams under the courses you manage</p>
         </Link>
       </>
     );
