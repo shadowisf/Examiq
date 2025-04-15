@@ -8,12 +8,14 @@ import {
   readAllStudents,
   readAllCourses,
   readAllExams,
+  readAllResults,
 } from "../utils/default/read";
 import TeacherCourses from "./components/TeacherCourses";
 import TeacherExams from "./components/TeacherExams";
 import StudentExams from "./components/StudentExams";
 import InfoMessage from "../components/InfoMessage";
 import StudentCourses from "./components/StudentCourses";
+import TeacherResults from "./components/TeacherResults";
 
 export default async function Dashboard() {
   const { currentUser, currentUserError } = await readCurrentUser();
@@ -21,6 +23,7 @@ export default async function Dashboard() {
   const { students = [], studentsError } = await readAllStudents();
   const { courses, coursesError } = await readAllCourses();
   const { exams, examsError } = await readAllExams();
+  const { results = [], resultsError } = await readAllResults();
 
   let filteredCourses: any;
   let filteredExams: any;
@@ -35,8 +38,10 @@ export default async function Dashboard() {
         courses?.filter((course) =>
           course.students?.id?.includes(currentUser.user.id)
         ) || [];
+
       var filteredCourseIDs =
         filteredCourses?.map((course: any) => course.id) || [];
+
       filteredExams =
         exams
           ?.filter((exam) => filteredCourseIDs.includes(exam.course_id))
@@ -46,13 +51,16 @@ export default async function Dashboard() {
               (course: any) => course.id === exam.course_id
             )?.name,
           })) || [];
+
       break;
     case "teacher":
       filteredCourses =
         courses?.filter((course) => course.author === currentUser.user.id) ||
         [];
+
       var filteredCourseIDs =
         filteredCourses?.map((course: any) => course.id) || [];
+
       filteredExams =
         exams
           ?.filter((exam) => exam.author === currentUser.user.id)
@@ -62,6 +70,7 @@ export default async function Dashboard() {
               (course: any) => course.id === exam.course_id
             )?.name,
           })) || [];
+
       break;
   }
 
@@ -110,12 +119,17 @@ export default async function Dashboard() {
       <>
         <Link href="#courses">
           <h1>courses</h1>
-          <p className="gray">view the courses you manage</p>
+          <InfoMessage>view the courses you manage</InfoMessage>
         </Link>
 
         <Link href="#exams">
           <h1>exams</h1>
-          <p className="gray">view the exams under the courses you manage</p>
+          <InfoMessage>view the exams under the courses you manage</InfoMessage>
+        </Link>
+
+        <Link href="#results">
+          <h1>results</h1>
+          <InfoMessage>view the exam results made by students</InfoMessage>
         </Link>
       </>
     );
@@ -136,6 +150,13 @@ export default async function Dashboard() {
           coursesError={coursesError}
           exams={filteredExams}
           examsError={examsError}
+        />
+
+        <TeacherResults
+          results={results}
+          resultsError={resultsError}
+          students={students}
+          studentsError={studentsError}
         />
       </>
     );

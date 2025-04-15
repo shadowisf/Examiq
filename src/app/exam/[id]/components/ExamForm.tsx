@@ -1,8 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useRef, useState, useTransition } from "react";
 import EyeTracker from "./EyeTracker";
+import { createResult } from "../actions";
+import Loading from "@/app/components/Loading";
+import ErrorMessage from "@/app/components/ErrorMessage";
+import { redirect } from "next/navigation";
 
 type ExamFormProps = {
   exam: any;
@@ -10,6 +14,9 @@ type ExamFormProps = {
 };
 
 export default function ExamForm({ exam, currentUser }: ExamFormProps) {
+  const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState("");
+
   const [startExam, setStartExam] = useState(false);
   const gazeCountsRef = useRef<Record<string, number>>({
     topleft: 0,
@@ -22,91 +29,116 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
     bottom: 0,
   });
 
-  async function handleSubmit(formData: FormData) {}
+  async function handleSubmit(formData: FormData) {
+    startTransition(async () => {
+      const result = await createResult(formData, exam, 0);
+
+      if (result?.error) {
+        setError(result.error.message);
+      }
+
+      alert("exam submitted successfully");
+
+      redirect("/dashboard");
+    });
+  }
 
   return startExam || currentUser.user.user_metadata.role === "teacher" ? (
-    <form action={handleSubmit}>
-      {exam.items.map((item: any, index: number) => (
-        <div key={item.id} className="question">
-          <h4>
-            <span>{index + 1}. </span>
+    <>
+      {isPending && <Loading />}
 
-            {item.type == "fill-in-the-blank"
-              ? item.question.replace(
-                  new RegExp(item.correctAnswer, "i"),
-                  "_____"
-                )
-              : item.question}
-          </h4>
+      {error && <ErrorMessage>{error}</ErrorMessage>}
 
-          {item.type === "multiple-choice" && (
-            <div className="choices">
-              {item.choices.map((choice: string, choiceIndex: number) => (
-                <label key={choiceIndex}>
+      <form action={handleSubmit}>
+        {exam.items.map((item: any, index: number) => (
+          <div key={item.id} className="question">
+            <h4>
+              <span>{index + 1}. </span>
+
+              {item.type == "fill-in-the-blank"
+                ? item.question.replace(
+                    new RegExp(item.correctAnswer, "i"),
+                    "_____"
+                  )
+                : item.question}
+            </h4>
+
+            {item.type === "multiple-choice" && (
+              <div className="choices">
+                {item.choices.map((choice: string, choiceIndex: number) => (
+                  <label key={choiceIndex}>
+                    <input
+                      type="radio"
+                      name={`question-${index + 1}`}
+                      value={`option-${choiceIndex + 1}`}
+                      required
+                      disabled={
+                        currentUser.user.user_metadata.role === "teacher"
+                      }
+                    />
+                    {choice}
+                  </label>
+                ))}
+              </div>
+            )}
+
+            {item.type === "paragraph" && (
+              <textarea
+                name={`question-${index + 1}`}
+                placeholder="answer"
+                required
+                disabled={currentUser.user.user_metadata.role === "teacher"}
+              />
+            )}
+
+            {item.type === "fill-in-the-blank" && (
+              <input
+                name={`question-${index + 1}`}
+                placeholder="answer"
+                required
+                disabled={currentUser.user.user_metadata.role === "teacher"}
+              />
+            )}
+
+            {item.type === "true-or-false" && (
+              <div className="choices">
+                <label>
                   <input
+                    name={`question-${index + 1}`}
                     type="radio"
-                    name={`question-${item.index}`}
-                    value={"option-" + choiceIndex}
+                    value={"true"}
                     required
                     disabled={currentUser.user.user_metadata.role === "teacher"}
                   />
-                  {choice}
+                  True
                 </label>
-              ))}
-            </div>
-          )}
+                <label>
+                  <input
+                    name={`question-${index + 1}`}
+                    type="radio"
+                    value={"false"}
+                    required
+                    disabled={currentUser.user.user_metadata.role === "teacher"}
+                  />
+                  False
+                </label>
+              </div>
+            )}
+          </div>
+        ))}
 
-          {item.type === "paragraph" && (
-            <textarea
-              name={`question-${item.index}`}
-              placeholder="answer"
-              required
-              disabled={currentUser.user.user_metadata.role === "teacher"}
+        {currentUser.user.user_metadata.role === "student" && (
+          <button type="submit">
+            <Image
+              src={"/icons/check.svg"}
+              alt="submit"
+              width={24}
+              height={24}
             />
-          )}
-
-          {item.type === "fill-in-the-blank" && (
-            <input
-              name={`question-${item.index}`}
-              placeholder="answer"
-              required
-              disabled={currentUser.user.user_metadata.role === "teacher"}
-            />
-          )}
-
-          {item.type === "true-or-false" && (
-            <div className="choices">
-              <label>
-                <input
-                  name={`question-${item.index}`}
-                  type="radio"
-                  value={"true"}
-                  required
-                  disabled={currentUser.user.user_metadata.role === "teacher"}
-                />
-                True
-              </label>
-              <label>
-                <input
-                  name={`question-${item.index}`}
-                  type="radio"
-                  value={"false"}
-                  required
-                  disabled={currentUser.user.user_metadata.role === "teacher"}
-                />
-                False
-              </label>
-            </div>
-          )}
-        </div>
-      ))}
-
-      {currentUser.user.user_metadata.role === "student" && (
-        <button type="submit">
-          <Image src={"/icons/check.svg"} alt="submit" width={24} height={24} />
-        </button>
-      )}
-    </form>
+          </button>
+        )}
+      </form>
+    </>
   ) : (
     currentUser.user.user_metadata.role === "student" && (
       <EyeTracker setStartExam={setStartExam} gazeCountsRef={gazeCountsRef} />

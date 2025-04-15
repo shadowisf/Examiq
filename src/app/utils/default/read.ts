@@ -127,3 +127,27 @@ export async function readAllExams() {
     return { examsError: { message: errorMessage } };
   }
 }
+
+export async function readAllResults() {
+  try {
+    const supabase = await createClient();
+
+    const { data: results, error: resultsError } = await supabase
+      .from("result")
+      .select("*");
+
+    if (resultsError) {
+      throw new Error(resultsError.message);
+    }
+
+    return {
+      results,
+      resultsError,
+    };
+  } catch (e) {
+    const errorMessage = (e as Error).message;
+
+    console.error(errorMessage);
+    return { resultsError: { message: errorMessage } };
+  }
+}

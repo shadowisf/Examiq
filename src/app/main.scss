@@ -479,6 +479,20 @@ textarea {
     }
   }
 
+  .teacher-results-container {
+    display: grid;
+    gap: 24px;
+
+    .button-container {
+      display: flex;
+      gap: 8px;
+    }
+
+    h1 {
+      border-bottom: 1px solid var(--accent-color);
+    }
+  }
+
   .student-exams-container {
     display: grid;
     gap: 24px;

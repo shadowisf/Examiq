@@ -25,7 +25,7 @@ export default function ExamOptions({
   const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState("");
 
-  const [selectedExamType, setSelectedExamType] = useState("multiple-choice");
+  const [selectedExamType, setSelectedExamType] = useState("");
   const [examItems, setExamItems] = useState<any[]>([]);
 
   function handleSelectExamType(event: React.ChangeEvent<HTMLSelectElement>) {
@@ -33,6 +33,10 @@ export default function ExamOptions({
   }
 
   function createExamItem() {
+    if (!selectedExamType) {
+      return;
+    }
+
     const newExamItem: any = {
       id: examItems.length,
       type: selectedExamType,
@@ -76,7 +80,7 @@ export default function ExamOptions({
 
   function handleCancel() {
     setShowModal(false);
-    setSelectedExamType("multiple-choice");
+    setSelectedExamType("");
     setExamItems([]);
   }
 

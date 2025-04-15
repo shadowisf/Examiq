@@ -170,7 +170,15 @@ export default function TeacherExamsModal({
                         <input
                           pattern={`^(${[
                             ...new Set(item.question.match(/\b\w+\b/g)),
-                          ].join("|")})$`}
+                          ]
+                            .map((w: any) =>
+                              w.replace(
+                                /./g,
+                                (c: any) =>
+                                  `[${c.toLowerCase()}${c.toUpperCase()}]`
+                              )
+                            )
+                            .join("|")})$`}
                           required
                           type="text"
                           placeholder="correct answer"

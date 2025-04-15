@@ -4,18 +4,7 @@ import { createClient } from "../utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { readCurrentUser } from "../utils/default/read";
-
-function generateIdentifier(prefix: string) {
-  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  let result = "";
-  const charactersLength = characters.length;
-
-  for (let i = 0; i < 8; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-
-  return `${prefix}-` + result;
-}
+import { generateID } from "../utils/default/generateID";
 
 // ADMIN
 export async function createAccount(formData: FormData) {
@@ -159,7 +148,7 @@ export async function createCourse(
       .from("course")
       .insert([
         {
-          id: generateIdentifier("C"),
+          id: generateID("C"),
           name: formData.get("course name") as string,
           description: formData.get("course description") as string,
           author: currentUser?.user.id,
@@ -246,7 +235,7 @@ export async function createExam(formData: FormData, examItems: any[]) {
 
     const { error: tableError } = await supabase.from("exam").insert([
       {
-        id: generateIdentifier("E"),
+        id: generateID("E"),
         course_id: formData.get("exam course") as string,
         name: formData.get("exam name") as string,
         duration: formData.get("exam duration") as string,
@@ -309,6 +298,28 @@ export async function deleteExam(exam: any) {
     const supabase = await createClient();
 
     const { error } = await supabase.from("exam").delete().eq("id", exam.id);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    revalidatePath("/dashboard", "layout");
+  } catch (e) {
+    const errorMessage = (e as Error).message;
+
+    console.error(errorMessage);
+    return { error: { message: errorMessage } };
+  }
+}
+
+export async function deleteResult(result: any) {
+  try {
+    const supabase = await createClient();
+
+    const { error } = await supabase
+      .from("result")
+      .delete()
+      .eq("id", result.id);
 
     if (error) {
       throw new Error(error.message);
