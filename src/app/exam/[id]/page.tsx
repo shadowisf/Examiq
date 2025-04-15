@@ -7,13 +7,7 @@ import { readAllCourses, readCurrentUser } from "@/app/utils/default/read";
 import ExamOptions from "./components/ExamOptions";
 import { readSingleCourse } from "@/app/course/[id]/actions";
 
-type ExamProps = {
-  params: {
-    id: string;
-  };
-};
-
-export default async function Course({ params }: ExamProps) {
+export default async function Course({ params }: { params: { id: string } }) {
   const { currentUser, currentUserError } = await readCurrentUser();
   const { courses = [], coursesError } = await readAllCourses();
   const { exam, examError } = await readSingleExam(params.id);

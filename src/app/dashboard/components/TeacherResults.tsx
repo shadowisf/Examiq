@@ -6,7 +6,9 @@ import ErrorMessage from "../../components/ErrorMessage";
 import InfoMessage from "../../components/InfoMessage";
 import Loading from "../../components/Loading";
 import { ResultTable } from "./_ResultTable";
-import { deleteResult } from "../actions";
+import { deleteResult, updateResult } from "../actions";
+import Image from "next/image";
+import TeacherResultsModal from "./TeacherResultsModal";
 
 type TeacherResultsProps = {
   results: any[];
@@ -26,10 +28,39 @@ export default function TeacherResults({
   const [isPending, startTransition] = useTransition();
 
   const [showModal, setShowModal] = useState(false);
-  const [isEditMode, setIsEditMode] = useState(false);
   const [error, setError] = useState("");
 
-  async function handleEdit() {}
+  const [selectedResult, setSelectedResult] = useState<any>(null);
+
+  function handleCancel() {
+    setShowModal(false);
+    setError("");
+  }
+
+  function handleEdit(selectedResult: any) {
+    setShowModal(true);
+    setSelectedResult(selectedResult);
+  }
+
+  function handleRefresh() {
+    startTransition(() => {
+      router.refresh();
+      setShowModal(false);
+      setError("");
+    });
+  }
+
+  async function handleConfirm(formData: FormData) {
+    startTransition(async () => {
+      const result = await updateResult(formData, selectedResult);
+
+      if (result?.error) {
+        setError(result.error.message);
+      }
+
+      setShowModal(false);
+    });
+  }
 
   async function handleDelete(selectedResult: any) {
     startTransition(async () => {
@@ -56,6 +87,17 @@ export default function TeacherResults({
 
         {error && <ErrorMessage>{error}</ErrorMessage>}
 
+        <div className="button-container">
+          <button onClick={handleRefresh}>
+            <Image
+              src={"/icons/refresh.svg"}
+              width={24}
+              height={24}
+              alt={"refresh"}
+            />
+          </button>
+        </div>
+
         {resultsError ? (
           <ErrorMessage>failed to load results</ErrorMessage>
         ) : results && results.length > 0 ? (
@@ -70,7 +112,13 @@ export default function TeacherResults({
         )}
       </section>
 
-      {showModal && ""}
+      {showModal && (
+        <TeacherResultsModal
+          handleConfirm={handleConfirm}
+          handleCancel={handleCancel}
+          selectedResult={selectedResult}
+        />
+      )}
     </>
   );
 }

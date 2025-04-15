@@ -9,7 +9,6 @@ import { signIn } from "../actions";
 import Image from "next/image";
 import InfoMessage from "@/app/components/InfoMessage";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 type SignInFormProps = {
   currentUser: any;
@@ -88,6 +87,7 @@ export default function SignInForm({
                 type="email"
                 onKeyDown={handleKeyDown}
                 placeholder="email"
+                autoComplete="username"
                 required
               />
               <input
@@ -95,6 +95,7 @@ export default function SignInForm({
                 type="password"
                 onKeyDown={handleKeyDown}
                 placeholder="password"
+                autoComplete="current-password"
                 required
               />
 

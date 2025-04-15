@@ -29,9 +29,47 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
     bottom: 0,
   });
 
+  function calculateLikelihoodOfCheating(
+    gazeCounts: Record<string, number>
+  ): number {
+    const suspiciousZones = [
+      "left",
+      "right",
+      "top",
+      "bottom",
+      "topleft",
+      "topright",
+      "bottomleft",
+      "bottomright",
+    ];
+
+    const totalCount = Object.values(gazeCounts).reduce(
+      (acc, val) => acc + val,
+      0
+    );
+
+    const suspiciousCount = suspiciousZones.reduce((acc, zone) => {
+      return acc + (gazeCounts[zone] || 0);
+    }, 0);
+
+    if (totalCount === 0) {
+      return 0;
+    }
+
+    let likelihood = (suspiciousCount / totalCount) * 100;
+
+    likelihood = likelihood - 7;
+
+    return Math.min(100, Math.max(0, Math.round(likelihood)));
+  }
+
   async function handleSubmit(formData: FormData) {
     startTransition(async () => {
-      const result = await createResult(formData, exam, 0);
+      const likelihood_of_cheating = calculateLikelihoodOfCheating(
+        gazeCountsRef.current
+      );
+
+      const result = await createResult(formData, exam, likelihood_of_cheating);
 
       if (result?.error) {
         setError(result.error.message);

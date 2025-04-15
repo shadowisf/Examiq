@@ -1,19 +1,13 @@
-import ErrorMessage from "../../components/ErrorMessage";
 import Image from "next/image";
-import InfoMessage from "../../components/InfoMessage";
 
 type TeacherResultsModalProps = {
   handleConfirm: (formData: FormData) => void;
-  students: any[];
-  studentsError: any;
   handleCancel: () => void;
   selectedResult: any;
 };
 
 export default function TeacherResultsModal({
   handleConfirm,
-  studentsError,
-  students,
   handleCancel,
   selectedResult,
 }: TeacherResultsModalProps) {
@@ -35,13 +29,13 @@ export default function TeacherResultsModal({
 
         <form action={handleConfirm}>
           <input
-            name="result final grade"
+            name="result score"
             type="text"
-            placeholder="final grade"
+            placeholder="score"
             required
-            defaultValue={selectedResult.final_grade}
+            defaultValue={selectedResult.score}
           />
-          <textarea
+          <input
             name="result likelihood of cheating"
             placeholder="chance of cheating"
             required

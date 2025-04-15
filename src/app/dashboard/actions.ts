@@ -312,6 +312,33 @@ export async function deleteExam(exam: any) {
   }
 }
 
+export async function updateResult(formData: FormData, result: any) {
+  try {
+    const supabase = await createClient();
+
+    const { error } = await supabase
+      .from("result")
+      .update({
+        score: formData.get("result score"),
+        likelihood_of_cheating: formData.get(
+          "result likelihood of cheating"
+        ) as string,
+      })
+      .eq("id", result.id);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    revalidatePath("/dashboard", "layout");
+  } catch (e) {
+    const errorMessage = (e as Error).message;
+
+    console.error(errorMessage);
+    return { error: { message: errorMessage } };
+  }
+}
+
 export async function deleteResult(result: any) {
   try {
     const supabase = await createClient();
