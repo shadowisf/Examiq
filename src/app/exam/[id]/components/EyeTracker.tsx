@@ -1,3 +1,5 @@
+"use client";
+
 import InfoMessage from "@/app/components/InfoMessage";
 import { useState, useCallback } from "react";
 import { EyeTracking } from "react-eye-tracking";
@@ -43,6 +45,8 @@ export default function EyeTracker({
 
     if (currentArea) {
       gazeCountsRef.current[currentArea] += 1;
+
+      console.log(gazeCountsRef.current);
     }
   }, []);
 

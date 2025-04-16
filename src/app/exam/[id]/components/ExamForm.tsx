@@ -63,6 +63,18 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
     return Math.min(100, Math.max(0, Math.round(likelihood)));
   }
 
+  /* async function handleSubmit(formData: FormData) {
+    void (async () => {
+      const likelihood_of_cheating = calculateLikelihoodOfCheating(
+        gazeCountsRef.current
+      );
+
+      await createResult(formData, exam, likelihood_of_cheating);
+    })();
+
+    window.location.href = "/dashboard";
+  } */
+
   async function handleSubmit(formData: FormData) {
     startTransition(async () => {
       const likelihood_of_cheating = calculateLikelihoodOfCheating(
@@ -74,8 +86,6 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
       if (result?.error) {
         setError(result.error.message);
       }
-
-      alert("exam submitted successfully");
 
       redirect("/dashboard");
     });
@@ -177,9 +187,7 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
         )}
       </form>
     </>
-  ) : (
-    currentUser.user.user_metadata.role === "student" && (
-      <EyeTracker setStartExam={setStartExam} gazeCountsRef={gazeCountsRef} />
-    )
-  );
+  ) : currentUser.user.user_metadata.role === "student" || !isPending ? (
+    <EyeTracker setStartExam={setStartExam} gazeCountsRef={gazeCountsRef} />
+  ) : null;
 }
