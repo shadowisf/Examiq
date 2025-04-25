@@ -15,13 +15,14 @@ type TeacherResultsProps = {
   resultsError: any;
   students: any[];
   studentsError: any;
+  exams: any[];
 };
 
 export default function TeacherResults({
   results,
   resultsError,
   students,
-  studentsError,
+  exams,
 }: TeacherResultsProps) {
   const router = useRouter();
 
@@ -82,7 +83,7 @@ export default function TeacherResults({
     <>
       {isPending && <Loading />}
 
-      <section className="teacher-results-container">
+      <section className="one-dashboard-container">
         <h1 id="results">results</h1>
 
         {error && <ErrorMessage>{error}</ErrorMessage>}
@@ -104,6 +105,7 @@ export default function TeacherResults({
           <ResultTable
             results={results}
             students={students}
+            exams={exams}
             handleEdit={handleEdit}
             handleDelete={handleDelete}
           />

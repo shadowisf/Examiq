@@ -116,7 +116,7 @@ export default function TeacherCourses({
     <>
       {isPending && <Loading />}
 
-      <section className="teacher-courses-container">
+      <section className="one-dashboard-container">
         <h1 id="courses">courses</h1>
 
         {error && <ErrorMessage>{error}</ErrorMessage>}

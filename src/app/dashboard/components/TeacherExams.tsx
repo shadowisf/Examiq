@@ -158,7 +158,7 @@ export default function TeacherExams({
     <>
       {isPending && <Loading />}
 
-      <section className="teacher-exams-container">
+      <section className="one-dashboard-container">
         <h1 id="exams">exams</h1>
 
         {error && <ErrorMessage>{error}</ErrorMessage>}

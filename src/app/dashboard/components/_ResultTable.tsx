@@ -2,8 +2,9 @@ import Link from "next/link";
 import Image from "next/image";
 
 type ResultTableProps = {
-  students: any[];
+  students?: any[];
   results: any[];
+  exams: any[];
   handleEdit?: (result: any) => void;
   handleDelete?: (result: any) => void;
 };
@@ -13,16 +14,17 @@ export function ResultTable({
   students,
   handleEdit,
   handleDelete,
+  exams,
 }: ResultTableProps) {
   return (
     <table>
       <thead>
         <tr>
           <th className="id-column">id</th>
-          <th className="id-column">exam id</th>
-          <th className="id-column">student</th>
-          <th>final grade</th>
-          <th>chance of cheating</th>
+          {students && <th className="id-column">exam id</th>}
+          {students && <th className="id-column">student</th>}
+          <th>score</th>
+          <th>% of cheating</th>
           <th>date of creation</th>
           {handleEdit && handleDelete && <th></th>}
         </tr>
@@ -34,14 +36,23 @@ export function ResultTable({
               <td>
                 <Link href={`/result/${result.id}`}>{result.id}</Link>
               </td>
+              {students && (
+                <td>
+                  <Link href={`/exam/${result.exam_id}`}>{result.exam_id}</Link>
+                </td>
+              )}
+              {students && (
+                <td>
+                  {students?.find((student) => student.id === result.student_id)
+                    ?.user_metadata.display_name || "unknown student"}
+                </td>
+              )}
               <td>
-                <Link href={`/exam/${result.exam_id}`}>{result.exam_id}</Link>
+                {result.score}
+                {"/"}
+                {exams.find((exam: any) => exam.id === result.exam_id)?.items
+                  .length ?? 0}
               </td>
-              <td>
-                {students.find((student) => student.id === result.student_id)
-                  ?.user_metadata.display_name || "unknown student"}
-              </td>
-              <td>{result.final_grade}</td>
               <td> {result.likelihood_of_cheating}</td>
               <td>
                 {new Date(result.created_at).toLocaleString("en-US", {

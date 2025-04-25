@@ -1,16 +1,16 @@
 import ErrorMessage from "@/app/components/ErrorMessage";
 import InfoMessage from "@/app/components/InfoMessage";
-import ExamForm from "@/app/exam/[id]/components/ExamForm";
 import { redirect } from "next/navigation";
-import { readSingleExam } from "./actions";
-import { readAllCourses, readCurrentUser } from "@/app/utils/default/read";
-import ExamOptions from "./components/ExamOptions";
+import { readCurrentUser } from "@/app/utils/default/read";
 import { readSingleCourse } from "@/app/course/[id]/actions";
+import { readSingleExam } from "@/app/exam/[id]/actions";
+import ResultForm from "./components/ResultForm";
+import { readSingleResult } from "./actions";
 
-export default async function Exam({ params }: { params: { id: string } }) {
+export default async function Result({ params }: { params: { id: string } }) {
   const { currentUser, currentUserError } = await readCurrentUser();
-  const { courses = [], coursesError } = await readAllCourses();
-  const { exam, examError } = await readSingleExam(params.id);
+  const { result, resultError } = await readSingleResult(params.id);
+  const { exam, examError } = await readSingleExam(result.exam_id);
   const { course, courseError } = await readSingleCourse(exam.course_id);
 
   if (!currentUser?.user || currentUserError) {
@@ -18,18 +18,12 @@ export default async function Exam({ params }: { params: { id: string } }) {
   }
 
   return (
-    <main className="exam-page">
-      {examError ? (
-        <ErrorMessage>failed to load exam</ErrorMessage>
+    <main className="exam-page result">
+      {examError || resultError ? (
+        <ErrorMessage>failed to load result</ErrorMessage>
       ) : (
         <>
           <section>
-            <ExamOptions
-              currentUser={currentUser}
-              exam={exam}
-              courses={courses}
-              coursesError={coursesError}
-            />
             <h1 className="big">{exam.name}</h1>
             <p>{exam.id}</p>
 
@@ -46,11 +40,7 @@ export default async function Exam({ params }: { params: { id: string } }) {
             <InfoMessage>total item: {exam.items.length}</InfoMessage>
           </section>
 
-          <div className="navbar-cover">
-            
-          </div>
-
-          <ExamForm exam={exam} currentUser={currentUser} />
+          <ResultForm exam={exam} result={result} />
         </>
       )}
     </main>

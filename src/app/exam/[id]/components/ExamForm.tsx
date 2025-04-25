@@ -2,11 +2,12 @@
 
 import Image from "next/image";
 import { useRef, useState, useTransition } from "react";
-import EyeTracker from "./EyeTracker";
 import { createResult } from "../actions";
 import Loading from "@/app/components/Loading";
 import ErrorMessage from "@/app/components/ErrorMessage";
 import { redirect } from "next/navigation";
+import EyeTracker from "./EyeTracker";
+import Timer from "./Timer";
 
 type ExamFormProps = {
   exam: any;
@@ -28,6 +29,8 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
     top: 0,
     bottom: 0,
   });
+
+  const formRef = useRef<HTMLFormElement | null>(null);
 
   function calculateLikelihoodOfCheating(
     gazeCounts: Record<string, number>
@@ -63,18 +66,6 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
     return Math.min(100, Math.max(0, Math.round(likelihood)));
   }
 
-  /* async function handleSubmit(formData: FormData) {
-    void (async () => {
-      const likelihood_of_cheating = calculateLikelihoodOfCheating(
-        gazeCountsRef.current
-      );
-
-      await createResult(formData, exam, likelihood_of_cheating);
-    })();
-
-    window.location.href = "/dashboard";
-  } */
-
   async function handleSubmit(formData: FormData) {
     startTransition(async () => {
       const likelihood_of_cheating = calculateLikelihoodOfCheating(
@@ -97,7 +88,16 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
 
       {error && <ErrorMessage>{error}</ErrorMessage>}
 
-      <form action={handleSubmit}>
+      <Timer
+        duration={exam.duration}
+        onTimeUp={() => {
+          if (formRef.current) {
+            formRef.current.requestSubmit();
+          }
+        }}
+      />
+
+      <form action={handleSubmit} ref={formRef}>
         {exam.items.map((item: any, index: number) => (
           <div key={item.id} className="question">
             <h4>
@@ -119,7 +119,6 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
                       type="radio"
                       name={`question-${index + 1}`}
                       value={`option-${choiceIndex + 1}`}
-                      required
                       disabled={
                         currentUser.user.user_metadata.role === "teacher"
                       }
@@ -134,7 +133,6 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
               <textarea
                 name={`question-${index + 1}`}
                 placeholder="answer"
-                required
                 disabled={currentUser.user.user_metadata.role === "teacher"}
               />
             )}
@@ -143,7 +141,6 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
               <input
                 name={`question-${index + 1}`}
                 placeholder="answer"
-                required
                 disabled={currentUser.user.user_metadata.role === "teacher"}
               />
             )}
@@ -155,7 +152,6 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
                     name={`question-${index + 1}`}
                     type="radio"
                     value={"true"}
-                    required
                     disabled={currentUser.user.user_metadata.role === "teacher"}
                   />
                   True
@@ -165,7 +161,6 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
                     name={`question-${index + 1}`}
                     type="radio"
                     value={"false"}
-                    required
                     disabled={currentUser.user.user_metadata.role === "teacher"}
                   />
                   False
@@ -187,7 +182,9 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
         )}
       </form>
     </>
-  ) : currentUser.user.user_metadata.role === "student" || !isPending ? (
-    <EyeTracker setStartExam={setStartExam} gazeCountsRef={gazeCountsRef} />
-  ) : null;
+  ) : (
+    currentUser.user.user_metadata.role === "student" && !isPending && (
+      <EyeTracker setStartExam={setStartExam} gazeCountsRef={gazeCountsRef} />
+    )
+  );
 }

@@ -451,35 +451,7 @@ textarea {
     }
   }
 
-  .teacher-courses-container {
-    display: grid;
-    gap: 24px;
-
-    .button-container {
-      display: flex;
-      gap: 8px;
-    }
-
-    h1 {
-      border-bottom: 1px solid var(--accent-color);
-    }
-  }
-
-  .teacher-exams-container {
-    display: grid;
-    gap: 24px;
-
-    .button-container {
-      display: flex;
-      gap: 8px;
-    }
-
-    h1 {
-      border-bottom: 1px solid var(--accent-color);
-    }
-  }
-
-  .teacher-results-container {
+  .one-dashboard-container {
     display: grid;
     gap: 24px;
 
@@ -494,13 +466,6 @@ textarea {
   }
 
   .student-exams-container {
-    display: grid;
-    gap: 24px;
-
-    h1 {
-      border-bottom: 1px solid var(--accent-color);
-    }
-
     .exams-container {
       display: grid;
       gap: 8px;
@@ -521,15 +486,6 @@ textarea {
         padding: 16px;
         width: 100%;
       }
-    }
-  }
-
-  .student-courses-container {
-    display: grid;
-    gap: 24px;
-
-    h1 {
-      border-bottom: 1px solid var(--accent-color);
     }
   }
 }
@@ -573,6 +529,32 @@ textarea {
 .exam-page {
   display: grid;
   gap: 64px;
+
+  .timer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    padding: 8rem;
+  }
+
+  .result {
+    .question {
+      label,
+      input,
+      textarea {
+        pointer-events: none;
+      }
+    }
+  }
+
+  .navbar-cover {
+    position: fixed;
+    top: 0;
+    right: 0;
+    background-color: var(--primary-color);
+    width: 100%;
+    height: 75px;
+  }
 
   form {
     display: grid;

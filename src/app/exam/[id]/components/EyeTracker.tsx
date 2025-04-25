@@ -45,8 +45,6 @@ export default function EyeTracker({
 
     if (currentArea) {
       gazeCountsRef.current[currentArea] += 1;
-
-      console.log(gazeCountsRef.current);
     }
   }, []);
 

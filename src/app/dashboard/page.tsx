@@ -16,17 +16,19 @@ import StudentExams from "./components/StudentExams";
 import InfoMessage from "../components/InfoMessage";
 import StudentCourses from "./components/StudentCourses";
 import TeacherResults from "./components/TeacherResults";
+import StudentResults from "./components/StudentResults";
 
 export default async function Dashboard() {
   const { currentUser, currentUserError } = await readCurrentUser();
   const { teachers = [], teachersError } = await readAllTeachers();
   const { students = [], studentsError } = await readAllStudents();
-  const { courses, coursesError } = await readAllCourses();
-  const { exams, examsError } = await readAllExams();
+  const { courses = [], coursesError } = await readAllCourses();
+  const { exams = [], examsError } = await readAllExams();
   const { results = [], resultsError } = await readAllResults();
 
   let filteredCourses: any;
   let filteredExams: any;
+  let filteredResults: any;
 
   if (!currentUser?.user || currentUserError) {
     redirect("/");
@@ -51,6 +53,10 @@ export default async function Dashboard() {
               (course: any) => course.id === exam.course_id
             )?.name,
           })) || [];
+
+      filteredResults = results?.filter(
+        (result: any) => result.student_id === currentUser.user.id
+      );
 
       break;
     case "teacher":
@@ -119,17 +125,17 @@ export default async function Dashboard() {
       <>
         <Link href="#courses">
           <h1>courses</h1>
-          <InfoMessage>view the courses you manage</InfoMessage>
+          <InfoMessage>view courses you manage</InfoMessage>
         </Link>
 
         <Link href="#exams">
           <h1>exams</h1>
-          <InfoMessage>view the exams under the courses you manage</InfoMessage>
+          <InfoMessage>view exams of courses you manage</InfoMessage>
         </Link>
 
         <Link href="#results">
           <h1>results</h1>
-          <InfoMessage>view the exam results made by students</InfoMessage>
+          <InfoMessage>view results made by students</InfoMessage>
         </Link>
       </>
     );
@@ -157,6 +163,7 @@ export default async function Dashboard() {
           resultsError={resultsError}
           students={students}
           studentsError={studentsError}
+          exams={exams}
         />
       </>
     );
@@ -168,27 +175,36 @@ export default async function Dashboard() {
       <>
         <Link href="#exams">
           <h1>exams</h1>
-          <InfoMessage>
-            take the required exams of the courses are you enrolled in
-          </InfoMessage>
+          <InfoMessage>take exams of courses you are enrolled in</InfoMessage>
         </Link>
 
         <Link href="#courses">
           <h1>courses</h1>
-          <InfoMessage>view the courses you are enrolled in</InfoMessage>
+          <InfoMessage>view courses you are enrolled in</InfoMessage>
+        </Link>
+
+        <Link href="#results">
+          <h1>results</h1>
+          <InfoMessage>view results of the exam you took</InfoMessage>
         </Link>
       </>
     );
 
     mainContent = (
       <>
-        <StudentExams exams={filteredExams} examsError={examsError} />
-
         <StudentCourses
           exams={filteredExams}
           examsError={examsError}
           courses={filteredCourses}
           coursesError={coursesError}
+        />
+
+        <StudentExams exams={filteredExams} examsError={examsError} />
+
+        <StudentResults
+          results={results}
+          resultsError={resultsError}
+          exams={exams}
         />
       </>
     );
