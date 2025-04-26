@@ -6,6 +6,7 @@ import { readSingleCourse } from "@/app/course/[id]/actions";
 import { readSingleExam } from "@/app/exam/[id]/actions";
 import ResultForm from "./components/ResultForm";
 import { readSingleResult } from "./actions";
+import { formatDateTimeLocal } from "@/app/utils/default/formatDateTimeLocal";
 
 export default async function Result({ params }: { params: { id: string } }) {
   const { currentUser, currentUserError } = await readCurrentUser();
@@ -35,7 +36,7 @@ export default async function Result({ params }: { params: { id: string } }) {
               <InfoMessage>course name: {course.name}</InfoMessage>
             )}
             <InfoMessage>
-              duration: {exam.duration} {exam.duration === 1 ? "hour" : "hours"}
+              deadline: {formatDateTimeLocal(exam.deadline, true)}
             </InfoMessage>
             <InfoMessage>total item: {exam.items.length}</InfoMessage>
           </section>

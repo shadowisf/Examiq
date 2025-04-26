@@ -25,6 +25,7 @@ export default function CourseExams({
 
   return (
     <section className="exams-container">
+      <h1 id="exams">exams</h1>
       {examsError || resultsError ? (
         <ErrorMessage>failed to load exams</ErrorMessage>
       ) : exams && exams.length > 0 ? (
@@ -64,9 +65,13 @@ export default function CourseExams({
 
             return (
               <Link
-                href={`/exam/${exam.id}`}
+                href={
+                  matchedResult
+                    ? `/result/${matchedResult.id}`
+                    : `/exam/${exam.id}`
+                }
                 key={exam.id}
-                className={matchedResult || isDeadlinePassed ? "done" : ""}
+                className={matchedResult || isDeadlinePassed ? "dnf" : ""}
               >
                 <div className="left">
                   <Image

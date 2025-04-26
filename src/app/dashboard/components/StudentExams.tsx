@@ -65,9 +65,13 @@ export default function StudentExams({
 
               return (
                 <Link
-                  href={`/exam/${exam.id}`}
+                  href={
+                    matchedResult
+                      ? `/result/${matchedResult.id}`
+                      : `/exam/${exam.id}`
+                  }
                   key={exam.id}
-                  className={matchedResult || isDeadlinePassed ? "done" : ""}
+                  className={!matchedResult && isDeadlinePassed ? "dnf" : ""}
                 >
                   <div className="left">
                     <Image
