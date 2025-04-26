@@ -478,6 +478,7 @@ textarea {
         cursor: pointer;
         display: flex;
         align-items: center;
+        justify-content: space-between;
         gap: 12px;
         width: fit-content;
         height: fit-content;
@@ -485,6 +486,22 @@ textarea {
         background-color: var(--secondary-color);
         padding: 16px;
         width: 100%;
+
+        &.done {
+          opacity: 0.5;
+          pointer-events: none;
+        }
+
+        .left {
+          display: flex;
+          gap: 12px;
+        }
+
+        .right {
+          p {
+            text-align: right;
+          }
+        }
       }
     }
   }
@@ -515,6 +532,7 @@ textarea {
       cursor: pointer;
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 12px;
       width: fit-content;
       height: fit-content;
@@ -522,6 +540,22 @@ textarea {
       background-color: var(--secondary-color);
       padding: 16px;
       width: 100%;
+
+      &.done {
+        opacity: 0.5;
+        pointer-events: none;
+      }
+
+      .left {
+        display: flex;
+        gap: 12px;
+      }
+
+      .right {
+        p {
+          text-align: right;
+        }
+      }
     }
   }
 }

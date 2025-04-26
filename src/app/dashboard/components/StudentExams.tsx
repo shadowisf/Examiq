@@ -7,16 +7,26 @@ import ErrorMessage from "@/app/components/ErrorMessage";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import Loading from "@/app/components/Loading";
+import { formatDateTimeLocal } from "@/app/utils/default/formatDateTimeLocal";
 
 type StudentExamsProps = {
+  results: any[];
+  resultsError: any;
   exams: any[];
   examsError: any;
 };
 
-export default function StudentExams({ exams, examsError }: StudentExamsProps) {
+export default function StudentExams({
+  results,
+  resultsError,
+  exams,
+  examsError,
+}: StudentExamsProps) {
   const router = useRouter();
 
   const [isPending, startTransition] = useTransition();
+
+  const now = new Date().getTime();
 
   function handleRefresh() {
     startTransition(() => {
@@ -43,24 +53,52 @@ export default function StudentExams({ exams, examsError }: StudentExamsProps) {
         </div>
 
         <div className="exams-container">
-          {examsError ? (
+          {examsError || resultsError ? (
             <ErrorMessage>failed to load exams</ErrorMessage>
           ) : exams && exams.length > 0 ? (
-            exams.map((exam) => (
-              <Link href={`/exam/${exam.id}`} key={exam.id}>
-                <Image
-                  src={"/icons/file.svg"}
-                  width={32}
-                  height={32}
-                  alt="file"
-                />
+            exams.map((exam) => {
+              const matchedResult = results.find(
+                (result) => result.exam_id === exam.id
+              );
+              const deadline = new Date(exam.deadline).getTime();
+              const isDeadlinePassed = deadline < now;
 
-                <div>
-                  <h4>{exam.name}</h4>
-                  <InfoMessage>{exam.course_name}</InfoMessage>
-                </div>
-              </Link>
-            ))
+              return (
+                <Link
+                  href={`/exam/${exam.id}`}
+                  key={exam.id}
+                  className={matchedResult || isDeadlinePassed ? "done" : ""}
+                >
+                  <div className="left">
+                    <Image
+                      src={"/icons/file.svg"}
+                      width={32}
+                      height={32}
+                      alt="file"
+                    />
+                    <div>
+                      <h4>{exam.name}</h4>
+                      <InfoMessage>{exam.course_name}</InfoMessage>
+                    </div>
+                  </div>
+
+                  <div className="right">
+                    {matchedResult ? (
+                      <p>
+                        {matchedResult.score}/{exam.items.length} |{" "}
+                        {matchedResult.likelihood_of_cheating}% cheating
+                      </p>
+                    ) : isDeadlinePassed ? (
+                      <p>❌ | did not attempt</p>
+                    ) : null}
+
+                    <InfoMessage>
+                      {formatDateTimeLocal(exam.deadline, true)}
+                    </InfoMessage>
+                  </div>
+                </Link>
+              );
+            })
           ) : (
             <InfoMessage>all exams done</InfoMessage>
           )}

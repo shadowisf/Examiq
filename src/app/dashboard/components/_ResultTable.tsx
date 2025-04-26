@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { formatDateTimeLocal } from "@/app/utils/default/formatDateTimeLocal";
 
 type ResultTableProps = {
   students?: any[];
@@ -54,13 +55,7 @@ export function ResultTable({
                   .length ?? 0}
               </td>
               <td> {result.likelihood_of_cheating}</td>
-              <td>
-                {new Date(result.created_at).toLocaleString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </td>
+              <td>{formatDateTimeLocal(result.created_at, true)}</td>
               {handleEdit && handleDelete && (
                 <td className="actions-column">
                   {handleEdit && (

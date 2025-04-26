@@ -9,14 +9,13 @@ import {
   readAllCourses,
   readAllExams,
   readAllResults,
-} from "../utils/default/read";
+} from "../utils/default/readEntities";
 import TeacherCourses from "./components/TeacherCourses";
 import TeacherExams from "./components/TeacherExams";
 import StudentExams from "./components/StudentExams";
 import InfoMessage from "../components/InfoMessage";
 import StudentCourses from "./components/StudentCourses";
 import TeacherResults from "./components/TeacherResults";
-import StudentResults from "./components/StudentResults";
 
 export default async function Dashboard() {
   const { currentUser, currentUserError } = await readCurrentUser();
@@ -27,6 +26,7 @@ export default async function Dashboard() {
   const { results = [], resultsError } = await readAllResults();
 
   let filteredCourses: any;
+  let filteredCourseIDs: any;
   let filteredExams: any;
   let filteredResults: any;
 
@@ -41,7 +41,7 @@ export default async function Dashboard() {
           course.students?.id?.includes(currentUser.user.id)
         ) || [];
 
-      var filteredCourseIDs =
+      filteredCourseIDs =
         filteredCourses?.map((course: any) => course.id) || [];
 
       filteredExams =
@@ -64,7 +64,7 @@ export default async function Dashboard() {
         courses?.filter((course) => course.author === currentUser.user.id) ||
         [];
 
-      var filteredCourseIDs =
+      filteredCourseIDs =
         filteredCourses?.map((course: any) => course.id) || [];
 
       filteredExams =
@@ -182,11 +182,6 @@ export default async function Dashboard() {
           <h1>courses</h1>
           <InfoMessage>view courses you are enrolled in</InfoMessage>
         </Link>
-
-        <Link href="#results">
-          <h1>results</h1>
-          <InfoMessage>view results of the exam you took</InfoMessage>
-        </Link>
       </>
     );
 
@@ -199,12 +194,11 @@ export default async function Dashboard() {
           coursesError={coursesError}
         />
 
-        <StudentExams exams={filteredExams} examsError={examsError} />
-
-        <StudentResults
-          results={results}
+        <StudentExams
+          results={filteredResults}
           resultsError={resultsError}
-          exams={exams}
+          exams={filteredExams}
+          examsError={examsError}
         />
       </>
     );

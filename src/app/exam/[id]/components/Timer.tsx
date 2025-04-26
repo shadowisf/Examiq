@@ -3,35 +3,38 @@
 import { useEffect, useState } from "react";
 
 type TimerProps = {
-  duration: number;
+  duration: number; // milliseconds
   onTimeUp: () => void;
 };
 
 export default function Timer({ duration, onTimeUp }: TimerProps) {
-  const [secondsLeft, setSecondsLeft] = useState(duration * 3600);
+  const [timeLeft, setTimeLeft] = useState(duration);
 
   useEffect(() => {
-    if (secondsLeft <= 0) {
+    if (timeLeft <= 0) {
       onTimeUp();
       return;
     }
 
     const timer = setInterval(() => {
-      setSecondsLeft((prev) => prev - 1);
+      setTimeLeft((prev) => prev - 1000); // Decrease 1 second
     }, 1000);
 
-    return () => clearInterval(timer);
-  }, [secondsLeft, onTimeUp]);
+    return () => clearInterval(timer); // Clean up on unmount
+  }, [timeLeft, onTimeUp]);
 
-  function formatTime(secs: number) {
-    const hrs = Math.floor(secs / 3600);
-    const mins = Math.floor((secs % 3600) / 60);
-    const secsLeft = secs % 60;
+  // Format the time nicely
+  const totalSeconds = Math.floor(timeLeft / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
 
-    return `${hrs}:${mins.toString().padStart(2, "0")}:${secsLeft
-      .toString()
-      .padStart(2, "0")}`;
-  }
+  // Helper to pad minutes and seconds to 2 digits
+  const formatTime = (num: number) => String(num).padStart(2, "0");
 
-  return <div className="timer">{formatTime(secondsLeft)}</div>;
+  return (
+    <div className="timer">
+      {hours}:{formatTime(minutes)}:{formatTime(seconds)}
+    </div>
+  );
 }

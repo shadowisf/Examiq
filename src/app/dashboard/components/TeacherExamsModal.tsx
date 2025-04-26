@@ -1,6 +1,7 @@
 import Image from "next/image";
 import ErrorMessage from "../../components/ErrorMessage";
 import InfoMessage from "../../components/InfoMessage";
+import { formatDateTimeLocal } from "@/app/utils/default/formatDateTimeLocal";
 
 type TeacherExamsModalProps = {
   isEditMode: boolean;
@@ -77,12 +78,15 @@ export default function TeacherExamsModal({
             />
 
             <input
-              name="exam duration"
-              type="number"
-              min={1}
-              placeholder="duration"
+              name="exam deadline"
+              type="datetime-local"
+              placeholder="deadline"
               required
-              defaultValue={isEditMode ? selectedExam.duration : ""}
+              defaultValue={
+                isEditMode && selectedExam.deadline
+                  ? formatDateTimeLocal(selectedExam.deadline, false)
+                  : ""
+              }
             />
 
             <br />

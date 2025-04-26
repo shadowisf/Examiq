@@ -3,8 +3,9 @@
 import { createClient } from "../utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
-import { readCurrentUser } from "../utils/default/read";
+import { readCurrentUser } from "../utils/default/readEntities";
 import { generateID } from "../utils/default/generateID";
+import { formatDateTimeToUTC } from "../utils/default/formatDateTimeUTC";
 
 // ADMIN
 export async function createAccount(formData: FormData) {
@@ -236,9 +237,9 @@ export async function createExam(formData: FormData, examItems: any[]) {
     const { error: tableError } = await supabase.from("exam").insert([
       {
         id: generateID("E"),
-        course_id: formData.get("exam course") as string,
-        name: formData.get("exam name") as string,
-        duration: formData.get("exam duration") as string,
+        course_id: formData.get("exam course"),
+        name: formData.get("exam name"),
+        deadline: formatDateTimeToUTC(formData.get("exam deadline") as string),
         author: currentUser?.user.id,
         items: examItems,
       },
@@ -272,9 +273,9 @@ export async function updateExam(
     const { error } = await supabase
       .from("exam")
       .update({
-        course_id: formData.get("exam course") as string,
-        name: formData.get("exam name") as string,
-        duration: formData.get("exam duration") as string,
+        course_id: formData.get("exam course"),
+        name: formData.get("exam name"),
+        deadline: formatDateTimeToUTC(formData.get("exam deadline") as string),
         items: examItems,
       })
       .eq("id", exam.id);

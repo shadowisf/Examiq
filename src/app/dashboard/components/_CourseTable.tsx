@@ -1,3 +1,4 @@
+import { formatDateTimeLocal } from "@/app/utils/default/formatDateTimeLocal";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -45,13 +46,7 @@ export function CourseTable({
                     : exams.filter((exam) => exam.course_id === course.id)
                         .length}
                 </td>
-                <td>
-                  {new Date(course.created_at).toLocaleString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </td>
+                <td>{formatDateTimeLocal(course.created_at, true)}</td>
                 {handleEdit && handleDelete && (
                   <td className="actions-column">
                     {handleEdit && (

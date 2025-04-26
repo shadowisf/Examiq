@@ -1,4 +1,4 @@
-import { readCurrentUser } from "../utils/default/read";
+import { readCurrentUser } from "../utils/default/readEntities";
 import SignInForm from "./components/SignInForm";
 
 export default async function SignIn() {

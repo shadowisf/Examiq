@@ -3,15 +3,22 @@ import InfoMessage from "@/app/components/InfoMessage";
 import ExamForm from "@/app/exam/[id]/components/ExamForm";
 import { redirect } from "next/navigation";
 import { readSingleExam } from "./actions";
-import { readAllCourses, readCurrentUser } from "@/app/utils/default/read";
+import {
+  readAllCourses,
+  readCurrentUser,
+} from "@/app/utils/default/readEntities";
 import ExamOptions from "./components/ExamOptions";
 import { readSingleCourse } from "@/app/course/[id]/actions";
+import { formatDateTimeLocal } from "@/app/utils/default/formatDateTimeLocal";
 
 export default async function Exam({ params }: { params: { id: string } }) {
   const { currentUser, currentUserError } = await readCurrentUser();
   const { courses = [], coursesError } = await readAllCourses();
   const { exam, examError } = await readSingleExam(params.id);
   const { course, courseError } = await readSingleCourse(exam.course_id);
+
+  const now = new Date().getTime();
+  const deadline = new Date(exam.deadline).getTime();
 
   if (!currentUser?.user || currentUserError) {
     redirect("/");
@@ -41,14 +48,12 @@ export default async function Exam({ params }: { params: { id: string } }) {
               <InfoMessage>course name: {course.name}</InfoMessage>
             )}
             <InfoMessage>
-              duration: {exam.duration} {exam.duration === 1 ? "hour" : "hours"}
+              deadline: {formatDateTimeLocal(exam.deadline, true)}
             </InfoMessage>
             <InfoMessage>total item: {exam.items.length}</InfoMessage>
           </section>
 
-          <div className="navbar-cover">
-            
-          </div>
+          {now > deadline ? null : <div className="navbar-cover" />}
 
           <ExamForm exam={exam} currentUser={currentUser} />
         </>

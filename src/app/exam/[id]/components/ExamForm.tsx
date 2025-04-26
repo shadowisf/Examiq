@@ -32,6 +32,10 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
 
   const formRef = useRef<HTMLFormElement | null>(null);
 
+  const now = new Date().getTime();
+  const deadline = new Date(exam.deadline).getTime();
+  const duration = deadline - now;
+
   function calculateLikelihoodOfCheating(
     gazeCounts: Record<string, number>
   ): number {
@@ -82,109 +86,132 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
     });
   }
 
-  return startExam || currentUser.user.user_metadata.role === "teacher" ? (
+  return (
     <>
       {isPending && <Loading />}
 
-      {error && <ErrorMessage>{error}</ErrorMessage>}
+      {now > deadline && currentUser.user.user_metadata.role === "student" ? (
+        <>
+          <section>
+            this exam is now expired. please contact your teacher for further
+            assistance.
+          </section>
+        </>
+      ) : startExam || currentUser.user.user_metadata.role === "teacher" ? (
+        <>
+          {error && <ErrorMessage>{error}</ErrorMessage>}
 
-      <Timer
-        duration={exam.duration}
-        onTimeUp={() => {
-          if (formRef.current) {
-            formRef.current.requestSubmit();
-          }
-        }}
-      />
+          <Timer
+            duration={duration}
+            onTimeUp={() => {
+              if (formRef.current && !isPending) {
+                const formData = new FormData(formRef.current);
 
-      <form action={handleSubmit} ref={formRef}>
-        {exam.items.map((item: any, index: number) => (
-          <div key={item.id} className="question">
-            <h4>
-              <span>{index + 1}. </span>
+                handleSubmit(formData);
+              } else {
+                return;
+              }
+            }}
+          />
 
-              {item.type == "fill-in-the-blank"
-                ? item.question.replace(
-                    new RegExp(item.correctAnswer, "i"),
-                    "_____"
-                  )
-                : item.question}
-            </h4>
+          <form action={handleSubmit} ref={formRef}>
+            {exam.items.map((item: any, index: number) => (
+              <div key={item.id} className="question">
+                <h4>
+                  <span>{index + 1}. </span>
 
-            {item.type === "multiple-choice" && (
-              <div className="choices">
-                {item.choices.map((choice: string, choiceIndex: number) => (
-                  <label key={choiceIndex}>
-                    <input
-                      type="radio"
-                      name={`question-${index + 1}`}
-                      value={`option-${choiceIndex + 1}`}
-                      disabled={
-                        currentUser.user.user_metadata.role === "teacher"
-                      }
-                    />
-                    {choice}
-                  </label>
-                ))}
-              </div>
-            )}
+                  {item.type == "fill-in-the-blank"
+                    ? item.question.replace(
+                        new RegExp(item.correctAnswer, "i"),
+                        "_____"
+                      )
+                    : item.question}
+                </h4>
 
-            {item.type === "paragraph" && (
-              <textarea
-                name={`question-${index + 1}`}
-                placeholder="answer"
-                disabled={currentUser.user.user_metadata.role === "teacher"}
-              />
-            )}
+                {item.type === "multiple-choice" && (
+                  <div className="choices">
+                    {item.choices.map((choice: string, choiceIndex: number) => (
+                      <label key={choiceIndex}>
+                        <input
+                          type="radio"
+                          name={`question-${index + 1}`}
+                          value={`option-${choiceIndex + 1}`}
+                          disabled={
+                            currentUser.user.user_metadata.role === "teacher"
+                          }
+                        />
+                        {choice}
+                      </label>
+                    ))}
+                  </div>
+                )}
 
-            {item.type === "fill-in-the-blank" && (
-              <input
-                name={`question-${index + 1}`}
-                placeholder="answer"
-                disabled={currentUser.user.user_metadata.role === "teacher"}
-              />
-            )}
-
-            {item.type === "true-or-false" && (
-              <div className="choices">
-                <label>
-                  <input
+                {item.type === "paragraph" && (
+                  <textarea
                     name={`question-${index + 1}`}
-                    type="radio"
-                    value={"true"}
+                    placeholder="answer"
                     disabled={currentUser.user.user_metadata.role === "teacher"}
                   />
-                  True
-                </label>
-                <label>
+                )}
+
+                {item.type === "fill-in-the-blank" && (
                   <input
                     name={`question-${index + 1}`}
-                    type="radio"
-                    value={"false"}
+                    placeholder="answer"
                     disabled={currentUser.user.user_metadata.role === "teacher"}
                   />
-                  False
-                </label>
-              </div>
-            )}
-          </div>
-        ))}
+                )}
 
-        {currentUser.user.user_metadata.role === "student" && (
-          <button type="submit">
-            <Image
-              src={"/icons/check.svg"}
-              alt="submit"
-              width={24}
-              height={24}
-            />
-          </button>
-        )}
-      </form>
+                {item.type === "true-or-false" && (
+                  <div className="choices">
+                    <label>
+                      <input
+                        name={`question-${index + 1}`}
+                        type="radio"
+                        value={"true"}
+                        disabled={
+                          currentUser.user.user_metadata.role === "teacher"
+                        }
+                      />
+                      True
+                    </label>
+                    <label>
+                      <input
+                        name={`question-${index + 1}`}
+                        type="radio"
+                        value={"false"}
+                        disabled={
+                          currentUser.user.user_metadata.role === "teacher"
+                        }
+                      />
+                      False
+                    </label>
+                  </div>
+                )}
+              </div>
+            ))}
+
+            {currentUser.user.user_metadata.role === "student" && (
+              <button type="submit">
+                <Image
+                  src={"/icons/check.svg"}
+                  alt="submit"
+                  width={24}
+                  height={24}
+                />
+              </button>
+            )}
+          </form>
+        </>
+      ) : (
+        currentUser.user.user_metadata.role === "student" &&
+        !isPending && (
+          <EyeTracker
+            setStartExam={setStartExam}
+            gazeCountsRef={gazeCountsRef}
+          />
+        )
+      )}
     </>
-  ) : (
-    currentUser.user.user_metadata.role === "student" && !isPending && (
-      <EyeTracker setStartExam={setStartExam} gazeCountsRef={gazeCountsRef} />
-    )
   );
 }

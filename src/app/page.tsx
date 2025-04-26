@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import Image from "next/image";
-import { readCurrentUser } from "./utils/default/read";
+import { readCurrentUser } from "./utils/default/readEntities";
 
 export default async function Home() {
   const { currentUser, currentUserError } = await readCurrentUser();

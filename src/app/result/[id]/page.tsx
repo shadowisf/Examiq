@@ -1,7 +1,7 @@
 import ErrorMessage from "@/app/components/ErrorMessage";
 import InfoMessage from "@/app/components/InfoMessage";
 import { redirect } from "next/navigation";
-import { readCurrentUser } from "@/app/utils/default/read";
+import { readCurrentUser } from "@/app/utils/default/readEntities";
 import { readSingleCourse } from "@/app/course/[id]/actions";
 import { readSingleExam } from "@/app/exam/[id]/actions";
 import ResultForm from "./components/ResultForm";

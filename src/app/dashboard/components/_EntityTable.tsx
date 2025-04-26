@@ -1,3 +1,4 @@
+import { formatDateTimeLocal } from "@/app/utils/default/formatDateTimeLocal";
 import Image from "next/image";
 
 type EntityTableProps = {
@@ -26,13 +27,7 @@ export function EntityTable({
           <tr key={entity.id}>
             <td>{entity.id}</td>
             <td>{entity.user_metadata.display_name}</td>
-            <td>
-              {new Date(entity.created_at).toLocaleString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </td>
+            <td>{formatDateTimeLocal(entity.created_at, true)}</td>
             {handleEdit && handleDelete && (
               <td className="actions-column">
                 <button onClick={() => handleEdit(entity)}>

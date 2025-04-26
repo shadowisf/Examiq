@@ -7,9 +7,10 @@ import InfoMessage from "@/app/components/InfoMessage";
 import { readSingleCourse } from "./actions";
 import {
   readAllExams,
+  readAllResults,
   readAllStudents,
   readCurrentUser,
-} from "@/app/utils/default/read";
+} from "@/app/utils/default/readEntities";
 
 type CourseProps = {
   params: {
@@ -20,8 +21,9 @@ type CourseProps = {
 export default async function Course({ params }: CourseProps) {
   const { currentUser, currentUserError } = await readCurrentUser();
   const { students = [], studentsError } = await readAllStudents();
-  const { course, courseError } = await readSingleCourse(params.id);
-  const { exams, examsError } = await readAllExams();
+  const { course = [], courseError } = await readSingleCourse(params.id);
+  const { exams = [], examsError } = await readAllExams();
+  const { results = [], resultsError } = await readAllResults();
 
   if (!currentUser?.user || currentUserError) {
     redirect("/");
@@ -58,7 +60,13 @@ export default async function Course({ params }: CourseProps) {
             <InfoMessage>{course.description}</InfoMessage>
           </section>
 
-          <CourseExams exams={filteredExams} examsError={examsError} />
+          <CourseExams
+            exams={filteredExams}
+            examsError={examsError}
+            currentUser={currentUser}
+            results={results}
+            resultsError={resultsError}
+          />
 
           <CourseStudents
             students={filteredStudents}
