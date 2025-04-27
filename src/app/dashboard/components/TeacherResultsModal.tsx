@@ -35,12 +35,6 @@ export default function TeacherResultsModal({
             required
             defaultValue={selectedResult.score}
           />
-          <input
-            name="result likelihood of cheating"
-            placeholder="chance of cheating"
-            required
-            defaultValue={selectedResult.likelihood_of_cheating}
-          />
 
           <br />
 

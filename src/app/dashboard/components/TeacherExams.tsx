@@ -27,10 +27,9 @@ export default function TeacherExams({
 
   const [isPending, startTransition] = useTransition();
 
+  const [error, setError] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [error, setError] = useState("");
-
   const [selectedExam, setSelectedExam] = useState<any>(null);
   const [selectedExamType, setSelectedExamType] = useState("");
   const [examItems, setExamItems] = useState<any[]>([]);

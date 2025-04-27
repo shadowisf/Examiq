@@ -34,10 +34,9 @@ export default function AdminAccounts({
 
   const [isPending, startTransition] = useTransition();
 
+  const [error, setError] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [error, setError] = useState("");
-
   const [selectedUser, setSelectedUser] = useState<any>(null);
 
   function handleCreate() {

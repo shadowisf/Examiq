@@ -95,8 +95,7 @@ export default function StudentExams({
                     <div className="right">
                       {matchedResult ? (
                         <p>
-                          {matchedResult.score}/{exam.items.length} |{" "}
-                          {matchedResult.likelihood_of_cheating}% cheating
+                          {matchedResult.score}/{exam.items.length}
                         </p>
                       ) : isDeadlinePassed ? (
                         <p>❌ | did not attempt</p>

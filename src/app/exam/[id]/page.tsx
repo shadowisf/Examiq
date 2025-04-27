@@ -14,8 +14,8 @@ import { formatDateTimeLocal } from "@/app/utils/default/formatDateTimeLocal";
 export default async function Exam({ params }: { params: { id: string } }) {
   const { currentUser, currentUserError } = await readCurrentUser();
   const { courses = [], coursesError } = await readAllCourses();
-  const { exam, examError } = await readSingleExam(params.id);
-  const { course, courseError } = await readSingleCourse(exam.course_id);
+  const { exam = [], examError } = await readSingleExam(params.id);
+  const { course = [], courseError } = await readSingleCourse(exam.course_id);
 
   const now = new Date().getTime();
   const deadline = new Date(exam.deadline).getTime();

@@ -10,7 +10,6 @@ export default function SignOutScreen() {
   const router = useRouter();
 
   const [isPending, startTransition] = useTransition();
-
   const [error, setError] = useState("");
 
   async function handleSignOut() {

@@ -23,9 +23,8 @@ export default function SignInForm({
   const searchParams = useSearchParams();
 
   const [isPending, startTransition] = useTransition();
-
-  const [userType, setUserType] = useState("");
   const [error, setError] = useState("");
+  const [userType, setUserType] = useState("");
 
   const role = currentUser?.user?.user_metadata?.role ?? "guest";
   const displayName = currentUser?.user?.user_metadata?.display_name ?? "";

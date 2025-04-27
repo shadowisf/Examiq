@@ -1,3 +1,3 @@
 export default function Loading() {
-  return <section className="loading-page"></section>;
+  return <section className="loading-page" />;
 }

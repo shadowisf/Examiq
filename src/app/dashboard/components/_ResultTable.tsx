@@ -25,9 +25,8 @@ export function ResultTable({
           {students && <th className="id-column">exam id</th>}
           {students && <th className="id-column">student</th>}
           <th>score</th>
-          <th>% of cheating</th>
           <th>date of creation</th>
-          {handleEdit && handleDelete && <th></th>}
+          {handleEdit && handleDelete && <th />}
         </tr>
       </thead>
       <tbody>
@@ -54,7 +53,6 @@ export function ResultTable({
                 {exams.find((exam: any) => exam.id === result.exam_id)?.items
                   .length ?? 0}
               </td>
-              <td> {result.likelihood_of_cheating}</td>
               <td>{formatDateTimeLocal(result.created_at, true)}</td>
               {handleEdit && handleDelete && (
                 <td className="actions-column">

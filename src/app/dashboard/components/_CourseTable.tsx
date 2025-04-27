@@ -26,7 +26,7 @@ export function CourseTable({
           <th>total students</th>
           <th>total exams</th>
           <th>date of creation</th>
-          {handleEdit && handleDelete && <th></th>}
+          {handleEdit && handleDelete && <th />}
         </tr>
       </thead>
       <tbody>

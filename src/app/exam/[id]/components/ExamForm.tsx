@@ -1,13 +1,16 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { createResult } from "../actions";
 import Loading from "@/app/components/Loading";
 import ErrorMessage from "@/app/components/ErrorMessage";
 import { redirect } from "next/navigation";
-import EyeTracker from "./EyeTracker";
-import Timer from "./Timer";
+import EyeTracker from "./_EyeTracker";
+import Timer from "./ExamTimer";
+import Blocked from "@/app/components/Blocked";
+import { inputTracker } from "./_InputTracker";
+import { windowTracker } from "./_WindowTracker";
 
 type ExamFormProps = {
   exam: any;
@@ -16,9 +19,11 @@ type ExamFormProps = {
 
 export default function ExamForm({ exam, currentUser }: ExamFormProps) {
   const [isPending, startTransition] = useTransition();
-  const [error, setError] = useState("");
 
+  const [error, setError] = useState("");
   const [startExam, setStartExam] = useState(false);
+  const [blocked, setBlocked] = useState(false);
+
   const gazeCountsRef = useRef<Record<string, number>>({
     topleft: 0,
     topright: 0,
@@ -29,54 +34,68 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
     top: 0,
     bottom: 0,
   });
-
+  const keyPressCount = useRef<Record<string, number>>({});
+  const mouseClickCount = useRef<Record<string, number>>({});
   const formRef = useRef<HTMLFormElement | null>(null);
 
   const now = new Date().getTime();
   const deadline = new Date(exam.deadline).getTime();
   const duration = deadline - now;
 
-  function calculateLikelihoodOfCheating(
-    gazeCounts: Record<string, number>
-  ): number {
-    const suspiciousZones = [
-      "left",
-      "right",
-      "top",
-      "bottom",
-      "topleft",
-      "topright",
-      "bottomleft",
-      "bottomright",
-    ];
-
-    const totalCount = Object.values(gazeCounts).reduce(
-      (acc, val) => acc + val,
-      0
-    );
-
-    const suspiciousCount = suspiciousZones.reduce((acc, zone) => {
-      return acc + (gazeCounts[zone] || 0);
-    }, 0);
-
-    if (totalCount === 0) {
-      return 0;
+  useEffect(() => {
+    if (startExam) {
+      gazeCountsRef.current = {
+        topleft: 0,
+        topright: 0,
+        bottomleft: 0,
+        bottomright: 0,
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+      };
     }
+  }, [startExam]);
 
-    let likelihood = (suspiciousCount / totalCount) * 100;
+  useEffect(() => {
+    if (startExam) {
+      const cleanup = inputTracker(
+        keyPressCount.current,
+        mouseClickCount.current
+      );
 
-    likelihood = likelihood - 7;
+      return () => {
+        cleanup();
+      };
+    }
+  }, [startExam]);
 
-    return Math.min(100, Math.max(0, Math.round(likelihood)));
-  }
+  useEffect(() => {
+    if (startExam) {
+      const cleanup = windowTracker(
+        () => setBlocked(true),
+        () => setBlocked(false)
+      );
+
+      return () => {
+        cleanup();
+      };
+    }
+  }, [startExam]);
 
   async function handleSubmit(formData: FormData) {
     startTransition(async () => {
-      const likelihood_of_cheating = calculateLikelihoodOfCheating(
-        gazeCountsRef.current
-      );
+      const combinedInputs = {
+        ...keyPressCount.current,
+        ...mouseClickCount.current,
+      };
 
-      const result = await createResult(formData, exam, likelihood_of_cheating);
+      const result = await createResult(
+        formData,
+        exam,
+        gazeCountsRef.current,
+        combinedInputs
+      );
 
       if (result?.error) {
         setError(result.error.message);
@@ -89,6 +108,8 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
   return (
     <>
       {isPending && <Loading />}
+
+      {blocked && <Blocked />}
 
       {now > deadline && currentUser.user.user_metadata.role === "student" ? (
         <>
@@ -202,7 +223,13 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
             ))}
 
             {currentUser.user.user_metadata.role === "student" && (
-              <button type="submit">
+              <button
+                type="submit"
+                onClick={() => {
+                  console.log(keyPressCount);
+                  console.log(mouseClickCount);
+                }}
+              >
                 <Image
                   src={"/icons/check.svg"}
                   alt="submit"

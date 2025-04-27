@@ -321,9 +321,6 @@ export async function updateResult(formData: FormData, result: any) {
       .from("result")
       .update({
         score: formData.get("result score"),
-        likelihood_of_cheating: formData.get(
-          "result likelihood of cheating"
-        ) as string,
       })
       .eq("id", result.id);
 

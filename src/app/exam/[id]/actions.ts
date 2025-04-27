@@ -59,8 +59,6 @@ export async function checkExam(formData: FormData, exam: any) {
         ?.toLowerCase()
         .trim();
 
-      console.log(response);
-
       if (response?.includes("yes")) {
         return 1;
       }
@@ -90,7 +88,8 @@ export async function checkExam(formData: FormData, exam: any) {
 export async function createResult(
   formData: FormData,
   exam: any,
-  likelihood_of_cheating: number
+  gazes: any,
+  inputs: any
 ) {
   try {
     const supabase = await createClient();
@@ -114,7 +113,8 @@ export async function createResult(
         };
       }),
       score: score,
-      likelihood_of_cheating: likelihood_of_cheating,
+      gazes: gazes,
+      inputs: inputs,
     });
 
     if (currentUserError) {
@@ -133,28 +133,3 @@ export async function createResult(
     return { error: { message: errorMessage } };
   }
 }
-
-/* export async function testAI() {
-  const openai = new OpenAI({
-    baseURL: "https://openrouter.ai/api/v1",
-    apiKey: process.env.OPEN_ROUTER_API_KEY!,
-  });
-
-  const completion = await openai.chat.completions.create({
-    model: "deepseek/deepseek-r1-zero:free",
-    messages: [
-      {
-        role: "user",
-        content: `
-        I'm checking exams for students. Below is the question. Answer only yes or no, is their answer correct?
-
-        Question: How do you approach character development when creating a story? Discuss the techniques you would use to ensure your characters are engaging and believable.
-        
-        Answer: When I create a story, I try to think about my characters like real people. I usually start by figuring out their personality, what they want, and maybe something from their past that affects how they act. I also make sure they have both good and bad traits so they feel more realistic. I try to show who they are through what they do or say instead of just describing them. I think it’s important that they change a bit by the end of the story, depending on what they go through.
-        `,
-      },
-    ],
-  });
-
-  return completion.choices[0].message.content;
-} */

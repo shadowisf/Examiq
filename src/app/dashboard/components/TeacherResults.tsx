@@ -28,9 +28,8 @@ export default function TeacherResults({
 
   const [isPending, startTransition] = useTransition();
 
-  const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState("");
-
+  const [showModal, setShowModal] = useState(false);
   const [selectedResult, setSelectedResult] = useState<any>(null);
 
   function handleCancel() {

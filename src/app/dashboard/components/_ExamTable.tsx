@@ -18,7 +18,7 @@ export function ExamTable({ exams, handleEdit, handleDelete }: ExamTableProps) {
           <th>name</th>
           <th>total items</th>
           <th>deadline</th>
-          {handleEdit && handleDelete && <th></th>}
+          {handleEdit && handleDelete && <th />}
         </tr>
       </thead>
       <tbody>

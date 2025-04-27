@@ -22,9 +22,8 @@ export default function ExamOptions({
 }: ExamOptions) {
   const [isPending, startTransition] = useTransition();
 
-  const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState("");
-
+  const [showModal, setShowModal] = useState(false);
   const [selectedExamType, setSelectedExamType] = useState("");
   const [examItems, setExamItems] = useState<any[]>([]);
 

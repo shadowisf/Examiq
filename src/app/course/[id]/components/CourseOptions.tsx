@@ -24,7 +24,6 @@ export default function CourseOptions({
 
   const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState("");
-
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
 
   function toggleStudentSelection(studentID: string) {

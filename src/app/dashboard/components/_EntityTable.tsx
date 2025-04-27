@@ -19,7 +19,7 @@ export function EntityTable({
           <th>id</th>
           <th>name</th>
           <th>date of creation</th>
-          {handleEdit && handleDelete && <th></th>}
+          {handleEdit && handleDelete && <th />}
         </tr>
       </thead>
       <tbody>

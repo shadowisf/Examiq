@@ -31,10 +31,9 @@ export default function TeacherCourses({
 
   const [isPending, startTransition] = useTransition();
 
+  const [error, setError] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [error, setError] = useState("");
-
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
   const [selectedCourse, setSelectedCourse] = useState<any>(null);
 
