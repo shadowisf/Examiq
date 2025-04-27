@@ -101,18 +101,20 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
         <>
           {error && <ErrorMessage>{error}</ErrorMessage>}
 
-          <Timer
-            duration={duration}
-            onTimeUp={() => {
-              if (formRef.current && !isPending) {
-                const formData = new FormData(formRef.current);
+          {currentUser.user.user_metadata.role === "student" ? (
+            <Timer
+              duration={duration}
+              onTimeUp={() => {
+                if (formRef.current && !isPending) {
+                  const formData = new FormData(formRef.current);
 
-                handleSubmit(formData);
-              } else {
-                return;
-              }
-            }}
-          />
+                  handleSubmit(formData);
+                } else {
+                  return;
+                }
+              }}
+            />
+          ) : null}
 
           <form action={handleSubmit} ref={formRef}>
             {exam.items.map((item: any, index: number) => (
@@ -147,6 +149,14 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
                 )}
 
                 {item.type === "paragraph" && (
+                  <textarea
+                    name={`question-${index + 1}`}
+                    placeholder="answer"
+                    disabled={currentUser.user.user_metadata.role === "teacher"}
+                  />
+                )}
+
+                {item.type === "coding-challenge" && (
                   <textarea
                     name={`question-${index + 1}`}
                     placeholder="answer"

@@ -54,6 +54,10 @@ export default function ResultForm({ exam, result }: ResultFormProps) {
                 <textarea defaultValue={studentAnswer} readOnly />
               )}
 
+              {item.type === "coding-challenge" && (
+                <textarea defaultValue={studentAnswer} readOnly />
+              )}
+
               {item.type === "fill-in-the-blank" && (
                 <input defaultValue={studentAnswer} readOnly />
               )}

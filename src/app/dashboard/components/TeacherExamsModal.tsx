@@ -100,6 +100,7 @@ export default function TeacherExamsModal({
                 <option value="paragraph">paragraph</option>
                 <option value="fill-in-the-blank">fill in the blank</option>
                 <option value="true-or-false">true or false</option>
+                <option value="coding-challenge">coding challenge</option>
               </select>
 
               <button type="button" onClick={createExamItem}>

@@ -39,7 +39,7 @@ export async function checkExam(formData: FormData, exam: any) {
   });
 
   const scorePromises = exam.items.map(async (item: any, index: number) => {
-    if (item.type === "paragraph") {
+    if (item.type === "paragraph" || item.type === "coding-challenge") {
       const completion = await openai.chat.completions.create({
         model: "deepseek/deepseek-r1-zero:free",
         messages: [

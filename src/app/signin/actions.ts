@@ -20,7 +20,7 @@ export async function signIn(formData: FormData, userType: string) {
       throw new Error(userError.message);
     }
 
-    if (userData.user.user_metadata.role !== userType && userType !== "admin") {
+    if (userData.user.user_metadata.role !== userType) {
       const { error: authError } = await supabase.auth.signOut();
 
       if (authError) {

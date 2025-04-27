@@ -212,7 +212,13 @@ export default async function Dashboard() {
         <h1 className="big">
           aloha,{" "}
           <span>
-            {role} {name}
+            {currentUser.user.user_metadata?.role === "admin" ? (
+              role
+            ) : (
+              <>
+                {role} {name}
+              </>
+            )}
           </span>
         </h1>
 

@@ -81,10 +81,7 @@ export default function CourseExams({
                     alt="file"
                   />
 
-                  <div>
-                    <h4>{exam.name}</h4>
-                    <InfoMessage>exam</InfoMessage>
-                  </div>
+                  <h4>{exam.name}</h4>
                 </div>
 
                 <div className="right">
