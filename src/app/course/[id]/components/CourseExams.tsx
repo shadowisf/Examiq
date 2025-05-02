@@ -102,7 +102,11 @@ export default function CourseExams({
             );
           })
         )
-      ) : null}
+      ) : (
+        <InfoMessage>
+          you have not created any exams for this course yet
+        </InfoMessage>
+      )}
     </section>
   );
 }

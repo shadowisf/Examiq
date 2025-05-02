@@ -1,7 +1,7 @@
 "use client";
 
 import InfoMessage from "@/app/components/InfoMessage";
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { EyeTracking } from "react-eye-tracking";
 
 type EyeTrackerProps = {
@@ -16,7 +16,9 @@ export default function EyeTracker({
   const [calibration, setCalibration] = useState(false);
   const [calibrationCount, setCalibrationCount] = useState(0);
 
-  const handleGazeData = useCallback((data: any) => {
+  ("use client");
+
+  function handleGazeData(data: any) {
     if (!data || typeof data.x !== "number" || typeof data.y !== "number") {
       return;
     }
@@ -24,8 +26,8 @@ export default function EyeTracker({
     const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
 
-    const thresholdX = 0.015; // 1% from left or right
-    const thresholdY = 0.015; // 1% from top or bottom
+    const thresholdX = 0.015; // 1.5% from sides
+    const thresholdY = 0.015; // 1.5% from top/bottom
 
     const isLeft = data.x < screenWidth * thresholdX;
     const isRight = data.x > screenWidth * (1 - thresholdX);
@@ -46,7 +48,7 @@ export default function EyeTracker({
     if (currentArea) {
       gazeCountsRef.current[currentArea] += 1;
     }
-  }, []);
+  }
 
   return (
     <>

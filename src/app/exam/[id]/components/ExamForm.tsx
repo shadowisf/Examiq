@@ -24,7 +24,7 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
   const [startExam, setStartExam] = useState(false);
   const [blocked, setBlocked] = useState(false);
 
-  const gazeCountsRef = useRef<Record<string, number>>({
+  const gazeTriggerCount = useRef<Record<string, number>>({
     topleft: 0,
     topright: 0,
     bottomleft: 0,
@@ -36,6 +36,10 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
   });
   const keyPressCount = useRef<Record<string, number>>({});
   const mouseClickCount = useRef<Record<string, number>>({});
+  const windowBlockCount = useRef<Record<string, number>>({
+    blur: 0,
+    unblur: 0,
+  });
   const formRef = useRef<HTMLFormElement | null>(null);
 
   const now = new Date().getTime();
@@ -44,7 +48,7 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
 
   useEffect(() => {
     if (startExam) {
-      gazeCountsRef.current = {
+      gazeTriggerCount.current = {
         topleft: 0,
         topright: 0,
         bottomleft: 0,
@@ -54,54 +58,47 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
         top: 0,
         bottom: 0,
       };
-    }
-  }, [startExam]);
 
-  useEffect(() => {
-    if (startExam) {
-      const cleanup = inputTracker(
+      const inputTrackerCleanUp = inputTracker(
         keyPressCount.current,
         mouseClickCount.current
       );
 
-      return () => {
-        cleanup();
-      };
-    }
-  }, [startExam]);
-
-  useEffect(() => {
-    if (startExam) {
-      const cleanup = windowTracker(
+      const windowTrackerCleanUp = windowTracker(
         () => setBlocked(true),
-        () => setBlocked(false)
+        () => setBlocked(false),
+        windowBlockCount.current
       );
 
       return () => {
-        cleanup();
+        inputTrackerCleanUp();
+        windowTrackerCleanUp();
       };
     }
   }, [startExam]);
 
   async function handleSubmit(formData: FormData) {
     startTransition(async () => {
-      const combinedInputs = {
-        ...keyPressCount.current,
-        ...mouseClickCount.current,
-      };
+      const combinedInputs = [
+        {
+          ...keyPressCount.current,
+        },
+        { ...mouseClickCount.current },
+      ];
 
       const result = await createResult(
         formData,
         exam,
-        gazeCountsRef.current,
-        combinedInputs
+        gazeTriggerCount.current,
+        combinedInputs,
+        windowBlockCount.current
       );
 
       if (result?.error) {
         setError(result.error.message);
+      } else {
+        redirect("/dashboard");
       }
-
-      redirect("/dashboard");
     });
   }
 
@@ -223,13 +220,7 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
             ))}
 
             {currentUser.user.user_metadata.role === "student" && (
-              <button
-                type="submit"
-                onClick={() => {
-                  console.log(keyPressCount);
-                  console.log(mouseClickCount);
-                }}
-              >
+              <button type="submit">
                 <Image
                   src={"/icons/check.svg"}
                   alt="submit"
@@ -245,7 +236,7 @@ export default function ExamForm({ exam, currentUser }: ExamFormProps) {
         !isPending && (
           <EyeTracker
             setStartExam={setStartExam}
-            gazeCountsRef={gazeCountsRef}
+            gazeCountsRef={gazeTriggerCount}
           />
         )
       )}

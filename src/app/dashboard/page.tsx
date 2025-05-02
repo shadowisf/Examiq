@@ -77,6 +77,11 @@ export default async function Dashboard() {
             )?.name,
           })) || [];
 
+      filteredResults =
+        results?.filter((result) =>
+          filteredExams.some((exam: any) => exam.id === result.exam_id)
+        ) || [];
+
       break;
   }
 
@@ -159,7 +164,7 @@ export default async function Dashboard() {
         />
 
         <TeacherResults
-          results={results}
+          results={filteredResults}
           resultsError={resultsError}
           students={students}
           studentsError={studentsError}

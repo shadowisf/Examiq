@@ -48,7 +48,11 @@ export function ResultTable({
                 </td>
               )}
               <td>
-                {result.score}
+                {
+                  result.contents.filter(
+                    (content: any) => content.status === "correct"
+                  ).length
+                }
                 {"/"}
                 {exams.find((exam: any) => exam.id === result.exam_id)?.items
                   .length ?? 0}

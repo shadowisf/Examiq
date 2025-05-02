@@ -95,7 +95,12 @@ export default function StudentExams({
                     <div className="right">
                       {matchedResult ? (
                         <p>
-                          {matchedResult.score}/{exam.items.length}
+                          {
+                            matchedResult.contents.filter(
+                              (content: any) => content.status === "correct"
+                            ).length
+                          }
+                          /{exam.items.length}
                         </p>
                       ) : isDeadlinePassed ? (
                         <p>❌ | did not attempt</p>

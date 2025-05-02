@@ -38,7 +38,15 @@ export default async function Result({ params }: { params: { id: string } }) {
             <InfoMessage>
               deadline: {formatDateTimeLocal(exam.deadline, true)}
             </InfoMessage>
-            <InfoMessage>total item: {exam.items.length}</InfoMessage>
+            <InfoMessage>
+              score:{" "}
+              {
+                result.contents.filter(
+                  (content: any) => content.status === "correct"
+                ).length
+              }
+              /{exam.items.length}
+            </InfoMessage>
           </section>
 
           <ResultForm exam={exam} result={result} />

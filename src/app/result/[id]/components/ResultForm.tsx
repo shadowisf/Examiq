@@ -13,16 +13,15 @@ export default function ResultForm({ exam, result }: ResultFormProps) {
           const answerObj = result.contents?.find((a: any) => a.id === item.id);
           const studentAnswer = answerObj?.studentAnswer;
           const correctAnswer = answerObj?.correctAnswer;
+          const status = answerObj?.status;
 
-          const isCorrect =
-            studentAnswer?.toLowerCase().trim() ===
-            correctAnswer?.toLowerCase().trim();
+          const isCorrect = status === "correct";
 
           return (
             <div key={item.id} className="question">
               <h4>
                 {isCorrect ? " ✅" : " ❌"} <span>{index + 1}. </span>
-                {item.type == "fill-in-the-blank"
+                {item.type === "fill-in-the-blank"
                   ? item.question.replace(
                       new RegExp(item.correctAnswer, "i"),
                       "_____"
@@ -76,6 +75,15 @@ export default function ResultForm({ exam, result }: ResultFormProps) {
                   ))}
                 </div>
               )}
+
+              <p>
+                correct answer:{" "}
+                <strong>
+                  {typeof correctAnswer === "string"
+                    ? correctAnswer.replace(/\\boxed{([\s\S]*?)}/, "$1")
+                    : correctAnswer}
+                </strong>
+              </p>
             </div>
           );
         })}
