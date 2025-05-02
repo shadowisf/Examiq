@@ -1,3 +1,4 @@
+import InfoMessage from "@/app/components/InfoMessage";
 import Image from "next/image";
 
 type TeacherResultsModalProps = {
@@ -28,13 +29,37 @@ export default function TeacherResultsModal({
         </div>
 
         <form action={handleConfirm}>
-          <input
-            name="result score"
-            type="text"
-            placeholder="score"
-            required
-            defaultValue={selectedResult.score}
-          />
+          <div className="exam-create-container">
+            {selectedResult.contents?.map((content: any, index: number) => (
+              <div key={content.id} className="exam-item">
+                <div>
+                  <InfoMessage>{index + 1}</InfoMessage>
+
+                  <p>
+                    correct answer:{" "}
+                    <strong>
+                      {content.correctAnswer.replace(
+                        /\\boxed{([\s\S]*?)}/,
+                        "$1"
+                      )}
+                    </strong>
+                  </p>
+                  <p>
+                    student answer: <strong>{content.studentAnswer}</strong>
+                  </p>
+
+                  <select
+                    name={`status-${content.id}`}
+                    defaultValue={content.status}
+                    required
+                  >
+                    <option value="correct">correct</option>
+                    <option value="incorrect">incorrect</option>
+                  </select>
+                </div>
+              </div>
+            ))}
+          </div>
 
           <br />
 

@@ -313,16 +313,16 @@ export async function deleteExam(exam: any) {
   }
 }
 
-export async function updateResult(formData: FormData, result: any) {
+export async function updateResult(updatedResult: any) {
   try {
     const supabase = await createClient();
 
     const { error } = await supabase
       .from("result")
       .update({
-        score: formData.get("result score"),
+        contents: updatedResult.contents,
       })
-      .eq("id", result.id);
+      .eq("id", updatedResult.id);
 
     if (error) {
       throw new Error(error.message);
@@ -331,7 +331,6 @@ export async function updateResult(formData: FormData, result: any) {
     revalidatePath("/dashboard", "layout");
   } catch (e) {
     const errorMessage = (e as Error).message;
-
     console.error(errorMessage);
     return { error: { message: errorMessage } };
   }

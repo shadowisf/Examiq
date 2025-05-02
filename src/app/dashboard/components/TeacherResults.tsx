@@ -32,6 +32,22 @@ export default function TeacherResults({
   const [showModal, setShowModal] = useState(false);
   const [selectedResult, setSelectedResult] = useState<any>(null);
 
+  function handleUpdatedContentStatuses(formData: FormData, result: any) {
+    const updatedContents = result.contents.map((content: any) => {
+      const statusKey = `status-${content.id}`;
+      const newStatus = formData.get(statusKey);
+      return {
+        ...content,
+        status: newStatus,
+      };
+    });
+
+    return {
+      ...result,
+      contents: updatedContents,
+    };
+  }
+
   function handleCancel() {
     setShowModal(false);
     setError("");
@@ -52,10 +68,15 @@ export default function TeacherResults({
 
   async function handleConfirm(formData: FormData) {
     startTransition(async () => {
-      const result = await updateResult(formData, selectedResult);
+      const updatedContent = handleUpdatedContentStatuses(
+        formData,
+        selectedResult
+      );
 
-      if (result?.error) {
-        setError(result.error.message);
+      const actionResult = await updateResult(updatedContent);
+
+      if (actionResult?.error) {
+        setError(actionResult.error.message);
       }
 
       setShowModal(false);

@@ -7,6 +7,7 @@ import { readSingleExam } from "@/app/exam/[id]/actions";
 import ResultForm from "./components/ResultForm";
 import { readSingleResult } from "./actions";
 import { formatDateTimeLocal } from "@/app/utils/default/formatDateTimeLocal";
+import ResultOptions from "./components/ResultOptions";
 
 export default async function Result({ params }: { params: { id: string } }) {
   const { currentUser, currentUserError } = await readCurrentUser();
@@ -25,6 +26,8 @@ export default async function Result({ params }: { params: { id: string } }) {
       ) : (
         <>
           <section>
+            <ResultOptions currentUser={currentUser} result={result} />
+
             <h1 className="big">{exam.name}</h1>
             <p>{exam.id}</p>
 
