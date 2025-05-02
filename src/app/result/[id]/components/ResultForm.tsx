@@ -1,11 +1,18 @@
 "use client";
 
+import InfoMessage from "@/app/components/InfoMessage";
+
 type ResultFormProps = {
   exam: any;
   result: any;
+  currentUser: any;
 };
 
-export default function ResultForm({ exam, result }: ResultFormProps) {
+export default function ResultForm({
+  exam,
+  result,
+  currentUser,
+}: ResultFormProps) {
   return (
     <>
       <form>
@@ -88,6 +95,86 @@ export default function ResultForm({ exam, result }: ResultFormProps) {
           );
         })}
       </form>
+
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+
+      {currentUser.user.user_metadata.role === "teacher" && (
+        <section className="cheating-stats-container">
+          <div>
+            <h4>keyboard inputs</h4>
+            {result.inputs
+              .filter(
+                (inputGroup: Record<string, number>) =>
+                  inputGroup.hasOwnProperty("A") ||
+                  inputGroup.hasOwnProperty("B")
+              )
+              .map((inputGroup: Record<string, number>, index: number) => (
+                <div key={index} style={{ marginBottom: "1rem" }}>
+                  {Object.entries(inputGroup).map(([key, count]) => (
+                    <InfoMessage key={key}>
+                      <span>{key}</span> - <span>{count}</span>
+                    </InfoMessage>
+                  ))}
+                </div>
+              ))}
+          </div>
+
+          <div>
+            <h4>mouse inputs</h4>
+            {result.inputs
+              .filter(
+                (inputGroup: Record<string, number>) =>
+                  inputGroup.hasOwnProperty("left") ||
+                  inputGroup.hasOwnProperty("right")
+              )
+              .map((inputGroup: Record<string, number>, index: number) => (
+                <div key={index} style={{ marginBottom: "1rem" }}>
+                  {Object.entries(inputGroup).map(([key, count]) => (
+                    <InfoMessage key={key}>
+                      <span>{key}</span> - <span>{count}</span>
+                    </InfoMessage>
+                  ))}
+                </div>
+              ))}
+          </div>
+
+          <div>
+            <h4>blurs</h4>
+            <div>
+              {["blur", "unblur"].map(
+                (key) =>
+                  result.blurs[key] !== undefined && (
+                    <InfoMessage key={key}>
+                      <span>{key}</span> - <span>{result.blurs[key]}</span>
+                    </InfoMessage>
+                  )
+              )}
+            </div>
+          </div>
+
+          <div className="gaze-grid-container">
+            <h4>gazes</h4>
+            <div>
+              <InfoMessage>{result.gazes?.topleft ?? 0}</InfoMessage>
+              <InfoMessage>{result.gazes?.top ?? 0}</InfoMessage>
+              <InfoMessage>{result.gazes?.topright ?? 0}</InfoMessage>
+
+              <InfoMessage>{result.gazes?.left ?? 0}</InfoMessage>
+              <InfoMessage>center</InfoMessage>
+              <InfoMessage>{result.gazes?.right ?? 0}</InfoMessage>
+
+              <InfoMessage>{result.gazes?.bottomleft ?? 0}</InfoMessage>
+              <InfoMessage>{result.gazes?.bottom ?? 0}</InfoMessage>
+              <InfoMessage>{result.gazes?.bottomright ?? 0}</InfoMessage>
+            </div>
+          </div>
+        </section>
+      )}
     </>
   );
 }

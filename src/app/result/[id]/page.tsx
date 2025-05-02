@@ -52,7 +52,7 @@ export default async function Result({ params }: { params: { id: string } }) {
             </InfoMessage>
           </section>
 
-          <ResultForm exam={exam} result={result} />
+          <ResultForm exam={exam} result={result} currentUser={currentUser} />
         </>
       )}
     </main>

@@ -636,6 +636,34 @@ textarea {
       gap: 8px;
     }
   }
+
+  .cheating-stats-container {
+    display: flex;
+    justify-content: space-between;
+
+    .gaze-grid-container {
+      display: grid;
+      gap: 8px;
+
+      text-align: center;
+
+      div {
+        display: grid;
+        grid-template-columns: repeat(3, 80px);
+        grid-template-rows: repeat(3, 80px);
+        gap: 8px;
+        justify-content: start;
+        align-items: center;
+
+        p {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-weight: bold;
+        }
+      }
+    }
+  }
 }
 
 #webgazerVideoContainer {
