@@ -4,7 +4,8 @@
 &emsp;
 
 ## SETUP
-1. Clone and open this repository in VSCODE.
-2. Run `npm install`.
-3. Run `npm run dev`.
-4. Register and login.
+1. Clone and open this repository
+2. Open in VSCODE.
+3. Run `npm install`.
+4. Run `npm run dev`.
+5. Register and login.
