@@ -78,13 +78,13 @@ export default function EyeTracker({
         </div>
       </section>
 
-      {/* <EyeTracking
+      <EyeTracking
         show={calibration}
         setShow={setCalibration}
         showCamera={true}
         showPoint={true}
         listener={handleGazeData}
-      /> */}
+      />
     </>
   );
 }

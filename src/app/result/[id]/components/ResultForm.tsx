@@ -87,7 +87,9 @@ export default function ResultForm({
                 correct answer:{" "}
                 <strong>
                   {typeof correctAnswer === "string"
-                    ? correctAnswer.replace(/\\boxed{([\s\S]*?)}/, "$1")
+                    ? correctAnswer
+                        .replace(/\\text{([\s\S]*?)}/g, "$1")
+                        .replace(/\\boxed{([\s\S]*?)}/g, "$1")
                     : correctAnswer}
                 </strong>
               </p>

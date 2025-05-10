@@ -173,22 +173,11 @@ export default function TeacherExamsModal({
 
                       {item.type === "fill-in-the-blank" && (
                         <input
-                          pattern={`^(${[
-                            ...new Set(item.question.match(/\b[\w\W]+\b/g)),
-                          ]
-                            .map((w: any) =>
-                              w
-                                .replace(
-                                  /([.*+?^=!:${}()|$begin:math:display$$end:math:display$\/\\])/g,
-                                  "\\$1"
-                                )
-                                .replace(
-                                  /./g,
-                                  (c: any) =>
-                                    `[${c.toLowerCase()}${c.toUpperCase()}]`
-                                )
-                            )
-                            .join("|")})$`}
+                          pattern={`^${item.question
+                            .split(" ")
+                            .slice(-3)
+                            .join(" ")
+                            .replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`}
                           required
                           type="text"
                           placeholder="correct answer"
