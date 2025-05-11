@@ -10,8 +10,9 @@ import { formatDateTimeLocal } from "@/app/utils/default/formatDateTimeLocal";
 import ResultOptions from "./components/ResultOptions";
 
 export default async function Result({ params }: { params: { id: string } }) {
+  const { id } = await params;
   const { currentUser, currentUserError } = await readCurrentUser();
-  const { result = [], resultError } = await readSingleResult(params.id);
+  const { result = [], resultError } = await readSingleResult(id);
   const { exam = [], examError } = await readSingleExam(result.exam_id);
   const { course = [], courseError } = await readSingleCourse(exam.course_id);
 

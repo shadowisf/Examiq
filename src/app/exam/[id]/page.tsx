@@ -12,9 +12,10 @@ import { readSingleCourse } from "@/app/course/[id]/actions";
 import { formatDateTimeLocal } from "@/app/utils/default/formatDateTimeLocal";
 
 export default async function Exam({ params }: { params: { id: string } }) {
+  const { id } = await params;
   const { currentUser, currentUserError } = await readCurrentUser();
   const { courses = [], coursesError } = await readAllCourses();
-  const { exam = [], examError } = await readSingleExam(params.id);
+  const { exam = [], examError } = await readSingleExam(id);
   const { course = [], courseError } = await readSingleCourse(exam.course_id);
 
   const now = new Date().getTime();

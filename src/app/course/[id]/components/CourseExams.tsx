@@ -56,51 +56,62 @@ export default function CourseExams({
             );
           })
         ) : (
-          exams.map((exam) => {
-            const matchedResult = results.find(
-              (result) => result.exam_id === exam.id
-            );
-            const deadline = new Date(exam.deadline).getTime();
-            const isDeadlinePassed = deadline < now;
+          exams
+            .sort(
+              (a, b) =>
+                new Date(b.deadline).getTime() - new Date(a.deadline).getTime()
+            )
+            .map((exam) => {
+              const matchedResult = results.find(
+                (result) => result.exam_id === exam.id
+              );
+              const deadline = new Date(exam.deadline).getTime();
+              const isDeadlinePassed = deadline < now;
 
-            return (
-              <Link
-                href={
-                  matchedResult
-                    ? `/result/${matchedResult.id}`
-                    : `/exam/${exam.id}`
-                }
-                key={exam.id}
-                className={matchedResult || isDeadlinePassed ? "dnf" : ""}
-              >
-                <div className="left">
-                  <Image
-                    src={"/icons/file.svg"}
-                    width={32}
-                    height={32}
-                    alt="file"
-                  />
+              return (
+                <Link
+                  href={
+                    matchedResult
+                      ? `/result/${matchedResult.id}`
+                      : `/exam/${exam.id}`
+                  }
+                  key={exam.id}
+                  className={!matchedResult && isDeadlinePassed ? "dnf" : ""}
+                >
+                  <div className="left">
+                    <Image
+                      src={"/icons/file.svg"}
+                      width={32}
+                      height={32}
+                      alt="file"
+                    />
+                    <div>
+                      <h4>{exam.name}</h4>
+                      <InfoMessage>{exam.course_name}</InfoMessage>
+                    </div>
+                  </div>
 
-                  <h4>{exam.name}</h4>
-                </div>
+                  <div className="right">
+                    {matchedResult ? (
+                      <p>
+                        {
+                          matchedResult.contents.filter(
+                            (content: any) => content.status === "correct"
+                          ).length
+                        }
+                        /{exam.items.length}
+                      </p>
+                    ) : isDeadlinePassed ? (
+                      <p>❌ | did not attempt</p>
+                    ) : null}
 
-                <div className="right">
-                  {matchedResult ? (
-                    <p>
-                      {matchedResult.score}/{exam.items.length} |{" "}
-                      {matchedResult.likelihood_of_cheating}% cheating
-                    </p>
-                  ) : isDeadlinePassed ? (
-                    <p>❌ | did not attempt</p>
-                  ) : null}
-
-                  <InfoMessage>
-                    {formatDateTimeLocal(exam.deadline, true)}
-                  </InfoMessage>
-                </div>
-              </Link>
-            );
-          })
+                    <InfoMessage>
+                      {formatDateTimeLocal(exam.deadline, true)}
+                    </InfoMessage>
+                  </div>
+                </Link>
+              );
+            })
         )
       ) : (
         <InfoMessage>

@@ -12,16 +12,11 @@ import {
   readCurrentUser,
 } from "@/app/utils/default/readEntities";
 
-type CourseProps = {
-  params: {
-    id: string;
-  };
-};
-
-export default async function Course({ params }: CourseProps) {
+export default async function Course({ params }: { params: { id: string } }) {
+  const { id } = await params;
   const { currentUser, currentUserError } = await readCurrentUser();
   const { students = [], studentsError } = await readAllStudents();
-  const { course = [], courseError } = await readSingleCourse(params.id);
+  const { course = [], courseError } = await readSingleCourse(id);
   const { exams = [], examsError } = await readAllExams();
   const { results = [], resultsError } = await readAllResults();
 
