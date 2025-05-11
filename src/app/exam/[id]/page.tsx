@@ -11,7 +11,11 @@ import ExamOptions from "./components/ExamOptions";
 import { readSingleCourse } from "@/app/course/[id]/actions";
 import { formatDateTimeLocal } from "@/app/utils/default/formatDateTimeLocal";
 
-export default async function Exam({ params }: { params: { id: string } }) {
+export default async function Exam({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
   const { currentUser, currentUserError } = await readCurrentUser();
   const { courses = [], coursesError } = await readAllCourses();

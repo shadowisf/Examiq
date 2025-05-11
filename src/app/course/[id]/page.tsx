@@ -12,7 +12,11 @@ import {
   readCurrentUser,
 } from "@/app/utils/default/readEntities";
 
-export default async function Course({ params }: { params: { id: string } }) {
+export default async function Course({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
   const { currentUser, currentUserError } = await readCurrentUser();
   const { students = [], studentsError } = await readAllStudents();

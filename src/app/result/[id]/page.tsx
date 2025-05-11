@@ -9,7 +9,11 @@ import { readSingleResult } from "./actions";
 import { formatDateTimeLocal } from "@/app/utils/default/formatDateTimeLocal";
 import ResultOptions from "./components/ResultOptions";
 
-export default async function Result({ params }: { params: { id: string } }) {
+export default async function Result({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
   const { currentUser, currentUserError } = await readCurrentUser();
   const { result = [], resultError } = await readSingleResult(id);
