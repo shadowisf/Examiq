@@ -77,6 +77,18 @@ export default function SignInForm({
                 <p className="gray">
                   sign in to your account as a <span>{userType}</span>
                 </p>
+
+                <br />
+
+                <b>
+                  use test account:
+                  <br />
+                  email: {userType === "admin" && "admin@email.com"}
+                  {userType === "student" && "john@email.com"}
+                  {userType === "teacher" && "jane@email.com"}
+                  <br />
+                  password: {userType}
+                </b>
               </div>
             </section>
 
